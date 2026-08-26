@@ -336,11 +336,10 @@ const EntryPoint = {
 
       return uiCapabilitiesPromise;
     };
-    const forkopMap = new form.Map(
-      UCI_PACKAGE,
-      _("Forkop Settings"),
-      _("Configuration for Forkop service"),
-    );
+    // The map title and description are intentionally empty: the
+    // .lh-brand-header below fills that role. Keeping both produced two
+    // competing descriptions, one hidden by CSS and dead weight in locales.
+    const forkopMap = new form.Map(UCI_PACKAGE, "", "");
     forkopMap.tabbed = true;
     const originalHandleSaveApply = forkopMap.handleSaveApply;
     forkopMap.handleSaveApply = function (ev, mode) {
@@ -486,7 +485,40 @@ const EntryPoint = {
       logWatcherStartDelayMs: 5000,
     });
 
-    return rendered;
+    const brandHeader = E("header", { class: "lh-brand-header" }, [
+      E("div", { class: "lh-brand-header__identity" }, [
+        E("div", { class: "lh-wordmark" }, [
+          E(
+            "span",
+            { class: "lh-wordmark__log" },
+            main.LOGIN_BRAND.wordmark.prefix,
+          ),
+          E(
+            "span",
+            { class: "lh-wordmark__in" },
+            main.LOGIN_BRAND.wordmark.accent,
+          ),
+        ]),
+        E(
+          "span",
+          { class: "lh-brand-header__edition" },
+          main.LOGIN_BRAND.edition,
+        ),
+      ]),
+      E(
+        "p",
+        { class: "lh-brand-header__description" },
+        // A literal is required here: extract-calls.js only collects string
+        // literals inside _(), so a variable would silently never be extracted.
+        _("Routing, subscriptions and DPI control for OpenWrt"),
+      ),
+    ]);
+
+    return E(
+      "div",
+      { class: "lh-shell", "data-loghorizon-shell": "foundation" },
+      [brandHeader, rendered],
+    );
   },
 };
 

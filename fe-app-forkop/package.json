@@ -1,7 +1,8 @@
 {
-  "name": "fe-app-forkop",
+  "name": "fe-app-loghorizon",
   "version": "1.0.0",
-  "license": "MIT",
+  "description": "logIn LuCI frontend (Forkop compatibility milestone)",
+  "license": "GPL-2.0-or-later",
   "type": "module",
   "scripts": {
     "format": "prettier --write src",

@@ -1,59 +1,66 @@
-# Forkop (Podkop Plus)
+# logIn
 
-[![Star](https://img.shields.io/github/stars/ushan0v/forkop?style=social)](https://github.com/ushan0v/forkop/stargazers)
-[![Releases](https://img.shields.io/github/v/release/ushan0v/forkop?label=releases)](https://github.com/ushan0v/forkop/releases)
-[![Telegram](https://img.shields.io/badge/Telegram-Forkop%20%7C%20Chat-2CA5E0?logo=telegram\&logoColor=white)](https://t.me/forkop_chat)
-[![AI Assistant](https://img.shields.io/badge/Telegram-Forkop%20%7C%20AI%20Assistant-2CA5E0?logo=telegram\&logoColor=white)](https://t.me/forkop_aibot)
+> English version: [README.en.md](README.en.md)
 
-> **Forkop — это бывший Podkop Plus.** Проект переименован и продолжает развиваться как независимый форк [Podkop](https://github.com/itdoginfo/podkop).
+`logIn` — проект маршрутизации и управления DPI для OpenWrt. Репозиторий: <https://github.com/AxelNerv/LogIn>. `loghorizon` — внутреннее пространство имён будущих пакетов, служб и конфигов.
 
-### Установка
+Фундамент собран на базе [Forkop](https://github.com/ushan0v/forkop), который сам является форком [Podkop](https://github.com/itdoginfo/podkop). Маршрутизация, подписки, диагностика и провайдеры DPI работают как раньше, пока поверх них строится новая оболочка продукта и поэтапный переезд рантайма на собственные имена.
 
-```sh
-sh <(wget -O - https://raw.githubusercontent.com/ushan0v/forkop/main/install.sh)
-```
+> **Статус:** разработка фундамента. Не ставить на рабочий роутер — установщик намеренно вытесняет podkop: останавливает его службу, снимает с автозапуска, удаляет файлы и переносит конфиг.
 
-<details>
-<summary><sub>Альтернативный способ установки</sub></summary>
+## Установка
 
 ```sh
-sh <(wget -O - https://forkop.sourceforge.io/install.sh)
+sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/install.sh)
 ```
 
-</details>
+Установщик берёт пакеты из релизов `AxelNerv/LogIn`, сам определяет формат (ipk для OpenWrt 24.10, apk для 25.12 и новее) и доставляет зависимости. Пакеты собираются с `PKGARCH:=all`, поэтому подходят любому роутеру.
 
-### Что нового в этом форке
+## Текущий этап
 
-* Поддержка подписок.
-* Поддержка sing-box extended и транспорта XHTTP.
-* Обновлённый LuCI-интерфейс.
-* Расширенное управление секциями.
-* Новые условия маршрутизации.
-* Возможность поднять собственный VPN/proxy-сервер.
-* Менеджер обновлений и установки компонентов.
-* Встроенный мониторинг соединений.
-* Расширенные настройки URLTest-групп.
-* Автоматический выбор узла по приоритету.
-* Каскадные подключения.
-* Маршрутизация DNS-запросов через прокси.
-* Резервные DNS-серверы.
-* Отдельные DNS-серверы для выбранных доменов.
-* Поддержка IPv6.
-* Действие Bypass с полным обходом sing-box.
-* Интеграция Zapret, Zapret2 и ByeDPI как отдельных действий секции.
-* Служба полностью переписана на ucode.
-* Другие исправления и улучшения.
+- Брендинг `logIn` в LuCI.
+- Operator Calm как единственное направление интерфейса.
+- Совместимость с существующим пространством имён Forkop (UCI, бэкенд, служба).
+- Описанный путь миграции на пакеты и службы `loghorizon`.
+- Основной профиль — роутеры с 256 МБ ОЗУ, планируется Lite для 128 МБ.
 
-### Документация
+## Проверки фронтенда локально
 
-Отдельной документации со всеми изменениями, нововведениями и инструкцией по настройке пока что не существует. Задать вопрос, сообщить о проблеме или обсудить проект можно в [Telegram-чате](https://t.me/forkop_chat) проекта.
+```sh
+cd fe-app-forkop && yarn install --frozen-lockfile && yarn lint --max-warnings=0 && yarn test --run && yarn build
+```
 
-Как альтернативу документации для быстрых персонализированных ответов используйте бесплатного, специально для этого созданного, AI-ассистента [@forkop_aibot](https://t.me/forkop_aibot).
+Собранный бандл LuCI лежит в `luci-app-forkop/htdocs/luci-static/resources/view/forkop/main.js` и **закоммичен в репозиторий**. CI падает, если пересборка меняет этот файл, поэтому после любой правки в `fe-app-forkop/src` пересобирай.
 
-### Поддержать проект
+Проверки бэкенда — обычные bash-скрипты:
 
-* 💳 **Карты РФ / СБП / Tinkoff Pay:** [Донат на CloudTips](https://pay.cloudtips.ru/p/385e5af2)
-* 💎 **USDT (сеть TON):** `UQAOCDav39WJ2gvnzs9RQ_IsF2dcGrcpw4U0j6XGO7je7uwm`
-* 🟢 **USDT (сеть TRC-20):** `TEMaZFyM8RQpkbd5LvB8CFJwxCyhHauKAe`
-* 🪙 **USDT (сети ERC-20 / BEP-20 / Polygon / Monad):** `0xe8aabb21c320240fe45b6087e68c6fe40a92d8bf`
-* 🟠 **USDT (сеть Solana):** `AhhUjTci9zDKQjUfgLacFR4LiHX9nmZud6DZ8YdbpjEB`
+```sh
+printf '%s\0' tests/*.sh | xargs -0 -n1 -P4 bash
+```
+
+## Переводы
+
+Строки интерфейса пишутся в исходниках по-английски и переводятся на русский через gettext. Извлекатель видит **только строковые литералы внутри `_()`** — строка, собранная из переменной, в каталог не попадёт и останется английской. После добавления или правки любого текста интерфейса:
+
+```sh
+cd fe-app-forkop && yarn locales:actualize
+```
+
+Затем заполни новые пустые `msgstr ""` в `locales/forkop.ru.po` и выполни `node distribute-locales.js`.
+
+## Прототип интерфейса
+
+Открой `design/logIn Operator Calm.html` в браузере. Operator Calm — единственное направление: тёмное, спокойное, ориентированное на состояние и достаточно лёгкое для LuCI. Интерфейс **только тёмный** и намеренно не подстраивается под тему LuCI.
+
+## Документы проекта
+
+- [Фундамент и миграция пространства имён](docs/FOUNDATION.md)
+- [Информационная архитектура](docs/INFORMATION_ARCHITECTURE.md)
+- [Профили маршрутизации и управляемые сети](docs/ROUTING_AND_NETWORKS.md)
+- [Чеклист релиза](docs/RELEASE_CHECKLIST.md)
+- [Факты о продукте](product-facts.md)
+- [Основа бренда](brand-spec.md)
+
+## Лицензия и атрибуция
+
+Код роутера — производная работа под GPL-2.0-or-later. Копирайты и уведомления об авторстве, унаследованные от Forkop и Podkop, обязаны остаться на месте: это условие лицензии, а не вопрос оформления. Самостоятельно разработанные компоненты документируются отдельно по мере появления.

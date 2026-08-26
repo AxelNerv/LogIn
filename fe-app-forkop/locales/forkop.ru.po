@@ -1,15 +1,15 @@
 # RU translations for FORKOP package.
 # Copyright (C) 2026 THE FORKOP COPYRIGHT HOLDER
 # This file is distributed under the same license as the FORKOP package.
-# ushan0v, 2026.
+# logIn, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: FORKOP\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-18 07:01+0300\n"
-"PO-Revision-Date: 2026-07-18 07:01+0300\n"
-"Last-Translator: ushan0v\n"
+"POT-Creation-Date: 2026-08-26 19:23+0300\n"
+"PO-Revision-Date: 2026-08-26 19:23+0300\n"
+"Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -71,20 +71,17 @@ msgstr "Добавьте хотя бы один DNS-сервер"
 msgid "Add prefix to nodes"
 msgstr "Добавлять префикс к узлам"
 
-msgid "Add URLs or local paths to .lst lists containing domains, IP addresses, or CIDR ranges. DNS actions ignore IP entries."
-msgstr "Добавьте URL или локальные пути к спискам .lst с доменами, IP-адресами или CIDR-подсетями. Для действия DNS записи IP игнорируются."
-
 msgid "Add URLs or local paths to .lst lists containing domains and subnets."
 msgstr "Добавьте URL или локальные пути к спискам .lst с доменами и подсетями."
 
 msgid "Add URLs or local paths to .lst lists containing domains. IP entries are ignored."
 msgstr "Добавьте URL или локальные пути к спискам .lst с доменами. IP игнорируются."
 
-msgid "Add URLs or local paths to .srs / .json lists. Subnets are ignored by default."
-msgstr "Добавьте URL или локальные пути к спискам .srs / .json. Подсети по умолчанию игнорируются."
-
 msgid "Add URLs or local paths to .srs / .json lists. Only domain rules are supported."
 msgstr "Добавьте URL или локальные пути к спискам .srs / .json. Поддерживаются только доменные правила."
+
+msgid "Add URLs or local paths to .srs / .json lists. Subnets are ignored by default."
+msgstr "Добавьте URL или локальные пути к спискам .srs / .json. Подсети по умолчанию игнорируются."
 
 msgid "Add URLTest / Priority group"
 msgstr "Добавить URLTest / Приоритет группу"
@@ -343,9 +340,6 @@ msgstr "Условия"
 
 msgid "Config File Path"
 msgstr "Путь к файлу конфигурации"
-
-msgid "Configuration for Forkop service"
-msgstr "Настройки сервиса Forkop"
 
 msgid "Configure User-Agent in the item settings"
 msgstr "Настройте User-Agent в настройках элемента"
@@ -758,9 +752,6 @@ msgstr "Служба Forkop остановлена. Запустите серв�
 msgid "Forkop service is stopped. Start the service to display the dashboard."
 msgstr "Служба Forkop остановлена. Запустите сервис для отображения дашборда."
 
-msgid "Forkop Settings"
-msgstr "Настройки Forkop"
-
 msgid "Forkop will not modify your DHCP configuration"
 msgstr "Forkop не будет изменять вашу конфигурацию DHCP"
 
@@ -965,6 +956,9 @@ msgstr "Неверный префикс CIDR"
 msgid "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH"
 msgstr "Неверный формат DNS-сервера. Примеры: 8.8.8.8, dns.example.com или dns.example.com/nicedns для DoH"
 
+msgid "Invalid DNS server port"
+msgstr "Неверный порт DNS-сервера"
+
 msgid "Invalid domain address"
 msgstr "Неверный домен"
 
@@ -1066,9 +1060,6 @@ msgstr "Неверный URL Shadowsocks: ошибка разбора"
 
 msgid "Invalid SOCKS URL: invalid host and port"
 msgstr "Некорректный SOCKS URL: некорректные хост и порт"
-
-msgid "Invalid SOCKS URL: invalid host format"
-msgstr "Неверный URL SOCKS: неверный формат хоста"
 
 msgid "Invalid SOCKS URL: invalid port number"
 msgstr "Неверный URL SOCKS: неверный номер порта"
@@ -1368,7 +1359,7 @@ msgid "Only the specified servers."
 msgstr "Только указанные серверы."
 
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 msgid "Open priority settings and enter a display name"
 msgstr "Откройте настройки приоритета и укажите отображаемое имя"
@@ -1570,6 +1561,9 @@ msgstr "Правила маршрутизации"
 
 msgid "Routing section"
 msgstr "Секция маршрутизации"
+
+msgid "Routing, subscriptions and DPI control for OpenWrt"
+msgstr "Маршрутизация, подписки и управление DPI для OpenWrt"
 
 msgid "Rule set must be an HTTP(S) URL or a local .srs / .json path"
 msgstr "Набор правил должен быть HTTP(S) URL или локальным путём .srs / .json"
@@ -1873,9 +1867,6 @@ msgstr "Интервал обновления подписки"
 
 msgid "Subscription URL"
 msgstr "URL подписки"
-
-msgid "Subscription URL cannot be empty"
-msgstr "URL подписки не может быть пустым"
 
 msgid "Subscription URL settings"
 msgstr "Настройки URL подписки"

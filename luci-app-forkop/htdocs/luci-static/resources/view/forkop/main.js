@@ -861,11 +861,7 @@ var FLAG_EMOJI_PATTERN = /([\u{1f1e6}-\u{1f1ff}]{2}|\u{1f3f4}[\u{e0061}-\u{e007a
 var EXACT_FLAG_EMOJI_PATTERN = /^([\u{1f1e6}-\u{1f1ff}]{2}|\u{1f3f4}[\u{e0061}-\u{e007a}]+\u{e007f})$/u;
 function renderFlagEmojis(value) {
   return value.split(FLAG_EMOJI_PATTERN).filter(Boolean).map(
-    (part) => EXACT_FLAG_EMOJI_PATTERN.test(part) ? E(
-      "span",
-      { class: "fkp_dashboard-page__flag-emoji" },
-      part
-    ) : part
+    (part) => EXACT_FLAG_EMOJI_PATTERN.test(part) ? E("span", { class: "fkp_dashboard-page__flag-emoji" }, part) : part
   );
 }
 
@@ -9158,7 +9154,7 @@ function renderWikiDisclaimer(kind) {
       classNames: ["cbi-button-save"],
       text: _("Open Project Page"),
       onClick: () => window.open(
-        "https://github.com/ushan0v/forkop#readme",
+        "https://github.com/AxelNerv/LogIn#readme",
         "_blank",
         "noopener,noreferrer"
       )
@@ -14100,6 +14096,308 @@ ${PartialStyles}
     opacity: 1;
     transform: translateY(0);
 }
+
+/* logIn / LogHorizon foundation shell
+ * Type: 12 / 14 / 16 / 20 / 28
+ * Space: 4 / 8 / 12 / 16 / 24 / 32
+ * Surfaces: canvas + two elevations; green is reserved for actions/status.
+ *
+ * Operator Calm is a dark-only system. The shell therefore defines every
+ * colour itself instead of leaning on LuCI theme variables: bootstrap does
+ * not declare --border-color-low / --background-color-high, so relying on
+ * fallbacks produced dark borders on a light page. Inside .lh-shell the
+ * palette is ours regardless of the theme the router runs.
+ */
+.lh-shell {
+    --lh-canvas: #0d1113;
+    --lh-surface: #151a1d;
+    --lh-surface-raised: #1b2225;
+    --lh-border: #2b3538;
+    --lh-border-strong: #3b494d;
+    --lh-ink: #edf2ef;
+    --lh-muted: #91a09a;
+    --lh-faint: #6f7d78;
+    --lh-primary: #45d483;
+    --lh-primary-ink: #07150d;
+    --lh-warning: #e6b85c;
+    --lh-danger: #ef6b67;
+    --lh-radius-sm: 3px;
+    --lh-radius-md: 6px;
+    --lh-radius-lg: 10px;
+    color-scheme: dark;
+    padding: 4px 16px 20px;
+    border-radius: var(--lh-radius-lg);
+    color: var(--lh-ink);
+    background: var(--lh-canvas);
+    font-family: Aptos, "Segoe UI Variable", "Noto Sans", sans-serif;
+}
+
+.lh-brand-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px 24px;
+    margin: 0 0 24px;
+    padding: 20px 0 16px;
+    border-bottom: 1px solid var(--lh-border);
+}
+
+.lh-brand-header__identity {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
+}
+
+.lh-wordmark {
+    color: var(--lh-ink);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 650;
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+}
+
+.lh-wordmark__in {
+    color: var(--lh-primary);
+}
+
+.lh-brand-header__edition {
+    color: var(--lh-muted);
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.lh-brand-header__description {
+    margin: 0;
+    color: var(--lh-muted);
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: right;
+    text-wrap: pretty;
+}
+
+/* The map title and description are empty by construction; the rule stays as
+ * a guard in case a future LuCI version renders the nodes anyway. */
+.lh-shell > .cbi-map > h2,
+.lh-shell > .cbi-map > .cbi-map-descr {
+    display: none;
+}
+
+.lh-shell h2,
+.lh-shell h3,
+.lh-shell h4,
+.lh-shell legend,
+.lh-shell label,
+.lh-shell strong {
+    color: var(--lh-ink);
+}
+
+.lh-shell .cbi-section-descr,
+.lh-shell .cbi-value-description,
+.lh-shell .cbi-value-title {
+    color: var(--lh-muted);
+}
+
+.lh-shell a:not(.btn):not(.cbi-button) {
+    color: var(--lh-primary);
+}
+
+.lh-shell .cbi-tabmenu {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--lh-border);
+    border-radius: var(--lh-radius-md);
+    background: var(--lh-surface);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.lh-shell .cbi-tabmenu li {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: var(--lh-radius-sm);
+    background: transparent;
+}
+
+.lh-shell .cbi-tabmenu li a {
+    min-height: 36px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: var(--lh-radius-sm);
+    color: var(--lh-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.lh-shell .cbi-tabmenu li.cbi-tab a,
+.lh-shell .cbi-tabmenu li a:hover,
+.lh-shell .cbi-tabmenu li a:focus-visible {
+    color: var(--lh-primary-ink);
+    background: var(--lh-primary);
+    outline: 0;
+}
+
+.lh-shell .cbi-section,
+.lh-shell .cbi-section-node {
+    border-color: var(--lh-border);
+    border-radius: var(--lh-radius-md);
+    background: var(--lh-surface);
+}
+
+.lh-shell table,
+.lh-shell .table {
+    color: var(--lh-ink);
+    background: transparent;
+}
+
+.lh-shell th,
+.lh-shell td,
+.lh-shell .tr,
+.lh-shell .th,
+.lh-shell .td {
+    border-color: var(--lh-border);
+}
+
+.lh-shell input,
+.lh-shell select,
+.lh-shell textarea {
+    border: 1px solid var(--lh-border-strong);
+    border-radius: var(--lh-radius-sm);
+    color: var(--lh-ink);
+    background: var(--lh-canvas);
+}
+
+.lh-shell input::placeholder,
+.lh-shell textarea::placeholder {
+    color: var(--lh-faint);
+}
+
+.lh-shell .fkp_dashboard-page {
+    --dashboard-grid-min-width: 190px;
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section,
+.lh-shell .fkp_dashboard-page__outbound-grid {
+    gap: 12px;
+}
+
+/* The cards sit inside .cbi-section, which already uses --lh-surface. Giving
+ * a card the same background makes it disappear, so cards go one step up. */
+.lh-shell .fkp_dashboard-page__widgets-section__item,
+.lh-shell .fkp_dashboard-page__outbound-section,
+.lh-shell .fkp_dashboard-page__subscription-meta,
+.lh-shell .fkp_dashboard-page__outbound-grid__item {
+    border-width: 1px;
+    border-color: var(--lh-border);
+    border-radius: var(--lh-radius-md);
+    background: var(--lh-surface-raised);
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section__item {
+    min-height: 92px;
+    padding: 14px;
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section__item__title,
+.lh-shell .fkp_dashboard-page__outbound-section__title-section__title {
+    letter-spacing: -0.01em;
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section__item__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 7px;
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section__item__row__key {
+    color: var(--lh-muted);
+}
+
+.lh-shell .fkp_dashboard-page__widgets-section__item__row__value,
+.lh-shell .fkp_dashboard-page__outbound-grid__item__latency--green,
+.lh-shell .fkp_dashboard-page__outbound-grid__item--active {
+    color: var(--lh-primary);
+}
+
+.lh-shell .fkp_dashboard-page__outbound-grid__item--active,
+.lh-shell .fkp_dashboard-page__outbound-grid__item--selectable:hover {
+    border-color: var(--lh-primary);
+}
+
+.lh-shell .fkp_dashboard-page__outbound-grid__item__type,
+.lh-shell .fkp_dashboard-page__outbound-grid__item__latency--green,
+.lh-shell .fkp_dashboard-page__outbound-grid__item__latency--yellow,
+.lh-shell .fkp_dashboard-page__outbound-grid__item__latency--red,
+.lh-shell .fkp_dashboard-page__subscription-meta__fact-value {
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 12px;
+}
+
+.lh-shell .btn,
+.lh-shell .cbi-button {
+    border: 1px solid var(--lh-border-strong);
+    border-radius: var(--lh-radius-sm);
+    color: var(--lh-ink);
+    background: var(--lh-surface-raised);
+    transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.lh-shell .btn:hover,
+.lh-shell .cbi-button:hover {
+    border-color: var(--lh-primary);
+}
+
+.lh-shell .btn:focus-visible,
+.lh-shell .cbi-button:focus-visible,
+.lh-shell input:focus-visible,
+.lh-shell select:focus-visible,
+.lh-shell textarea:focus-visible {
+    outline: 2px solid var(--lh-primary);
+    outline-offset: 2px;
+}
+
+.lh-shell .cbi-button-positive,
+.lh-shell .cbi-button-add,
+.lh-shell .cbi-button-apply,
+.lh-shell .cbi-button-save {
+    border-color: var(--lh-primary);
+    color: var(--lh-primary-ink);
+    background: var(--lh-primary);
+}
+
+.lh-shell .cbi-button-negative,
+.lh-shell .cbi-button-remove,
+.lh-shell .cbi-button-reset {
+    border-color: var(--lh-danger);
+    color: var(--lh-danger);
+    background: transparent;
+}
+
+@media (max-width: 700px) {
+    .lh-shell {
+        padding: 4px 12px 16px;
+    }
+
+    .lh-brand-header {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .lh-brand-header__description {
+        text-align: left;
+    }
+
+    .lh-shell .cbi-tabmenu li a {
+        min-height: 44px;
+    }
+}
 `;
 
 // src/helpers/injectGlobalStyles.ts
@@ -14118,6 +14416,14 @@ function injectGlobalStyles() {
   );
 }
 
+// src/brand.ts
+var LOGIN_BRAND = Object.freeze({
+  displayName: "logIn",
+  wordmark: Object.freeze({ prefix: "log", accent: "In" }),
+  internalName: "loghorizon",
+  edition: "Foundation"
+});
+
 // src/main.ts
 if (typeof structuredClone !== "function")
   globalThis.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
@@ -14132,6 +14438,7 @@ return baseclass.extend({
   FORKOP_UCI_PACKAGE,
   ForkopShellMethods,
   LATENCY_TEST_URL_OPTIONS,
+  LOGIN_BRAND,
   MonitoringTab,
   UpdatesTab,
   applyUiStateToStore,

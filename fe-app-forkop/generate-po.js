@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { execSync } from 'child_process';
 
 const lang = process.argv[2];
 if (!lang) {
@@ -10,12 +9,10 @@ if (!lang) {
 const callsPath = 'locales/calls.json';
 const poPath = `locales/forkop.${lang}.po`;
 
-function getGitUser() {
-  try {
-    return execSync('git config user.name').toString().trim();
-  } catch {
-    return 'Automatically generated';
-  }
+// Same principle as generate-pot.js: authorship belongs to the project, not
+// to the build machine, otherwise the .po header changes between runs.
+function getPoTranslator() {
+  return 'logIn';
 }
 
 function getHeader(lang) {
@@ -30,7 +27,7 @@ function getHeader(lang) {
     return `${sign}${hours}${minutes}`;
   })();
 
-  const translator = getGitUser();
+  const translator = getPoTranslator();
   const pluralForms =
     lang === 'ru'
       ? 'nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);'

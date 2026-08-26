@@ -1,33 +1,20 @@
 import fs from 'fs/promises';
-import { execSync } from 'child_process';
 
 const inputFile = 'locales/calls.json';
 const outputFile = 'locales/forkop.pot';
 const projectId = 'FORKOP';
 
-function getGitUser() {
-  try {
-    const name = execSync('git config user.name', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .toString()
-      .trim();
-    const email = execSync('git config user.email', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .toString()
-      .trim();
-
-    if (name && email) {
-      return { name, email };
-    }
-  } catch (error) {
-    // Fall through to deterministic defaults when git identity is not configured.
-  }
-
+/**
+ * The template is authored by the project, not by whichever machine ran the
+ * generator. This used to read `git config user.name/email`, which embedded an
+ * upstream contact on machines without a git identity and a personal address
+ * on machines with one, making the .pot differ per machine. `.invalid` is the
+ * RFC 2606 reserved domain, so it can never belong to anybody.
+ */
+function getPotAuthor() {
   return {
-    name: 'Forkop',
-    email: 'ushan0v@users.noreply.github.com',
+    name: 'logIn',
+    email: 'locales@loghorizon.invalid',
   };
 }
 
@@ -73,11 +60,11 @@ function generateEntry(item) {
 }
 
 async function generatePot() {
-  const gitUser = getGitUser();
+  const potAuthor = getPotAuthor();
   const raw = await fs.readFile(inputFile, 'utf8');
   const entries = JSON.parse(raw);
 
-  const header = getPotHeader(gitUser);
+  const header = getPotHeader(potAuthor);
   const body = entries.map(generateEntry).join('\n');
 
   await fs.writeFile(outputFile, `${header}\n${body}`, 'utf8');
