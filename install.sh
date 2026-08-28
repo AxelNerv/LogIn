@@ -1928,8 +1928,10 @@ migrate_legacy_configuration() {
         if ! LOGHORIZON_CONFIG_NAME="loghorizon" \
             LOGHORIZON_LIB="/usr/lib/loghorizon" \
             ucode -L /usr/lib/loghorizon /usr/lib/loghorizon/config/migration.uc migrate-podkop; then
-            cp "$LEGACY_CONFIG_BACKUP" /etc/config/loghorizon 2>/dev/null || true
-            fail "Legacy configuration migration failed; the original configuration was restored"
+            if cp "$LEGACY_CONFIG_BACKUP" /etc/config/loghorizon 2>/dev/null; then
+                fail "Legacy configuration migration failed; the original configuration was restored"
+            fi
+            fail "Legacy configuration migration failed AND the original configuration could not be restored. A copy is kept at $LEGACY_CONFIG_BACKUP"
         fi
     else
         warn "The legacy package had no readable configuration; logIn defaults will be used"

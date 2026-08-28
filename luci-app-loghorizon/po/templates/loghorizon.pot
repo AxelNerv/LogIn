@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-28 16:01+0300\n"
-"PO-Revision-Date: 2026-08-28 16:01+0300\n"
+"POT-Creation-Date: 2026-08-28 16:14+0300\n"
+"PO-Revision-Date: 2026-08-28 16:14+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "✘ Stopped"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:406
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:442
 msgid "Accept external proxy connections and route them with sing-box."
 msgstr ""
 
@@ -84,11 +84,11 @@ msgstr ""
 msgid "Active Main DNS"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:395
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:431
 msgid "Add a section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:412
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:448
 msgid "Add a server inbound"
 msgstr ""
 
@@ -414,14 +414,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 msgid "Checks failed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -482,7 +482,7 @@ msgstr ""
 msgid "Component update check interval"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:507
 msgid "Components"
 msgstr ""
 
@@ -543,6 +543,10 @@ msgstr ""
 msgid "Could not compare FakeIP and control public IPs"
 msgstr ""
 
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:526
+msgid "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running."
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7509
 msgid "Current section cannot be used as its own transit section"
 msgstr ""
@@ -559,7 +563,7 @@ msgstr ""
 msgid "Custom outbound configurations in JSON format"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:447
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:483
 msgid "Dashboard"
 msgstr ""
 
@@ -609,7 +613,7 @@ msgstr ""
 msgid "DHCP is managed manually"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:435
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471
 msgid "Diagnostics"
 msgstr ""
 
@@ -834,7 +838,7 @@ msgstr ""
 msgid "Downloaded"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:389
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:425
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr ""
 
@@ -1539,8 +1543,8 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 msgid "Issues detected"
 msgstr ""
 
@@ -1774,7 +1778,7 @@ msgstr ""
 msgid "Monitored Interfaces"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:459
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:495
 msgid "Monitoring"
 msgstr ""
 
@@ -2268,7 +2272,7 @@ msgstr ""
 msgid "Routing section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:513
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:566
 msgid "Routing, subscriptions and DPI control for OpenWrt"
 msgstr ""
 
@@ -2333,7 +2337,7 @@ msgstr ""
 msgid "Secret key for authenticating remote access to YACD when WAN access is enabled."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:394
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:430
 msgid "Section"
 msgstr ""
 
@@ -2341,7 +2345,7 @@ msgstr ""
 msgid "Section name"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:388
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:424
 msgid "Sections"
 msgstr ""
 
@@ -2441,7 +2445,7 @@ msgstr ""
 msgid "Selector and URLTest outbounds must contain a non-empty outbounds array"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:411
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:447
 msgid "Server"
 msgstr ""
 
@@ -2483,7 +2487,7 @@ msgstr ""
 msgid "server_port must be a number from 1 to 65535"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:405
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:441
 msgid "Servers"
 msgstr ""
 
@@ -2505,10 +2509,14 @@ msgstr ""
 msgid "Services info"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:423
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:459
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1124
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6963
 msgid "Settings"
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:386
+msgid "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2377
@@ -2957,6 +2965,7 @@ msgstr ""
 msgid "unique UCI identifier"
 msgstr ""
 
+#: src/loghorizon/helpers/singBoxVariant.ts:28
 #: src/loghorizon/services/systemInfo.service.ts:10
 #: src/loghorizon/services/systemInfo.service.ts:11
 #: src/loghorizon/services/systemInfo.service.ts:12
@@ -2966,7 +2975,6 @@ msgstr ""
 #: src/loghorizon/services/systemInfo.service.ts:22
 #: src/loghorizon/services/systemInfo.service.ts:25
 #: src/loghorizon/services/systemInfo.service.ts:26
-#: src/loghorizon/helpers/singBoxVariant.ts:28
 #: src/loghorizon/tabs/updates/initController.ts:332
 #: src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:25
 msgid "unknown"

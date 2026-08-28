@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-28 19:01+0300\n"
-"PO-Revision-Date: 2026-08-28 19:01+0300\n"
+"POT-Creation-Date: 2026-08-28 19:14+0300\n"
+"PO-Revision-Date: 2026-08-28 19:14+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -367,6 +367,9 @@ msgstr "Скопировать ссылку прокси"
 
 msgid "Could not compare FakeIP and control public IPs"
 msgstr "Не удалось сравнить публичные IP FakeIP и контрольной проверки"
+
+msgid "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running."
+msgstr "Не удалось прочитать состояние службы logIn. Установленные компоненты и провайдеры DPI могут отображаться неверно. Проверьте, запущена ли служба."
 
 msgid "Current section cannot be used as its own transit section"
 msgstr "Текущую секцию нельзя использовать как транзит для самой себя"
@@ -1741,6 +1744,9 @@ msgstr "Информация о сервисах"
 
 msgid "Settings"
 msgstr "Настройки"
+
+msgid "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page."
+msgstr "Настройки применены, но состояние службы перечитать не удалось. Показанные значения могут быть устаревшими, обновите страницу."
 
 msgid "Show metadata on dashboard"
 msgstr "Отображать метаданные в дашборде"

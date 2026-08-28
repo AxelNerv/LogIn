@@ -62,7 +62,7 @@
     "call": "Accept external proxy connections and route them with sing-box.",
     "key": "Accept external proxy connections and route them with sing-box.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:406"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:442"
     ]
   },
   {
@@ -113,14 +113,14 @@
     "call": "Add a section",
     "key": "Add a section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:395"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:431"
     ]
   },
   {
     "call": "Add a server inbound",
     "key": "Add a server inbound",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:412"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:448"
     ]
   },
   {
@@ -668,17 +668,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
     ]
   },
   {
@@ -778,7 +778,7 @@
     "call": "Components",
     "key": "Components",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:507"
     ]
   },
   {
@@ -878,6 +878,13 @@
     ]
   },
   {
+    "call": "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running.",
+    "key": "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:526"
+    ]
+  },
+  {
     "call": "Current section cannot be used as its own transit section",
     "key": "Current section cannot be used as its own transit section",
     "places": [
@@ -909,7 +916,7 @@
     "call": "Dashboard",
     "key": "Dashboard",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:447"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:483"
     ]
   },
   {
@@ -995,7 +1002,7 @@
     "call": "Diagnostics",
     "key": "Diagnostics",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:435"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471"
     ]
   },
   {
@@ -1379,7 +1386,7 @@
     "call": "Drag rows to change priority. The rule at the top is checked first.",
     "key": "Drag rows to change priority. The rule at the top is checked first.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:389"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:425"
     ]
   },
   {
@@ -2573,8 +2580,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
     ]
   },
   {
@@ -2976,7 +2983,7 @@
     "call": "Monitoring",
     "key": "Monitoring",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:459"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:495"
     ]
   },
   {
@@ -3806,7 +3813,7 @@
     "call": "Routing, subscriptions and DPI control for OpenWrt",
     "key": "Routing, subscriptions and DPI control for OpenWrt",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:513"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:566"
     ]
   },
   {
@@ -3919,7 +3926,7 @@
     "call": "Section",
     "key": "Section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:394"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:430"
     ]
   },
   {
@@ -3933,7 +3940,7 @@
     "call": "Sections",
     "key": "Sections",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:388"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:424"
     ]
   },
   {
@@ -4105,7 +4112,7 @@
     "call": "Server",
     "key": "Server",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:411"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:447"
     ]
   },
   {
@@ -4177,7 +4184,7 @@
     "call": "Servers",
     "key": "Servers",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:405"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:441"
     ]
   },
   {
@@ -4214,9 +4221,16 @@
     "call": "Settings",
     "key": "Settings",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:423",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:459",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1124",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6963"
+    ]
+  },
+  {
+    "call": "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page.",
+    "key": "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:386"
     ]
   },
   {
@@ -4984,6 +4998,7 @@
     "call": "unknown",
     "key": "unknown",
     "places": [
+      "src/loghorizon/helpers/singBoxVariant.ts:28",
       "src/loghorizon/services/systemInfo.service.ts:10",
       "src/loghorizon/services/systemInfo.service.ts:11",
       "src/loghorizon/services/systemInfo.service.ts:12",
@@ -4993,7 +5008,6 @@
       "src/loghorizon/services/systemInfo.service.ts:22",
       "src/loghorizon/services/systemInfo.service.ts:25",
       "src/loghorizon/services/systemInfo.service.ts:26",
-      "src/loghorizon/helpers/singBoxVariant.ts:28",
       "src/loghorizon/tabs/updates/initController.ts:332",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:25"
     ]

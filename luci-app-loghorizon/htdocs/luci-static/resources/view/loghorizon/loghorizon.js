@@ -234,6 +234,26 @@ const EntryPoint = {
           byedpiRuntimeResult,
           inboundsConfigResult,
         ]) => {
+          // Every probe below degrades a failure into "not installed". That is
+          // only honest while at least one probe answered: if none did, the
+          // backend is unreachable and reporting an empty install would be a
+          // lie. Fail loudly instead so the caller can tell the user.
+          const answered = [
+            serverCapabilitiesResult,
+            zapretRuntimeResult,
+            zapret2RuntimeResult,
+            byedpiRuntimeResult,
+            inboundsConfigResult,
+          ].some(
+            (result) => result.status === "fulfilled" && result.value?.success,
+          );
+
+          if (!answered) {
+            throw new Error(
+              "no logIn capability probe answered; the backend is unreachable",
+            );
+          }
+
           const serverCapabilities =
             serverCapabilitiesResult.status === "fulfilled"
               ? serverCapabilitiesResult.value
@@ -346,14 +366,30 @@ const EntryPoint = {
       const refreshUiState = function () {
         main.LogHorizonShellMethods.getUiState()
           .then((response) => {
-            if (
-              response?.success &&
-              typeof main.applyUiStateToStore === "function"
-            ) {
+            if (!response?.success) {
+              throw new Error(response?.error || "UI state request failed");
+            }
+
+            if (typeof main.applyUiStateToStore === "function") {
               main.applyUiStateToStore(response.data);
             }
           })
-          .catch(() => null);
+          .catch((error) => {
+            // Settings were applied, but the displayed state is now stale.
+            // Staying silent here makes the interface look up to date.
+            console.error("Failed to refresh logIn state after apply", error);
+            ui.addNotification(
+              null,
+              E(
+                "p",
+                {},
+                _(
+                  "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page.",
+                ),
+              ),
+              "warning",
+            );
+          });
       };
 
       if (main.store && typeof main.store.set === "function") {
@@ -477,7 +513,24 @@ const EntryPoint = {
     };
     updates.createUpdatesContent(updatesSection);
 
-    await loadUiCapabilities().catch(() => null);
+    await loadUiCapabilities().catch((error) => {
+      // Without this the page renders as if nothing were installed: no Zapret,
+      // no ByeDPI, plain sing-box. That looks like a working interface and is
+      // the worst way to fail, so say it out loud.
+      console.error("Failed to load logIn state", error);
+      ui.addNotification(
+        null,
+        E(
+          "p",
+          {},
+          _(
+            "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running.",
+          ),
+        ),
+        "error",
+      );
+      return null;
+    });
 
     const rendered = await loghorizonMap.render();
     main.coreService({
