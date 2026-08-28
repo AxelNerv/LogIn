@@ -186,8 +186,8 @@ awk '
   capture && /^}/ { exit }
 ' "$INSTALLER" > "$detect_legacy_block"
 [ -s "$detect_legacy_block" ] || fail "failed to extract legacy detection helper"
-grep -Fq 'if ! pkg_is_installed "$LEGACY_BACKEND_PACKAGE"; then' "$detect_legacy_block" ||
-  fail "legacy detection must inspect configuration when the package is absent"
+grep -Fq 'if ! pkg_is_installed "$LEGACY_BACKEND_PACKAGE" && ! pkg_is_installed "$LEGACY_BRAND"; then' "$detect_legacy_block" ||
+  fail "legacy detection must inspect configuration when neither legacy package is installed"
 grep -Fq 'legacy_config_present=0' "$detect_legacy_block" ||
   fail "legacy detection must track a readable config-only legacy installation"
 

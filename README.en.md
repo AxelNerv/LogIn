@@ -6,7 +6,7 @@
 
 The foundation milestone is based on [Forkop](https://github.com/ushan0v/forkop), which in turn is derived from [Podkop](https://github.com/itdoginfo/podkop). It retains the existing routing, subscription, diagnostics and DPI-provider functionality while a new product shell and a staged runtime migration are developed.
 
-> **Status:** foundation development. Do not install on a production router — the installer deliberately displaces podkop: it stops the service, disables autostart, removes its files and migrates the configuration.
+> **Status:** foundation development. Do not install on a production router — the installer deliberately displaces both podkop and podkop-plus: it stops the service, disables autostart, removes the packages and migrates the configuration into logIn.
 
 ## Installation
 

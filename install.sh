@@ -963,10 +963,15 @@ function installer_service_action(init_script, action) {
     return true;
 }
 
-function select_dns_owner(legacy) {
-    if (legacy) {
+function select_dns_owner(owner) {
+    if (owner == "legacy") {
         dns_owner_config = LEGACY_BACKEND_PACKAGE;
         dns_owner_section = LEGACY_CONFIG_PACKAGE_ALT;
+        dns_owner_option_prefix = LEGACY_BRAND + "_";
+    }
+    else if (owner == "legacy-base") {
+        dns_owner_config = LEGACY_BRAND;
+        dns_owner_section = LEGACY_BRAND;
         dns_owner_option_prefix = LEGACY_BRAND + "_";
     }
     else {
@@ -978,11 +983,11 @@ function select_dns_owner(legacy) {
 
 let dnsmasq_failsafe_restore;
 
-function installer_restore_dnsmasq(bin_path, legacy) {
+function installer_restore_dnsmasq(bin_path, owner) {
     if (path_executable(bin_path) && run_args([ bin_path, "restore_dnsmasq" ]))
         return true;
 
-    select_dns_owner(legacy);
+    select_dns_owner(owner);
     return dnsmasq_failsafe_restore();
 }
 
@@ -1001,6 +1006,9 @@ function installer_deactivate_legacy_base() {
         warn("Detected a running legacy service. Stopping it before installing logIn.\n");
         if (!installer_service_action(INSTALLER_LEGACY_BASE_INIT, "stop"))
             return false;
+        // The base package owns dnsmasq entries of its own; hand them back
+        // before its files disappear, or the router keeps a dangling resolver.
+        installer_restore_dnsmasq(INSTALLER_LEGACY_BASE_BIN, "legacy-base");
     }
 
     if (enabled.value) {
@@ -1011,9 +1019,21 @@ function installer_deactivate_legacy_base() {
     return true;
 }
 
+function installer_legacy_base_present() {
+    if (LEGACY_BRAND == "")
+        return false;
+    return installer_package_installed(LEGACY_BRAND) ||
+        path_executable(INSTALLER_LEGACY_BASE_INIT) ||
+        path_exists(INSTALLER_LEGACY_BASE_CONFIG);
+}
+
 function installer_cleanup_legacy() {
     let loghorizon_installed = installer_package_installed("loghorizon");
     let legacy_installed = LEGACY_BRAND != "" && installer_package_installed(LEGACY_BACKEND_PACKAGE);
+    // podkop-plus is the ancestor of this codebase, plain podkop is not, but
+    // both drive sing-box, nftables and DNS. Leaving either one running next
+    // to logIn breaks routing for both.
+    let legacy_base_installed = installer_legacy_base_present();
     let active_init = legacy_installed ? INSTALLER_LEGACY_INIT : INSTALLER_LOGHORIZON_INIT;
     let active_bin = legacy_installed ? INSTALLER_LEGACY_BIN : INSTALLER_LOGHORIZON_BIN;
 
@@ -1039,13 +1059,13 @@ function installer_cleanup_legacy() {
     if (!installer_confirm_remove_https_dns_proxy())
         return false;
 
-    if (legacy_installed && !installer_deactivate_legacy_base())
+    if ((legacy_installed || legacy_base_installed) && !installer_deactivate_legacy_base())
         return false;
 
     if (path_executable(active_init)) {
         if (!installer_service_action(active_init, "stop"))
             return false;
-        installer_restore_dnsmasq(active_bin, legacy_installed);
+        installer_restore_dnsmasq(active_bin, legacy_installed ? "legacy" : "loghorizon");
         if (!installer_service_action(active_init, "disable"))
             return false;
     }
@@ -1063,6 +1083,15 @@ function installer_cleanup_legacy() {
         if (!installer_remove_package("luci-app-" + LEGACY_BACKEND_PACKAGE))
             packages_removed = false;
         if (!installer_remove_package(LEGACY_BACKEND_PACKAGE))
+            packages_removed = false;
+    }
+
+    if (legacy_base_installed) {
+        if (!installer_remove_package_prefix("luci-i18n-" + LEGACY_BRAND))
+            packages_removed = false;
+        if (!installer_remove_package("luci-app-" + LEGACY_BRAND))
+            packages_removed = false;
+        if (!installer_remove_package(LEGACY_BRAND))
             packages_removed = false;
     }
 
@@ -1109,7 +1138,8 @@ function installer_cleanup_legacy() {
 
     print("LOGHORIZON_WAS_ENABLED=", was_enabled ? "1" : "0", "\n");
     print("LOGHORIZON_WAS_RUNNING=", was_running ? "1" : "0", "\n");
-    print("LOGHORIZON_LEGACY_DETECTED=", legacy_installed ? "1" : "0", "\n");
+    print("LOGHORIZON_LEGACY_DETECTED=",
+        (legacy_installed || legacy_base_installed) ? "1" : "0", "\n");
     return true;
 }
 
@@ -1833,11 +1863,12 @@ detect_legacy_installation() {
     LOGHORIZON_LEGACY_DETECTED=0
     LEGACY_CONFIG_BACKUP=""
 
-    if ! pkg_is_installed "$LEGACY_BACKEND_PACKAGE"; then
+    if ! pkg_is_installed "$LEGACY_BACKEND_PACKAGE" && ! pkg_is_installed "$LEGACY_BRAND"; then
         legacy_config_present=0
         for legacy_config_path in \
             "/etc/config/$LEGACY_BACKEND_PACKAGE" \
-            "/etc/config/$LEGACY_CONFIG_PACKAGE_ALT"; do
+            "/etc/config/$LEGACY_CONFIG_PACKAGE_ALT" \
+            "/etc/config/$LEGACY_BRAND"; do
             if [ -r "$legacy_config_path" ]; then
                 legacy_config_present=1
                 break
@@ -1847,9 +1878,11 @@ detect_legacy_installation() {
     fi
 
     LOGHORIZON_LEGACY_DETECTED=1
+    # podkop-plus first: where both exist it is the richer configuration.
     for legacy_config_path in \
         "/etc/config/$LEGACY_BACKEND_PACKAGE" \
-        "/etc/config/$LEGACY_CONFIG_PACKAGE_ALT"; do
+        "/etc/config/$LEGACY_CONFIG_PACKAGE_ALT" \
+        "/etc/config/$LEGACY_BRAND"; do
         if [ -r "$legacy_config_path" ]; then
             LEGACY_CONFIG_BACKUP="$TMP_DIR/legacy-config.backup"
             cp "$legacy_config_path" "$LEGACY_CONFIG_BACKUP" ||
