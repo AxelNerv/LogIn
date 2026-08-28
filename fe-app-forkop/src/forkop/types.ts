@@ -366,7 +366,7 @@ export namespace Forkop {
     | MethodFailureResponse;
 
   export interface DnsCheckResult {
-    dns_type: 'udp' | 'doh' | 'dot';
+    dns_type: 'udp' | 'doh' | 'doh3' | 'doq' | 'dot';
     dns_server: string;
     dns_server_index: number;
     dns_server_count: number;

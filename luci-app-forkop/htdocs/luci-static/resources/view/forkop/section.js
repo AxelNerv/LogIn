@@ -166,8 +166,13 @@ function dependsOnRuleConditions(option) {
       option.depends({ action, [condition]: /\S/ }),
     ),
   );
-  ["domain", "community_lists", "_dns_rule_set", "_dns_domain_ip_lists"].forEach(
-    (condition) => option.depends({ action: "dns", [condition]: /\S/ }),
+  [
+    "domain",
+    "community_lists",
+    "_dns_rule_set",
+    "_dns_domain_ip_lists",
+  ].forEach((condition) =>
+    option.depends({ action: "dns", [condition]: /\S/ }),
   );
   return option;
 }
@@ -1763,6 +1768,8 @@ function subscriptionDownloadTargetChoices(section_id) {
 function dnsTypeChoices() {
   return [
     { value: "doh", label: _("DNS over HTTPS (DoH)") },
+    { value: "doh3", label: _("DNS over HTTP/3 (DoH3)") },
+    { value: "doq", label: _("DNS over QUIC (DoQ)") },
     { value: "dot", label: _("DNS over TLS (DoT)") },
     { value: "udp", label: "UDP" },
   ];
@@ -2537,9 +2544,7 @@ function addUrlTestItemOptions(itemSection, options = {}) {
     form.Flag,
     "interrupt_exist_connections",
     _("Interrupt connections"),
-    _(
-      "Interrupt connections when URLTest switches the selected server",
-    ),
+    _("Interrupt connections when URLTest switches the selected server"),
   );
   o.default = "1";
   o.rmempty = false;
@@ -7789,9 +7794,7 @@ function createSectionContent(section) {
     form.DynamicList,
     "domain_ip_lists",
     _("Domain and IP lists"),
-    _(
-      "Add URLs or local paths to .lst lists containing domains and subnets.",
-    ),
+    _("Add URLs or local paths to .lst lists containing domains and subnets."),
   );
   domainIpListsOption.modalonly = true;
   // Both widgets map to domain_ip_lists, so neither inactive view may erase shared storage.

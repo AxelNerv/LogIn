@@ -121,6 +121,20 @@ function server_from_options(tag_name, dns_type, dns_server, detour) {
         if (path != "")
             result.path = path;
     }
+    else if (dns_type == "doq") {
+        // RFC 9250. Runs over QUIC on its own port, so DPI that kills DoT/DoH
+        // by inspecting the TLS ClientHello on 853/443 does not see it.
+        result.type = "quic";
+        result.server_port = port != "" ? int(port, 10) : 853;
+    }
+    else if (dns_type == "doh3") {
+        // DoH carried over HTTP/3 instead of TCP+TLS, same 443 endpoint.
+        result.type = "h3";
+        result.server_port = port != "" ? int(port, 10) : 443;
+        let path = runtime_url.path(dns_server);
+        if (path != "")
+            result.path = path;
+    }
     else {
         return { unsupported: "unsupported dns_type " + dns_type };
     }

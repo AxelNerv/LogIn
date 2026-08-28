@@ -897,8 +897,8 @@ function dns_setting_values(settings, key) {
 
 function validate_dns_settings(settings, sections, context) {
     let dns_type = option(settings, "dns_type", "udp");
-    if (!contains([ "udp", "dot", "doh" ], dns_type))
-        fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, dot, or doh. Aborted.");
+    if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
+        fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");
 
     let dns_strategy = option(settings, "dns_strategy", "prefer_ipv4");
     if (!contains([ "prefer_ipv4", "ipv4_only", "prefer_ipv6", "ipv6_only" ], dns_strategy))
@@ -1372,8 +1372,8 @@ function dns_action_has_domain_matchers(section) {
 function validate_dns_action(section, sections, context) {
     let name = section_name(section);
     let dns_type = option(section, "dns_type", "udp");
-    if (!contains([ "udp", "dot", "doh" ], dns_type))
-        fail_validation("DNS rule '" + name + "' uses unsupported protocol '" + dns_type + "'. Use udp, dot, or doh. Aborted.");
+    if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
+        fail_validation("DNS rule '" + name + "' uses unsupported protocol '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");
     let dns_server = option(section, "dns_server", "");
     if (!dns_server_value_valid(dns_server))
         fail_validation("DNS rule '" + name + "' has an invalid DNS server '" + dns_server + "'. Aborted.");

@@ -992,12 +992,15 @@ var DOMAIN_LIST_OPTIONS = {
   cloudfront: "CloudFront ASN"
 };
 var DNS_SERVER_OPTIONS = {
-  "1.1.1.1": "1.1.1.1 (Cloudflare)",
-  "8.8.8.8": "8.8.8.8 (Google)",
-  "9.9.9.9": "9.9.9.9 (Quad9)",
+  "77.88.8.8": "77.88.8.8 (Yandex)",
+  "77.88.8.1": "77.88.8.1 (Yandex)",
   "dns.adguard-dns.com": "dns.adguard-dns.com (AdGuard Default)",
   "unfiltered.adguard-dns.com": "unfiltered.adguard-dns.com (AdGuard Unfiltered)",
-  "family.adguard-dns.com": "family.adguard-dns.com (AdGuard Family)"
+  "family.adguard-dns.com": "family.adguard-dns.com (AdGuard Family)",
+  "94.140.14.14": "94.140.14.14 (AdGuard, by IP)",
+  "9.9.9.9": "9.9.9.9 (Quad9)",
+  "1.1.1.1": "1.1.1.1 (Cloudflare)",
+  "8.8.8.8": "8.8.8.8 (Google)"
 };
 var BOOTSTRAP_DNS_SERVER_OPTIONS = {
   "77.88.8.8": "77.88.8.8 (Yandex DNS)",

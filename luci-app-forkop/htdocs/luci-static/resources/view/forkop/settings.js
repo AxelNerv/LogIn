@@ -161,6 +161,8 @@ function createSettingsContent(section, capabilities) {
     _("Select DNS protocol to use"),
   );
   o.value("doh", _("DNS over HTTPS (DoH)"));
+  o.value("doh3", _("DNS over HTTP/3 (DoH3)"));
+  o.value("doq", _("DNS over QUIC (DoQ)"));
   o.value("dot", _("DNS over TLS (DoT)"));
   o.value("udp", _("UDP (Unprotected DNS)"));
   o.default = "udp";
