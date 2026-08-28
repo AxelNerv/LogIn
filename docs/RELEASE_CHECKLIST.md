@@ -26,12 +26,12 @@ The project lives at <https://github.com/AxelNerv/LogIn>.
 
 | Item | Location | State |
 | --- | --- | --- |
-| Package title and description | `forkop/Makefile`, `luci-app-forkop/Makefile`, `build.sh` | done — logIn |
-| LuCI menu entry | `luci-app-forkop/root/usr/share/luci/menu.d/luci-app-forkop.json` | done — logIn |
-| Frontend package name and licence | `fe-app-forkop/package.json` | done |
-| Locale catalogue metadata | `fe-app-forkop/generate-pot.js`, `generate-po.js` | done — project identity, no personal contact |
-| Package maintainer | `forkop/Makefile`, `luci-app-forkop/Makefile`, `build.sh` | done — `AxelNerv <AxelNerv@users.noreply.github.com>` |
-| Project URL | `forkop/Makefile`, `build.sh` | done — AxelNerv/LogIn |
+| Package title and description | `loghorizon/Makefile`, `luci-app-loghorizon/Makefile`, `build.sh` | done — logIn |
+| LuCI menu entry | `luci-app-loghorizon/root/usr/share/luci/menu.d/luci-app-loghorizon.json` | done — logIn |
+| Frontend package name and licence | `fe-app-loghorizon/package.json` | done |
+| Locale catalogue metadata | `fe-app-loghorizon/generate-pot.js`, `generate-po.js` | done — project identity, no personal contact |
+| Package maintainer | `loghorizon/Makefile`, `luci-app-loghorizon/Makefile`, `build.sh` | done — `AxelNerv <AxelNerv@users.noreply.github.com>` |
+| Project URL | `loghorizon/Makefile`, `build.sh` | done — AxelNerv/LogIn |
 | Repository owner | `.github/CODEOWNERS` | done — was still `@itdoginfo`, inherited from Podkop |
 | Issue and README links | `.github/ISSUE_TEMPLATE/*`, `singbox/runtime.uc`, `renderWikiDisclaimer.ts` | done |
 | README, docs, brand spec | repository root, `docs/` | done |
@@ -45,7 +45,7 @@ another person. Swap it for a different contact if you prefer.
 | Value | Location | State |
 | --- | --- | --- |
 | `REPO_OWNER` / `REPO_NAME` | `install.sh` | done — `AxelNerv/LogIn` |
-| `FORKOP_RELEASE_REPO` default | `core/constants.uc`, `components/action.uc`, `diagnostics/runtime.uc` | done — `AxelNerv/LogIn` |
+| `LOGHORIZON_RELEASE_REPO` default | `core/constants.uc`, `components/action.uc`, `diagnostics/runtime.uc` | done — `AxelNerv/LogIn` |
 | `SRS_SUPERCELL_URL` | `core/constants.uc`, `singbox/rulesets.uc` | kept upstream on purpose — community rule set, covered by attribution |
 
 Installation and component updates now resolve against this repository, so they
@@ -55,19 +55,20 @@ release automatically.
 
 ## Before calling a build ready
 
-1. `cd fe-app-forkop && yarn lint --max-warnings=0 && yarn test --run && yarn build`
+1. `cd fe-app-loghorizon && yarn lint --max-warnings=0 && yarn test --run && yarn build`
    — the build must leave `main.js` unchanged in git.
 2. `printf '%s\0' tests/*.sh | xargs -0 -n1 -P4 bash` — all backend checks pass.
 3. `yarn locales:actualize`, then no empty `msgstr ""` remains in
-   `locales/forkop.ru.po` except the catalogue header.
+   `locales/loghorizon.ru.po` except the catalogue header.
 4. `bash tests/branding_owner.sh` — branding, locales and bundle are in sync.
 5. Install on a spare router, not the one serving the household.
 6. Confirm rollback: the previous package can be reinstalled and the existing
-   `/etc/config/forkop` still loads.
+   `/etc/config/loghorizon` still loads.
 
-## Still open before the namespace rename
+## Namespace rename
 
-The rename from `forkop` to `loghorizon` touches the installer, build scripts,
-ucode imports, RPC ACLs, LuCI routes, tests and update manifests at once. It is
-deliberately the last step; see [FOUNDATION.md](FOUNDATION.md) for the staged
-sequence and the migration that has to copy existing UCI data first.
+Done. Packages, paths, services, the UCI config, LuCI routes and every
+`LOGHORIZON_*` environment override now carry the `loghorizon` name; see
+[FOUNDATION.md](FOUNDATION.md) for the full table. There is no migration from
+an installed `forkop`, because nothing ever ran under that name outside test
+builds. The Podkop migration stays: that is the real upgrade path.

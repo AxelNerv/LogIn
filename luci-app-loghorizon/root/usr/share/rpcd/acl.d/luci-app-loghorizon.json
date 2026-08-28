@@ -1,0 +1,61 @@
+{
+  "luci-app-loghorizon": {
+    "description": "Grant UCI and RPC access to LuCI app logIn",
+    "read": {
+      "file": {
+        "/etc/init.d/loghorizon": [
+          "exec"
+        ],
+        "/var/run/loghorizon/section-cache/*": [
+          "read"
+        ],
+        "/var/run/loghorizon/component-actions/*": [
+          "read"
+        ],
+        "/var/run/loghorizon/ui-state/*": [
+          "read"
+        ],
+        "/var/run/loghorizon/ui-state/service-actions/*": [
+          "read"
+        ],
+        "/var/run/loghorizon/ui-state/latency-actions/*": [
+          "read"
+        ],
+        "/usr/bin/loghorizon": [
+          "exec"
+        ]
+      },
+      "ubus": {
+        "luci-rpc": [
+          "getDHCPLeases",
+          "getHostHints"
+        ],
+        "network.interface": [
+          "dump"
+        ],
+        "service": [
+          "list"
+        ]
+      },
+      "uci": [
+        "loghorizon"
+      ]
+    },
+    "write": {
+      "file": {
+        "/var/run/loghorizon/ui-state/*": [
+          "write"
+        ],
+        "/var/run/loghorizon/ui-state/service-actions/*": [
+          "write"
+        ],
+        "/var/run/loghorizon/ui-state/latency-actions/*": [
+          "write"
+        ]
+      },
+      "uci": [
+        "loghorizon"
+      ]
+    }
+  }
+}

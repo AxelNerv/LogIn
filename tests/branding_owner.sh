@@ -2,18 +2,18 @@
 set -eo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BRAND_TS="$ROOT_DIR/fe-app-forkop/src/brand.ts"
-STYLES_TS="$ROOT_DIR/fe-app-forkop/src/styles.ts"
-ENTRY_JS="$ROOT_DIR/luci-app-forkop/htdocs/luci-static/resources/view/forkop/forkop.js"
-BUNDLE_JS="$ROOT_DIR/luci-app-forkop/htdocs/luci-static/resources/view/forkop/main.js"
-MENU_JSON="$ROOT_DIR/luci-app-forkop/root/usr/share/luci/menu.d/luci-app-forkop.json"
-SOURCE_POT="$ROOT_DIR/fe-app-forkop/locales/forkop.pot"
-SOURCE_PO="$ROOT_DIR/fe-app-forkop/locales/forkop.ru.po"
-PACKAGE_PO="$ROOT_DIR/luci-app-forkop/po/ru/forkop.po"
-POT_GENERATOR="$ROOT_DIR/fe-app-forkop/generate-pot.js"
-PO_GENERATOR="$ROOT_DIR/fe-app-forkop/generate-po.js"
-BACKEND_MAKEFILE="$ROOT_DIR/forkop/Makefile"
-LUCI_MAKEFILE="$ROOT_DIR/luci-app-forkop/Makefile"
+BRAND_TS="$ROOT_DIR/fe-app-loghorizon/src/brand.ts"
+STYLES_TS="$ROOT_DIR/fe-app-loghorizon/src/styles.ts"
+ENTRY_JS="$ROOT_DIR/luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js"
+BUNDLE_JS="$ROOT_DIR/luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js"
+MENU_JSON="$ROOT_DIR/luci-app-loghorizon/root/usr/share/luci/menu.d/luci-app-loghorizon.json"
+SOURCE_POT="$ROOT_DIR/fe-app-loghorizon/locales/loghorizon.pot"
+SOURCE_PO="$ROOT_DIR/fe-app-loghorizon/locales/loghorizon.ru.po"
+PACKAGE_PO="$ROOT_DIR/luci-app-loghorizon/po/ru/loghorizon.po"
+POT_GENERATOR="$ROOT_DIR/fe-app-loghorizon/generate-pot.js"
+PO_GENERATOR="$ROOT_DIR/fe-app-loghorizon/generate-po.js"
+BACKEND_MAKEFILE="$ROOT_DIR/loghorizon/Makefile"
+LUCI_MAKEFILE="$ROOT_DIR/luci-app-loghorizon/Makefile"
 BUILD_SCRIPT="$ROOT_DIR/build.sh"
 CODEOWNERS="$ROOT_DIR/.github/CODEOWNERS"
 PROJECT_REPO='https://github.com/AxelNerv/LogIn'
@@ -42,7 +42,7 @@ if grep -Eq '^[[:space:]]*description:' "$BRAND_TS"; then
   fail "brand.ts must not carry user-facing prose; keep it as a literal in the view"
 fi
 if grep -Fq '_(main.' "$ENTRY_JS"; then
-  fail "forkop.js passes a variable to _(); the string would never reach the .pot"
+  fail "loghorizon.js passes a variable to _(); the string would never reach the .pot"
 fi
 
 grep -Fq '"title": "logIn"' "$MENU_JSON" ||
@@ -59,7 +59,7 @@ done
 # --- The shell description is extractable and translated --------------------
 
 grep -Fq "_(\"$SHELL_DESCRIPTION\")" "$ENTRY_JS" ||
-  fail "forkop.js must render the shell description as a translatable literal"
+  fail "loghorizon.js must render the shell description as a translatable literal"
 grep -Fq "msgid \"$SHELL_DESCRIPTION\"" "$SOURCE_POT" ||
   fail "shell description must be extracted into the .pot; run yarn locales:actualize"
 
@@ -126,14 +126,28 @@ done < <(
 # --- Ownership metadata points at this project, not upstream ----------------
 
 grep -Fq "PKG_MAINTAINER:=AxelNerv" "$BACKEND_MAKEFILE" ||
-  fail "forkop/Makefile must name the current maintainer"
+  fail "loghorizon/Makefile must name the current maintainer"
 grep -Fq "LUCI_MAINTAINER:=AxelNerv" "$LUCI_MAKEFILE" ||
-  fail "luci-app-forkop/Makefile must name the current maintainer"
+  fail "luci-app-loghorizon/Makefile must name the current maintainer"
 grep -Fq "URL:=$PROJECT_REPO" "$BACKEND_MAKEFILE" ||
-  fail "forkop/Makefile must point at the logIn repository"
+  fail "loghorizon/Makefile must point at the logIn repository"
 grep -Fq "PROJECT_URL=\"$PROJECT_REPO\"" "$BUILD_SCRIPT" ||
   fail "build.sh must point at the logIn repository"
 grep -Fq '@AxelNerv' "$CODEOWNERS" ||
   fail "CODEOWNERS must name the current owner"
+
+# --- The retired namespace is gone from everything but attribution ----------
+
+# Documentation still names Forkop as the project this code derives from, and
+# this file quotes the retired strings it checks for. Everything else must be
+# free of the old namespace and of its CSS prefix.
+while IFS= read -r tracked; do
+  case "$tracked" in
+    *.md | tests/branding_owner.sh) continue ;;
+  esac
+  if grep -qiE 'forkop|fkp[-_]' "$ROOT_DIR/$tracked"; then
+    fail "the retired forkop namespace is back in $tracked"
+  fi
+done < <(git -C "$ROOT_DIR" ls-files)
 
 printf 'branding ownership checks passed\n'

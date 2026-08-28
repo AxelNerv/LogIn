@@ -20,21 +20,21 @@ The installer pulls packages from `AxelNerv/LogIn` releases, detects the package
 
 - `logIn` branding in LuCI.
 - Operator Calm interface foundation as the single product design.
-- Compatibility with the existing Forkop UCI/backend namespace.
-- Documented migration path to `loghorizon` packages and services.
+- Own `loghorizon` namespace: packages, service, configuration and paths.
+- Podkop migration on install; there is nothing to migrate from forkop.
 - Standard target for 256 MB RAM and a planned Lite profile for 128 MB RAM.
 
 ## Local frontend checks
 
 ```sh
-cd fe-app-forkop
+cd fe-app-loghorizon
 yarn install --frozen-lockfile
 yarn lint --max-warnings=0
 yarn test --run
 yarn build
 ```
 
-The generated LuCI bundle is written to `luci-app-forkop/htdocs/luci-static/resources/view/forkop/main.js` during the compatibility milestone. It is committed to the repository, and CI fails if a rebuild changes it — always rebuild after touching `fe-app-forkop/src`.
+The generated LuCI bundle is written to `luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js` during the compatibility milestone. It is committed to the repository, and CI fails if a rebuild changes it — always rebuild after touching `fe-app-loghorizon/src`.
 
 Backend checks are plain bash scripts:
 
@@ -47,11 +47,11 @@ printf '%s\0' tests/*.sh | xargs -0 -n1 -P4 bash
 Interface strings are English in source and translated into Russian through gettext. The extractor only sees string literals inside `_()`, so a string built from a variable never reaches the catalogue. After adding or changing any interface text:
 
 ```sh
-cd fe-app-forkop
+cd fe-app-loghorizon
 yarn locales:actualize
 ```
 
-Then fill in the new `msgstr ""` entries in `locales/forkop.ru.po` and run `node distribute-locales.js`.
+Then fill in the new `msgstr ""` entries in `locales/loghorizon.ru.po` and run `node distribute-locales.js`.
 
 ## Design preview
 

@@ -1,0 +1,14 @@
+{
+  "admin/services/loghorizon": {
+    "title": "logIn",
+    "order": 42,
+    "action": {
+      "type": "view",
+      "path": "loghorizon/loghorizon"
+    },
+    "depends": {
+			"acl": [ "luci-app-loghorizon" ],
+			"uci": { "loghorizon": true }
+		}
+  }
+}

@@ -20,17 +20,17 @@ sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/install.sh)
 
 - Брендинг `logIn` в LuCI.
 - Operator Calm как единственное направление интерфейса.
-- Совместимость с существующим пространством имён Forkop (UCI, бэкенд, служба).
-- Описанный путь миграции на пакеты и службы `loghorizon`.
+- Собственное пространство имён `loghorizon`: пакеты, служба, конфиг, пути.
+- Миграция с podkop при установке; с forkop мигрировать неоткуда.
 - Основной профиль — роутеры с 256 МБ ОЗУ, планируется Lite для 128 МБ.
 
 ## Проверки фронтенда локально
 
 ```sh
-cd fe-app-forkop && yarn install --frozen-lockfile && yarn lint --max-warnings=0 && yarn test --run && yarn build
+cd fe-app-loghorizon && yarn install --frozen-lockfile && yarn lint --max-warnings=0 && yarn test --run && yarn build
 ```
 
-Собранный бандл LuCI лежит в `luci-app-forkop/htdocs/luci-static/resources/view/forkop/main.js` и **закоммичен в репозиторий**. CI падает, если пересборка меняет этот файл, поэтому после любой правки в `fe-app-forkop/src` пересобирай.
+Собранный бандл LuCI лежит в `luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js` и **закоммичен в репозиторий**. CI падает, если пересборка меняет этот файл, поэтому после любой правки в `fe-app-loghorizon/src` пересобирай.
 
 Проверки бэкенда — обычные bash-скрипты:
 
@@ -43,10 +43,10 @@ printf '%s\0' tests/*.sh | xargs -0 -n1 -P4 bash
 Строки интерфейса пишутся в исходниках по-английски и переводятся на русский через gettext. Извлекатель видит **только строковые литералы внутри `_()`** — строка, собранная из переменной, в каталог не попадёт и останется английской. После добавления или правки любого текста интерфейса:
 
 ```sh
-cd fe-app-forkop && yarn locales:actualize
+cd fe-app-loghorizon && yarn locales:actualize
 ```
 
-Затем заполни новые пустые `msgstr ""` в `locales/forkop.ru.po` и выполни `node distribute-locales.js`.
+Затем заполни новые пустые `msgstr ""` в `locales/loghorizon.ru.po` и выполни `node distribute-locales.js`.
 
 ## Прототип интерфейса
 

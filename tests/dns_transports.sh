@@ -7,7 +7,7 @@ set -eo pipefail
 # has nothing to match.
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-UCODE_LIB="$ROOT_DIR/forkop/files/usr/lib"
+UCODE_LIB="$ROOT_DIR/loghorizon/files/usr/lib"
 VALIDATOR="$UCODE_LIB/config/validator.uc"
 
 fail() {

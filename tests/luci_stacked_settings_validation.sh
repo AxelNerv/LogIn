@@ -2,7 +2,7 @@
 set -eo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SECTION_JS="$ROOT_DIR/luci-app-forkop/htdocs/luci-static/resources/view/forkop/section.js"
+SECTION_JS="$ROOT_DIR/luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -13,7 +13,7 @@ modal_source="$(sed -n '/^function renderStackedJsonSettingsModal(/,/^function r
 
 grep -Fq '.catch((error) => {' <<<"$modal_source" ||
   fail "stacked settings Save must retain the validation error"
-grep -Fq 'fkp-stacked-settings-validation-summary' <<<"$modal_source" ||
+grep -Fq 'lgh-stacked-settings-validation-summary' <<<"$modal_source" ||
   fail "stacked settings Save must render a visible validation summary"
 grep -Fq '_("Cannot save settings")' <<<"$modal_source" ||
   fail "stacked settings validation summary must explain that Save failed"

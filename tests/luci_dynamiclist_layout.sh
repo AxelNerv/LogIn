@@ -2,27 +2,27 @@
 set -eo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SECTION_JS="$ROOT_DIR/luci-app-forkop/htdocs/luci-static/resources/view/forkop/section.js"
-MONITORING_STYLES="$ROOT_DIR/fe-app-forkop/src/forkop/tabs/monitoring/styles.ts"
+SECTION_JS="$ROOT_DIR/luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js"
+MONITORING_STYLES="$ROOT_DIR/fe-app-loghorizon/src/loghorizon/tabs/monitoring/styles.ts"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
   exit 1
 }
 
-wrapper_styles="$(sed -n '/^\.fkp-button-add-dynlist > \.add-item {$/,/^}$/p' "$SECTION_JS")"
-button_styles="$(sed -n '/^\.fkp-button-add-dynlist > \.add-item > \.cbi-button-add {$/,/^}$/p' "$SECTION_JS")"
-settings_styles="$(sed -n '/^\.fkp-connections-dynlist > \.item > \.fkp-dynlist-settings {$/,/^}$/p' "$SECTION_JS")"
+wrapper_styles="$(sed -n '/^\.lgh-button-add-dynlist > \.add-item {$/,/^}$/p' "$SECTION_JS")"
+button_styles="$(sed -n '/^\.lgh-button-add-dynlist > \.add-item > \.cbi-button-add {$/,/^}$/p' "$SECTION_JS")"
+settings_styles="$(sed -n '/^\.lgh-connections-dynlist > \.item > \.lgh-dynlist-settings {$/,/^}$/p' "$SECTION_JS")"
 urltest_options="$(sed -n '/^function addUrlTestItemOptions(/,/^function priorityLevelSettingsForValidation(/p' "$SECTION_JS")"
 priority_options="$(sed -n '/^function addPriorityLevelItemOptions(/,/^function addPriorityGroupItemOptions(/p' "$SECTION_JS")"
 dashboard_options="$(sed -n '/^function addDashboardServerFilterOptions(/,/^function settingValueEquals(/p' "$SECTION_JS")"
 create_section="$(sed -n '/^function createSectionContent(/,/^function loadSectionTableOptions(/p' "$SECTION_JS")"
 live_choices="$(sed -n '/^function configureLiveDynamicListChoices(/,/^function countryChoices(/p' "$SECTION_JS")"
-close_all_styles="$(sed -n '/^\.fkp_monitoring-page #monitoring-close-all\.btn\.fkp_monitoring-page__icon-button:hover:not(:disabled) {$/,/^}$/p' "$MONITORING_STYLES")"
+close_all_styles="$(sed -n '/^\.lgh_monitoring-page #monitoring-close-all\.btn\.lgh_monitoring-page__icon-button:hover:not(:disabled) {$/,/^}$/p' "$MONITORING_STYLES")"
 
 grep -Fq 'display: flex;' <<<"$wrapper_styles" ||
   fail "button-only DynamicList add rows must use a content-sized flex wrapper"
-grep -Fq 'width: var(--fkp-button-add-width, 210px);' <<<"$wrapper_styles" ||
+grep -Fq 'width: var(--lgh-button-add-width, 210px);' <<<"$wrapper_styles" ||
   fail "button-only DynamicList wrappers must follow the measured button width"
 grep -Fq 'max-width: 100%;' <<<"$wrapper_styles" ||
   fail "button-only DynamicList wrappers must stay inside narrow option fields"
@@ -41,7 +41,7 @@ grep -Fq 'text-overflow: ellipsis !important;' <<<"$button_styles" ||
   fail "button-only DynamicList labels must truncate instead of overflowing"
 grep -Fq 'var(--background-color-high, var(--primary, ButtonFace))' <<<"$button_styles" ||
   fail "button-only DynamicList buttons must remain visible outside Bootstrap themes"
-grep -Fq 'min-width: var(--fkp-dynlist-action-width);' <<<"$settings_styles" ||
+grep -Fq 'min-width: var(--lgh-dynlist-action-width);' <<<"$settings_styles" ||
   fail "DynamicList settings buttons must resist theme label sizing"
 
 grep -Fq 'if (key === "include_regex") {' <<<"$urltest_options" ||
@@ -133,7 +133,7 @@ ports_line="$(grep -n 'dependsOnRoutingAction(portsOption);' <<<"$create_section
 dashboard_line="$(grep -n 'addDashboardServerFilterOptions(section);' <<<"$create_section" | cut -d: -f1)"
 [[ "$dashboard_line" -gt "$ports_line" ]] ||
   fail "dashboard server filter must be the last section option block"
-if grep -Fq '__forkop_no_group__' "$SECTION_JS"; then
+if grep -Fq '__loghorizon_no_group__' "$SECTION_JS"; then
   fail "dashboard group selectors must not duplicate the placeholder with a fake choice"
 fi
 
@@ -150,7 +150,7 @@ grep -Fq 'Add URLs or local paths to .lst lists containing domains. IP entries a
 
 grep -Fq 'background: transparent !important;' <<<"$close_all_styles" ||
   fail "close-all hover must match the pause button's transparent background"
-grep -Fq 'color: color-mix(in srgb, var(--fkp-monitoring-danger-color) 70%, white) !important;' <<<"$close_all_styles" ||
+grep -Fq 'color: color-mix(in srgb, var(--lgh-monitoring-danger-color) 70%, white) !important;' <<<"$close_all_styles" ||
   fail "close-all hover must highlight its icon"
 
 printf 'LuCI DynamicList layout checks passed\n'

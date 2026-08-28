@@ -2,16 +2,16 @@
 set -eo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SOURCE_STYLES="$ROOT_DIR/fe-app-forkop/src/forkop/tabs/updates/styles.ts"
-BUNDLE="$ROOT_DIR/luci-app-forkop/htdocs/luci-static/resources/view/forkop/main.js"
+SOURCE_STYLES="$ROOT_DIR/fe-app-loghorizon/src/loghorizon/tabs/updates/styles.ts"
+BUNDLE="$ROOT_DIR/luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
   exit 1
 }
 
-source_card_styles="$(sed -n '/^\.fkp_updates-page__component {$/,/^}$/p' "$SOURCE_STYLES")"
-bundle_card_styles="$(sed -n '/^\.fkp_updates-page__component {$/,/^}$/p' "$BUNDLE")"
+source_card_styles="$(sed -n '/^\.lgh_updates-page__component {$/,/^}$/p' "$SOURCE_STYLES")"
+bundle_card_styles="$(sed -n '/^\.lgh_updates-page__component {$/,/^}$/p' "$BUNDLE")"
 
 [[ -n "$source_card_styles" ]] ||
   fail "component card styles must exist in the frontend source"
