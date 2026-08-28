@@ -2,7 +2,9 @@ name: Build packages
 on:
   push:
     tags:
-      - '*'
+      # Only release versions. Auxiliary tags such as the config contract
+      # baseline must not try to publish a release.
+      - '[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
     inputs:
       release_tag:

@@ -2,7 +2,11 @@
 set -eo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-STABLE_REF="${LOGHORIZON_STABLE_REF:-0.7.19.9}"
+# The config contract is pinned to the upstream release this project forked
+# from. That tag lives in the upstream repository under its own version
+# number; here it is republished under a name that cannot be mistaken for a
+# logIn release, so the check works on a fresh clone of this repository.
+STABLE_REF="${LOGHORIZON_STABLE_REF:-config-baseline-0.7.19.9}"
 STABLE_REPO="${LOGHORIZON_STABLE_REPO:-}"
 MATRIX_SCRIPT="$ROOT_DIR/tests/helpers/config_contract_matrix.js"
 WORK_DIR="$(mktemp -d)"
