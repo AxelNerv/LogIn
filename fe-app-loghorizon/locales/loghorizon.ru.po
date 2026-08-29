@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-28 19:14+0300\n"
-"PO-Revision-Date: 2026-08-28 19:14+0300\n"
+"POT-Creation-Date: 2026-08-29 18:50+0300\n"
+"PO-Revision-Date: 2026-08-29 18:50+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -623,6 +623,9 @@ msgstr "Включить YACD"
 msgid "Enable YACD WAN Access"
 msgstr "Включить доступ YACD WAN"
 
+msgid "Encrypted Client Hello (ECH)"
+msgstr "Encrypted Client Hello (ECH)"
+
 msgid "Enter a complete sing-box inbound object"
 msgstr "Введите полный объект inbound sing-box"
 
@@ -805,6 +808,9 @@ msgstr "Скрывать узлы URLTest групп"
 
 msgid "Hide values"
 msgstr "Скрывать значения"
+
+msgid "Hides the resolver name inside the TLS handshake, which is what providers match on when they block DoH and DoT. Requires an encrypted DNS protocol and a resolver that publishes ECH keys."
+msgstr "Прячет имя резолвера внутрь TLS-рукопожатия — именно по нему провайдеры опознают и режут DoH и DoT. Нужен зашифрованный протокол DNS и резолвер, публикующий ключи ECH."
 
 msgid "Higher-level check interval"
 msgstr "Интервал проверки высших уровней"
@@ -1556,9 +1562,6 @@ msgstr "Продолжить обновление"
 msgid "Route"
 msgstr "Маршрут"
 
-msgid "Route main DNS requests through the selected section."
-msgstr "Маршрутизировать основные DNS-запросы через выбранную секцию."
-
 msgid "Route requests to this DNS server through another section."
 msgstr "Направлять запросы к этому DNS-серверу через другую секцию."
 
@@ -1696,6 +1699,9 @@ msgstr "Выбранная секция"
 
 msgid "Selector and URLTest outbounds must contain a non-empty outbounds array"
 msgstr "Selector и URLTest outbound должны содержать непустой массив outbounds"
+
+msgid "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block."
+msgstr "Отправляет DNS-запросы через выбранное подключение, а не напрямую. Провайдер не видит ни запросов, ни имени резолвера — блокировать ему нечего."
 
 msgid "Server"
 msgstr "Сервер"

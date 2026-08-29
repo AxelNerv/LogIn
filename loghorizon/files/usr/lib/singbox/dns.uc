@@ -48,6 +48,7 @@ function state_template(settings) {
     return {
         version: 1,
         dns_type: option(settings, "dns_type", "udp"),
+        dns_ech: bool_option(settings, "dns_ech_enabled", false),
         dns_detour: detour_tag(settings),
         main_servers: server_list(settings, "dns_server", "77.88.8.8"),
         bootstrap_servers: server_list(settings, "bootstrap_dns_server", "77.88.8.8"),
@@ -96,7 +97,12 @@ function active_values(settings, override_state) {
     };
 }
 
-function server_from_options(tag_name, dns_type, dns_server, detour) {
+function encrypted_dns_type(dns_type) {
+    return dns_type == "dot" || dns_type == "doh" ||
+        dns_type == "doq" || dns_type == "doh3";
+}
+
+function server_from_options(tag_name, dns_type, dns_server, detour, ech) {
     let server = runtime_url.host(dns_server);
     let port = runtime_url.port(dns_server);
     let result = {
@@ -144,6 +150,12 @@ function server_from_options(tag_name, dns_type, dns_server, detour) {
     if (as_string(detour) != "")
         result.detour = as_string(detour);
 
+    // Encrypted Client Hello hides the resolver name that DPI matches on.
+    // It only means anything for the encrypted transports; plain UDP has no
+    // handshake to hide.
+    if (ech && encrypted_dns_type(dns_type))
+        result.tls = { enabled: true, ech: { enabled: true } };
+
     return result;
 }
 
@@ -164,13 +176,33 @@ function server_config(settings, override_state) {
         runtime_constants.DNS_SERVER_TAG,
         active.state.dns_type,
         active.main,
-        active.state.dns_detour
+        active.state.dns_detour,
+        active.state.dns_ech
     );
 }
 
 function bootstrap_config(settings, override_state) {
     let active = active_values(settings, override_state);
     return bootstrap_server(runtime_constants.BOOTSTRAP_DNS_SERVER_TAG, active.bootstrap);
+}
+
+// Domains whose HTTPS records must stay reachable: that is where the ECH
+// keys live, and the generator otherwise rejects every HTTPS query.
+function ech_resolver_domains(settings) {
+    let state = state_template(settings);
+    let result = [];
+
+    if (!state.dns_ech || !encrypted_dns_type(state.dns_type))
+        return result;
+
+    for (let value in state.main_servers) {
+        let host = runtime_url.host(value);
+        if (host == "")
+            host = as_string(value);
+        if (host != "" && !core_ip.valid_ip(host))
+            push(result, host);
+    }
+    return result;
 }
 
 function failover_enabled(settings) {
@@ -209,7 +241,8 @@ function add_health_candidate(result, kind, index_value, server) {
     let server_tag = health_tag(kind, index_value, "server");
     let inbound_tag = health_tag(kind, index_value, "in");
     let dns_server = kind == "main"
-        ? server_from_options(server_tag, result.state.dns_type, server, result.state.dns_detour)
+        ? server_from_options(server_tag, result.state.dns_type, server,
+            result.state.dns_detour, result.state.dns_ech)
         : bootstrap_server(server_tag, server);
 
     if (dns_server.unsupported) {
@@ -277,6 +310,7 @@ return {
     default_domain_resolver,
     detour_tag,
     failover_enabled,
+    ech_resolver_domains,
     health_port,
     normalize_state,
     runtime_state,

@@ -900,6 +900,9 @@ function validate_dns_settings(settings, sections, context) {
     if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
         fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");
 
+    if (bool_option(settings, "dns_ech_enabled", false) && dns_type == "udp")
+        fail_validation("ECH needs an encrypted DNS protocol. Choose DoT, DoH, DoQ or DoH3, or turn ECH off. Aborted.");
+
     let dns_strategy = option(settings, "dns_strategy", "prefer_ipv4");
     if (!contains([ "prefer_ipv4", "ipv4_only", "prefer_ipv6", "ipv6_only" ], dns_strategy))
         fail_validation("Unsupported DNS strategy '" + dns_strategy + "'. Use prefer_ipv4, ipv4_only, prefer_ipv6, or ipv6_only. Aborted.");

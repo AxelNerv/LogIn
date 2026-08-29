@@ -14138,7 +14138,7 @@ ${PartialStyles}
      * use the viewport, with a ceiling so it stays readable on wide monitors. */
     width: min(calc(100vw - 32px), 1720px);
     margin-inline: calc(50% - min(calc(50vw - 16px), 860px));
-    padding: 4px 20px 20px;
+    padding: 6px 28px 22px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
     background: var(--lh-canvas);

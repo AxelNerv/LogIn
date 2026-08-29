@@ -425,6 +425,17 @@ function base_config(settings, service_address, runtime_context) {
     let dns_rules = [];
     for (let rule in dns_config.rules)
         push(dns_rules, rule);
+    // The reject below kills browser DoH probing, but ECH keys arrive in the
+    // very same record type, so the resolver's own name is let through first.
+    let ech_domains = runtime_dns.ech_resolver_domains(settings);
+    if (length(ech_domains) > 0)
+        push(dns_rules, {
+            action: "route",
+            server: runtime_constants.BOOTSTRAP_DNS_SERVER_TAG,
+            query_type: "HTTPS",
+            domain: ech_domains
+        });
+
     for (let rule in [
         { action: "reject", query_type: "HTTPS" },
         { action: "reject", domain_suffix: "use-application-dns.net" },

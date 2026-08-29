@@ -249,9 +249,25 @@ function createSettingsContent(section, capabilities) {
 
   o = section.option(
     form.Flag,
+    "dns_ech_enabled",
+    _("Encrypted Client Hello (ECH)"),
+    _(
+      "Hides the resolver name inside the TLS handshake, which is what providers match on when they block DoH and DoT. Requires an encrypted DNS protocol and a resolver that publishes ECH keys.",
+    ),
+  );
+  o.depends({ dns_type: "dot" });
+  o.depends({ dns_type: "doh" });
+  o.depends({ dns_type: "doq" });
+  o.depends({ dns_type: "doh3" });
+  o.default = "0";
+
+  o = section.option(
+    form.Flag,
     "dns_detour_enabled",
     _("DNS through proxy"),
-    _("Route main DNS requests through the selected section."),
+    _(
+      "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block.",
+    ),
   );
   configureDownloadViaProxyFlag(o, "dns_detour_section");
 
