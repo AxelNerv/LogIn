@@ -14167,7 +14167,18 @@ ${PartialStyles}
     min-width: 0;
 }
 
+/* The theme styles the bare <header> element, because that is its own top
+ * navigation bar: a grey gradient, a drop shadow, sticky positioning and
+ * padding that pins content to a 940px column. Our brand header is a plain
+ * element that happens to use the same tag, and inheriting that skin is what
+ * made it look like a cut-off box sitting inside the panel. */
 .lh-brand-header {
+    position: static;
+    z-index: auto;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    overflow: visible;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     align-items: end;
