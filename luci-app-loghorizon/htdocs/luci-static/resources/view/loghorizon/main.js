@@ -14132,20 +14132,30 @@ ${PartialStyles}
     --lh-radius-md: 6px;
     --lh-radius-lg: 10px;
     color-scheme: dark;
-    padding: 4px 16px 20px;
+    box-sizing: border-box;
+    /* The theme wraps this in a padded container. Reclaiming a little of that
+     * padding gives the tables room without the panel touching the viewport. */
+    width: calc(100% + 24px);
+    margin-inline: -12px;
+    padding: 4px 14px 18px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
     background: var(--lh-canvas);
     font-family: Aptos, "Segoe UI Variable", "Noto Sans", sans-serif;
+    overflow-x: hidden;
+}
+
+.lh-shell * {
+    min-width: 0;
 }
 
 .lh-brand-header {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: end;
     gap: 12px 24px;
-    margin: 0 0 24px;
-    padding: 20px 0 16px;
+    margin: 0 0 20px;
+    padding: 16px 0 14px;
     border-bottom: 1px solid var(--lh-border);
 }
 
@@ -14213,20 +14223,28 @@ ${PartialStyles}
 
 .lh-shell .cbi-tabmenu {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 4px;
+    margin: 0 0 14px;
     padding: 4px;
     border: 1px solid var(--lh-border);
     border-radius: var(--lh-radius-md);
     background: var(--lh-surface);
-    overflow-x: auto;
-    scrollbar-width: thin;
+    /* Wrapping instead of scrolling: overflow-x also produced a vertical
+     * scrollbar whenever the row was a pixel taller than its box. */
+    overflow: visible;
 }
 
 .lh-shell .cbi-tabmenu li {
     flex: 0 0 auto;
+    /* The theme gives tab items a bottom margin that pushed the row a few
+     * pixels past its own border. */
+    margin: 0;
     border: 0;
     border-radius: var(--lh-radius-sm);
     background: transparent;
+    line-height: 1;
 }
 
 .lh-shell .cbi-tabmenu li a {
@@ -14269,6 +14287,36 @@ ${PartialStyles}
 .lh-shell .th,
 .lh-shell .td {
     border-color: var(--lh-border);
+}
+
+/* The section list is the main working surface, and its rows were tight
+ * enough to be awkward to hit. */
+.lh-shell .cbi-section-table .tr,
+.lh-shell .table .tr {
+    min-height: 44px;
+}
+
+.lh-shell .cbi-section-table .td,
+.lh-shell .cbi-section-table .th,
+.lh-shell .table .td,
+.lh-shell .table .th {
+    padding: 10px 12px;
+    vertical-align: middle;
+}
+
+.lh-shell .cbi-section-table .th,
+.lh-shell .table .th {
+    color: var(--lh-muted);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.lh-shell .cbi-section-table .td .btn,
+.lh-shell .table .td .btn,
+.lh-shell .cbi-section-table .td .cbi-button,
+.lh-shell .table .td .cbi-button {
+    min-height: 32px;
 }
 
 .lh-shell input,
