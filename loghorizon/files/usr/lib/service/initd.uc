@@ -19,6 +19,11 @@ const BIN_PATH = getenv("LOGHORIZON_BIN") || constant_value("LOGHORIZON_BIN", "/
 const SERVICE_INIT = getenv("LOGHORIZON_SERVICE_INIT") || constant_value("LOGHORIZON_SERVICE_INIT", "/etc/init.d/loghorizon");
 const SERVICE_NAME = getenv("LOGHORIZON_SERVICE_NAME") || constant_value("LOGHORIZON_SERVICE_NAME", "loghorizon");
 const CONFIG_FILE = getenv("LOGHORIZON_CONFIG_FILE") || "/etc/config/" + CONFIG_NAME;
+// Exit status meaning "the configuration itself is unusable". Such a failure
+// never fixes itself, so service/initd.uc must not schedule a retry for it.
+// Kept in sync across singbox/runtime.uc, service/lifecycle.uc and
+// service/initd.uc; tests/start_retry_policy.sh pins that they agree.
+const CONFIG_ERROR_EXIT_STATUS = 78;
 const RELOAD_LOCK_DIR = getenv("LOGHORIZON_RELOAD_LOCK_DIR") || "/var/run/loghorizon.reload.lock";
 const RUNTIME_STATE_DIR = getenv("LOGHORIZON_RUNTIME_STATE_DIR") || "/var/run/loghorizon";
 const PENDING_RELOAD_FILE = getenv("LOGHORIZON_PENDING_RELOAD_FILE") || RUNTIME_STATE_DIR + "/reload.pending";
@@ -570,6 +575,15 @@ function start_service(reason, owner_pid) {
     if (status == 0) {
         clear_start_retry(START_RETRY_FILE);
         cancel_scheduled_start_retry(START_RETRY_PID_FILE);
+    }
+    else if (status == CONFIG_ERROR_EXIT_STATUS) {
+        // Nothing here changes on its own. Retrying every half minute would
+        // only fill the log and keep the service busy, and while a retry is in
+        // flight a manual stop has to fight it for the runtime lock.
+        clear_start_retry(START_RETRY_FILE);
+        cancel_scheduled_start_retry(START_RETRY_PID_FILE);
+        command_success_from_args([ "logger", "-t", SERVICE_NAME,
+            "[warn] logIn start failed because of the configuration; fix it and start again. No automatic retry." ]);
     }
     else {
         mark_start_retry(START_RETRY_FILE, as_string(reason) == "triggered" ? "wan_retry_failed" : "start_failed");

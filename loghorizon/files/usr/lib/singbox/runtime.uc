@@ -5,6 +5,11 @@ let uci_core = require("core.uci");
 let common = require("core.common");
 let runtime_dns = require("singbox.dns");
 
+// Exit status meaning "the configuration itself is unusable". Such a failure
+// never fixes itself, so service/initd.uc must not schedule a retry for it.
+// Kept in sync across singbox/runtime.uc, service/lifecycle.uc and
+// service/initd.uc; tests/start_retry_policy.sh pins that they agree.
+const CONFIG_ERROR_EXIT_STATUS = 78;
 const CONFIG_NAME = getenv("LOGHORIZON_CONFIG_NAME") || "loghorizon";
 const LIB_DIR = getenv("LOGHORIZON_LIB") || "/usr/lib/loghorizon";
 const TMP_SING_BOX_FOLDER = getenv("TMP_SING_BOX_FOLDER") || "/tmp/sing-box";
@@ -810,7 +815,9 @@ function init_config(populate_nft, caches_prepared, no_refresh, prepared_deferre
         let reason = generator_failure_reason(runtime_log, generate_status);
         log_message("Failed to generate sing-box configuration: " + reason, "fatal");
         remove_files([ temp_config, runtime_log ]);
-        exit(1);
+        // The configuration cannot produce a runtime; an automatic retry would
+        // repeat this forever. See CONFIG_ERROR_EXIT_STATUS in service/initd.uc.
+        exit(CONFIG_ERROR_EXIT_STATUS);
     }
     log_file_lines(runtime_log, "warn", "sing-box config generator: ");
 
@@ -818,7 +825,7 @@ function init_config(populate_nft, caches_prepared, no_refresh, prepared_deferre
     if (check_result.status != 0) {
         log_message("Generated sing-box configuration is invalid: " + check_result.reason + ". Aborted.", "fatal");
         remove_files([ temp_config, runtime_log ]);
-        exit(1);
+        exit(CONFIG_ERROR_EXIT_STATUS);
     }
 
     if (populate_nft && !module_success([

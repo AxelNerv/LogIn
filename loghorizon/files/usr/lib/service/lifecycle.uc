@@ -13,6 +13,11 @@ function constant_value(name, fallback) {
     return value == null ? as_string(fallback) : as_string(value);
 }
 
+// Exit status meaning "the configuration itself is unusable". Such a failure
+// never fixes itself, so service/initd.uc must not schedule a retry for it.
+// Kept in sync across singbox/runtime.uc, service/lifecycle.uc and
+// service/initd.uc; tests/start_retry_policy.sh pins that they agree.
+const CONFIG_ERROR_EXIT_STATUS = 78;
 const CONFIG_NAME = getenv("LOGHORIZON_CONFIG_NAME") || constant_value("LOGHORIZON_CONFIG_NAME", "loghorizon");
 const CONFIG_FILE = getenv("LOGHORIZON_CONFIG_FILE") || "/etc/config/" + CONFIG_NAME;
 const LIB_DIR = getenv("LOGHORIZON_LIB") || "/usr/lib/loghorizon";
@@ -546,7 +551,9 @@ function validate_start_config() {
     status = module_status(VALIDATOR_UC, [ "validate-runtime" ]);
     if (status != 0) {
         log_message("Runtime config validation failed. Aborted.", "fatal");
-        return status;
+        // Invalid settings stay invalid until the user changes them, so report
+        // this as a configuration error and let the caller skip the retry.
+        return CONFIG_ERROR_EXIT_STATUS;
     }
 
     return 0;
