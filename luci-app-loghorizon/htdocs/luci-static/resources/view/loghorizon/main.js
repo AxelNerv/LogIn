@@ -14128,8 +14128,8 @@ ${PartialStyles}
  * Lift that cap only on the page that hosts logIn, rather than dragging the
  * panel out of the column with negative margins: that depended on the column
  * being centred in the viewport and clipped the header when it was not. */
-.container:has(> .lh-shell),
-#maincontent:has(> .lh-shell) {
+.container:has(.lh-shell),
+#maincontent:has(.lh-shell) {
     max-width: min(1720px, calc(100vw - 32px));
 }
 
