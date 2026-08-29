@@ -7450,6 +7450,60 @@ function createSectionContent(section) {
   o = section.taboption(
     "settings",
     form.Flag,
+    "tls_fragment_enabled",
+    _("Split the TLS handshake"),
+    _(
+      "Sends the TLS ClientHello in several packets so a filter cannot read the server name out of a single one. Applies to the connections of this section that use TLS.",
+    ),
+  );
+  o.default = "0";
+  o.rmempty = false;
+  o.depends("action", "connection");
+  o.modalonly = true;
+
+  o = section.taboption(
+    "settings",
+    form.Flag,
+    "multiplex_enabled",
+    _("Multiplex connections"),
+    _(
+      "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own.",
+    ),
+  );
+  o.default = "0";
+  o.rmempty = false;
+  o.depends("action", "connection");
+  o.modalonly = true;
+
+  o = section.taboption(
+    "settings",
+    form.ListValue,
+    "multiplex_protocol",
+    _("Multiplex protocol"),
+  );
+  o.value("h2mux", "h2mux");
+  o.value("smux", "smux");
+  o.value("yamux", "yamux");
+  o.default = "h2mux";
+  o.rmempty = false;
+  o.depends({ action: "connection", multiplex_enabled: "1" });
+  o.modalonly = true;
+
+  o = section.taboption(
+    "settings",
+    form.Flag,
+    "multiplex_padding",
+    _("Pad multiplexed streams"),
+    _("Adds filler so the size of the traffic gives less away."),
+  );
+  o.default = "1";
+  o.rmempty = false;
+  o.depends({ action: "connection", multiplex_enabled: "1" });
+  o.modalonly = true;
+
+  o = section.taboption(
+    "settings",
+    form.Flag,
     "outbound_detour_enabled",
     _("Cascade connection"),
     _(

@@ -1480,6 +1480,55 @@ function apply_section_detour_to_connection_outbounds(config, start_index, detou
     }
 }
 
+// sing-box refuses multiplex on the QUIC based protocols, which carry their
+// own stream multiplexing already.
+function multiplex_supported_outbound_type(outbound_type) {
+    return outbound_type == "vless" || outbound_type == "vmess" ||
+        outbound_type == "trojan" || outbound_type == "shadowsocks";
+}
+
+function apply_section_transport_tweaks(config, start_index, section, section_name) {
+    let fragment = bool_option(section, "tls_fragment_enabled", false);
+    let multiplex = bool_option(section, "multiplex_enabled", false);
+    if (!fragment && !multiplex)
+        return;
+
+    let protocol = option(section, "multiplex_protocol", "h2mux");
+    let padding = bool_option(section, "multiplex_padding", true);
+    let skipped_multiplex = 0;
+
+    let outbounds = array_or_empty(config.outbounds);
+    for (let i = int(start_index || 0); i < length(outbounds); i++) {
+        let outbound = outbounds[i];
+        if (type(outbound) != "object")
+            continue;
+
+        let outbound_type = lc(as_string(outbound.type || ""));
+        if (outbound_type == "" || outbound_type == "selector" ||
+            outbound_type == "urltest" || outbound_type == "dns" ||
+            outbound_type == "block" || outbound_type == "direct")
+            continue;
+
+        // Fragmentation is a TLS transport setting: without TLS there is no
+        // ClientHello to split.
+        if (fragment && type(outbound.tls) == "object" && outbound.tls.enabled)
+            outbound.tls.fragment = true;
+
+        if (multiplex) {
+            if (multiplex_supported_outbound_type(outbound_type))
+                outbound.multiplex = { enabled: true, protocol, padding };
+            else
+                skipped_multiplex++;
+        }
+    }
+
+    // Silently ignoring the setting would leave the user believing it applied.
+    if (skipped_multiplex > 0)
+        warn("multiplexing skipped for ", skipped_multiplex,
+            " outbound(s) of rule '", section_name,
+            "': the protocol carries its own multiplexing\n");
+}
+
 function mixed_proxy_enabled_action(action) {
     return action == "connection" || action == "proxy" || action == "outbound" || action == "vpn" ||
         action == "byedpi" || action == "zapret" || action == "zapret2";
@@ -2231,6 +2280,7 @@ function add_connections_outbound(config, section, taken) {
         cascade_start,
         outbound_detour_tag_for_section(section)
     );
+    apply_section_transport_tweaks(config, cascade_start, section, section_name);
     add_connection_interfaces(config, state, section, taken, selector_tags, urltest_candidate_tags);
     add_connection_json_outbounds(config, state, section, taken, selector_tags, urltest_candidate_tags);
 

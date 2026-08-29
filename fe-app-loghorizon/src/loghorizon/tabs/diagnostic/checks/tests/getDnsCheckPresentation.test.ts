@@ -14,6 +14,8 @@ const baseDnsResult = {
   bootstrap_dns_status: 1 as const,
   dhcp_config_status: 0 as const,
   dont_touch_dhcp: 0 as const,
+  dns_detoured: 0 as const,
+  dns_ech: 0 as const,
 };
 
 describe('getDnsCheckPresentation', () => {

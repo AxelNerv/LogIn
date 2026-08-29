@@ -141,28 +141,28 @@
     "call": "Add URLs or local paths to .lst lists containing domains and subnets.",
     "key": "Add URLs or local paths to .lst lists containing domains and subnets.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7798"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7852"
     ]
   },
   {
     "call": "Add URLs or local paths to .lst lists containing domains. IP entries are ignored.",
     "key": "Add URLs or local paths to .lst lists containing domains. IP entries are ignored.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7819"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7873"
     ]
   },
   {
     "call": "Add URLs or local paths to .srs / .json lists. Only domain rules are supported.",
     "key": "Add URLs or local paths to .srs / .json lists. Only domain rules are supported.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7773"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7827"
     ]
   },
   {
     "call": "Add URLs or local paths to .srs / .json lists. Subnets are ignored by default.",
     "key": "Add URLs or local paths to .srs / .json lists. Subnets are ignored by default.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7744"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7798"
     ]
   },
   {
@@ -214,6 +214,13 @@
     "key": "Address",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1649"
+    ]
+  },
+  {
+    "call": "Adds filler so the size of the traffic gives less away.",
+    "key": "Adds filler so the size of the traffic gives less away.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7497"
     ]
   },
   {
@@ -277,7 +284,7 @@
     "call": "All traffic from these IP addresses will be routed through the section unconditionally, ignoring all other conditions.",
     "key": "All traffic from these IP addresses will be routed through the section unconditionally, ignoring all other conditions.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7851"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7905"
     ]
   },
   {
@@ -319,7 +326,7 @@
     "call": "Apply section rules only to the specified local IP addresses",
     "key": "Apply section rules only to the specified local IP addresses",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7842"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7896"
     ]
   },
   {
@@ -449,7 +456,7 @@
     "call": "Built-in rule sets",
     "key": "Built-in rule sets",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7723"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7777"
     ]
   },
   {
@@ -589,10 +596,17 @@
     ]
   },
   {
+    "call": "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own.",
+    "key": "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7469"
+    ]
+  },
+  {
     "call": "Cascade connection",
     "key": "Cascade connection",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7454"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7508"
     ]
   },
   {
@@ -820,7 +834,7 @@
     "call": "Connect through",
     "key": "Connect through",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7492"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7546"
     ]
   },
   {
@@ -888,7 +902,7 @@
     "call": "Current section cannot be used as its own transit section",
     "key": "Current section cannot be used as its own transit section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7509"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7563"
     ]
   },
   {
@@ -974,7 +988,7 @@
     "call": "Device filter",
     "key": "Device filter",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7841"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7895"
     ]
   },
   {
@@ -1060,6 +1074,27 @@
     "key": "DNS Check Interval",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:198"
+    ]
+  },
+  {
+    "call": "DNS goes through the tunnel",
+    "key": "DNS goes through the tunnel",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:89"
+    ]
+  },
+  {
+    "call": "DNS is encrypted but visible to the provider",
+    "key": "DNS is encrypted but visible to the provider",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:92"
+    ]
+  },
+  {
+    "call": "DNS leaves the router unencrypted",
+    "key": "DNS leaves the router unencrypted",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:91"
     ]
   },
   {
@@ -1265,14 +1300,14 @@
     "call": "Domain and IP lists",
     "key": "Domain and IP lists",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7797"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7851"
     ]
   },
   {
     "call": "Domain lists",
     "key": "Domain lists",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7818"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7872"
     ]
   },
   {
@@ -1286,7 +1321,7 @@
     "call": "Domains",
     "key": "Domains",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7684"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7738"
     ]
   },
   {
@@ -1458,14 +1493,14 @@
     "call": "Enable Mixed Proxy",
     "key": "Enable Mixed Proxy",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7530"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7584"
     ]
   },
   {
     "call": "Enable Mixed Proxy Authentication",
     "key": "Enable Mixed Proxy Authentication",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7571"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7625"
     ]
   },
   {
@@ -1652,7 +1687,7 @@
     "call": "Expose this section as a local HTTP+SOCKS proxy",
     "key": "Expose this section as a local HTTP+SOCKS proxy",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7531"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7585"
     ]
   },
   {
@@ -1794,7 +1829,7 @@
     "call": "Forced device routing",
     "key": "Forced device routing",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7850"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7904"
     ]
   },
   {
@@ -2374,7 +2409,7 @@
     "call": "Invalid port number. Must be between 1 and 65535",
     "key": "Invalid port number. Must be between 1 and 65535",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7564",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7618",
       "src/validators/validateShadowsocksUrl.ts:91"
     ]
   },
@@ -2573,7 +2608,7 @@
     "call": "IPs",
     "key": "IPs",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7713"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7767"
     ]
   },
   {
@@ -2927,14 +2962,14 @@
     "call": "Match destination IPs or subnets",
     "key": "Match destination IPs or subnets",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7714"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7768"
     ]
   },
   {
     "call": "Match destination ports. Use a single port or a range",
     "key": "Match destination ports. Use a single port or a range",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7862"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7916"
     ]
   },
   {
@@ -2969,21 +3004,21 @@
     "call": "Mixed Proxy Password",
     "key": "Mixed Proxy Password",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7622"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7676"
     ]
   },
   {
     "call": "Mixed Proxy Port",
     "key": "Mixed Proxy Port",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7545"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7599"
     ]
   },
   {
     "call": "Mixed Proxy Username",
     "key": "Mixed Proxy Username",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7586"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7640"
     ]
   },
   {
@@ -2998,6 +3033,20 @@
     "key": "Monitoring",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:495"
+    ]
+  },
+  {
+    "call": "Multiplex connections",
+    "key": "Multiplex connections",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7468"
+    ]
+  },
+  {
+    "call": "Multiplex protocol",
+    "key": "Multiplex protocol",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7482"
     ]
   },
   {
@@ -3396,6 +3445,13 @@
     ]
   },
   {
+    "call": "Pad multiplexed streams",
+    "key": "Pad multiplexed streams",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7496"
+    ]
+  },
+  {
     "call": "Padding",
     "key": "Padding",
     "places": [
@@ -3413,7 +3469,7 @@
     "call": "Password cannot be empty",
     "key": "Password cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7648"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7702"
     ]
   },
   {
@@ -3479,7 +3535,7 @@
     "call": "Port cannot be empty",
     "key": "Port cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7556"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7610"
     ]
   },
   {
@@ -3493,7 +3549,7 @@
     "call": "Port for the local mixed proxy of this section",
     "key": "Port for the local mixed proxy of this section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7546"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7600"
     ]
   },
   {
@@ -3515,7 +3571,7 @@
     "call": "Ports",
     "key": "Ports",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7861"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7915"
     ]
   },
   {
@@ -3719,21 +3775,21 @@
     "call": "Require a username and password for the local mixed proxy",
     "key": "Require a username and password for the local mixed proxy",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7572"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7626"
     ]
   },
   {
     "call": "Resolve domain names before routing so sing-box can use real destination IPs.",
     "key": "Resolve domain names before routing so sing-box can use real destination IPs.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7659"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7713"
     ]
   },
   {
     "call": "Resolve real IP for routing",
     "key": "Resolve real IP for routing",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7658"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7712"
     ]
   },
   {
@@ -3841,8 +3897,8 @@
     "call": "Rule sets",
     "key": "Rule sets",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7743",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7772"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7797",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7826"
     ]
   },
   {
@@ -3976,7 +4032,7 @@
     "call": "Select a predefined domain list",
     "key": "Select a predefined domain list",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7724"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7778"
     ]
   },
   {
@@ -3998,7 +4054,7 @@
     "call": "Select a transit section",
     "key": "Select a transit section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7493"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7547"
     ]
   },
   {
@@ -4019,7 +4075,7 @@
     "call": "Select an intermediate section",
     "key": "Select an intermediate section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7506"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7560"
     ]
   },
   {
@@ -4123,6 +4179,13 @@
     ]
   },
   {
+    "call": "Sends the TLS ClientHello in several packets so a filter cannot read the server name out of a single one. Applies to the connections of this section that use TLS.",
+    "key": "Sends the TLS ClientHello in several packets so a filter cannot read the server name out of a single one. Applies to the connections of this section that use TLS.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7455"
+    ]
+  },
+  {
     "call": "Server",
     "key": "Server",
     "places": [
@@ -4221,7 +4284,7 @@
     "call": "Service list",
     "key": "Service list",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7727"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7781"
     ]
   },
   {
@@ -4378,14 +4441,14 @@
     "call": "Sort by latency",
     "key": "Sort by latency",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7518"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7572"
     ]
   },
   {
     "call": "Sorts servers in this section by lowest latency in the dashboard.",
     "key": "Sorts servers in this section by lowest latency in the dashboard.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7519"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7573"
     ]
   },
   {
@@ -4416,6 +4479,13 @@
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1937",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1949"
+    ]
+  },
+  {
+    "call": "Split the TLS handshake",
+    "key": "Split the TLS handshake",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7454"
     ]
   },
   {
@@ -4700,7 +4770,7 @@
     "call": "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression.",
     "key": "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7685"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7739"
     ]
   },
   {
@@ -5253,7 +5323,7 @@
     "call": "Use another section as an intermediate hop to connect to servers in this section. Does not apply to network interfaces or JSON outbounds.",
     "key": "Use another section as an intermediate hop to connect to servers in this section. Does not apply to network interfaces or JSON outbounds.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7455"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7509"
     ]
   },
   {
@@ -5326,7 +5396,7 @@
     "call": "Username cannot be empty",
     "key": "Username cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7612"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7666"
     ]
   },
   {
@@ -5435,6 +5505,13 @@
     "key": "When switching to another level, test every server and select the fastest instead of the first working one.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2995"
+    ]
+  },
+  {
+    "call": "with ECH",
+    "key": "with ECH",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:93"
     ]
   },
   {

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 18:50+0300\n"
-"PO-Revision-Date: 2026-08-29 18:50+0300\n"
+"POT-Creation-Date: 2026-08-29 19:01+0300\n"
+"PO-Revision-Date: 2026-08-29 19:01+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -103,6 +103,9 @@ msgstr "Дополнительно показывать серверы по пр
 
 msgid "Address"
 msgstr "Адрес"
+
+msgid "Adds filler so the size of the traffic gives less away."
+msgstr "Добавляет наполнитель, чтобы размер трафика меньше выдавал."
 
 msgid "Advertise exit node"
 msgstr "Анонсировать exit node"
@@ -256,6 +259,9 @@ msgstr "Не удалось сохранить сервер"
 
 msgid "Cannot save settings"
 msgstr "Не удалось сохранить настройки"
+
+msgid "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own."
+msgstr "Ведёт несколько потоков через одно соединение и добивает их наполнителем. Прячет форму трафика и уменьшает число соединений. Для Hysteria2 и TUIC не применяется — они мультиплексируют сами."
 
 msgid "Cascade connection"
 msgstr "Каскадное подключение"
@@ -445,6 +451,15 @@ msgstr "Отображаемое имя"
 
 msgid "DNS Check Interval"
 msgstr "Период проверки DNS"
+
+msgid "DNS goes through the tunnel"
+msgstr "DNS идёт через тоннель"
+
+msgid "DNS is encrypted but visible to the provider"
+msgstr "DNS зашифрован, но виден провайдеру"
+
+msgid "DNS leaves the router unencrypted"
+msgstr "DNS уходит с роутера открытым"
 
 msgid "DNS on router"
 msgstr "DNS на роутере"
@@ -1244,6 +1259,12 @@ msgstr "Наблюдаемые интерфейсы"
 msgid "Monitoring"
 msgstr "Мониторинг"
 
+msgid "Multiplex connections"
+msgstr "Мультиплексировать соединения"
+
+msgid "Multiplex protocol"
+msgstr "Протокол мультиплексирования"
+
 msgid "Must be a number in the range of 0 - 10000"
 msgstr "Должно быть числом в диапазоне 0 - 10000"
 
@@ -1399,6 +1420,9 @@ msgstr "outbounds должен быть непустым массивом стр
 
 msgid "Output Network Interface"
 msgstr "Выходной сетевой интерфейс"
+
+msgid "Pad multiplexed streams"
+msgstr "Добивать потоки наполнителем"
 
 msgid "Padding"
 msgstr "Padding"
@@ -1703,6 +1727,9 @@ msgstr "Selector и URLTest outbound должны содержать непус�
 msgid "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block."
 msgstr "Отправляет DNS-запросы через выбранное подключение, а не напрямую. Провайдер не видит ни запросов, ни имени резолвера — блокировать ему нечего."
 
+msgid "Sends the TLS ClientHello in several packets so a filter cannot read the server name out of a single one. Applies to the connections of this section that use TLS."
+msgstr "Отправляет TLS ClientHello несколькими пакетами, чтобы фильтр не прочитал имя сервера из одного. Действует на подключения этой секции, использующие TLS."
+
 msgid "Server"
 msgstr "Сервер"
 
@@ -1825,6 +1852,9 @@ msgstr "Укажите путь к файлу"
 
 msgid "Specify different files"
 msgstr "Укажите разные файлы"
+
+msgid "Split the TLS handshake"
+msgstr "Разбивать TLS-рукопожатие"
 
 msgid "Standalone ByeDPI autostart is enabled"
 msgstr "Автозапуск отдельной службы ByeDPI включен"
@@ -2230,6 +2260,9 @@ msgstr "Что logIn должен делать при совпадении эт�
 
 msgid "When switching to another level, test every server and select the fastest instead of the first working one."
 msgstr "При переходе на другой уровень тестировать все сервера и выбирать самый быстрый, а не первый работающий."
+
+msgid "with ECH"
+msgstr "с ECH"
 
 msgid "XHTTP mode"
 msgstr "Режим XHTTP"

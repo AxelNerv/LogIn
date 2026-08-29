@@ -1374,6 +1374,12 @@ function dns_action_has_domain_matchers(section) {
 
 function validate_dns_action(section, sections, context) {
     let name = section_name(section);
+    let multiplex_protocol = option(section, "multiplex_protocol", "h2mux");
+    if (bool_option(section, "multiplex_enabled", false) &&
+        !contains([ "h2mux", "smux", "yamux" ], multiplex_protocol))
+        fail_validation("Section '" + name + "' uses unsupported multiplex protocol '" +
+            multiplex_protocol + "'. Use h2mux, smux or yamux. Aborted.");
+
     let dns_type = option(section, "dns_type", "udp");
     if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
         fail_validation("DNS rule '" + name + "' uses unsupported protocol '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");

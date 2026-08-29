@@ -1392,7 +1392,11 @@ function check_dns_available() {
         bootstrap_dns_server_count: length(active.state.bootstrap_servers),
         bootstrap_dns_status,
         dhcp_config_status,
-        dont_touch_dhcp
+        dont_touch_dhcp,
+        // Whether the provider can still see the DNS traffic at all. Detoured
+        // requests go inside the tunnel, where there is nothing left to read.
+        dns_detoured: as_string(active.state.dns_detour) != "" ? 1 : 0,
+        dns_ech: active.state.dns_ech ? 1 : 0
     });
     return 0;
 }

@@ -75,6 +75,23 @@ export async function runDnsCheck() {
         key: _('DNS on router'),
         value: '',
       },
+      // Whether the provider can read the DNS traffic at all. Detoured
+      // requests travel inside the tunnel, so there is nothing to read and
+      // nothing to block; anything else is worth pointing out, because this
+      // is exactly what gets filtered.
+      {
+        state: data.dns_detoured
+          ? 'success'
+          : data.dns_type === 'udp'
+            ? 'error'
+            : 'warning',
+        key: data.dns_detoured
+          ? _('DNS goes through the tunnel')
+          : data.dns_type === 'udp'
+            ? _('DNS leaves the router unencrypted')
+            : _('DNS is encrypted but visible to the provider'),
+        value: data.dns_ech ? _('with ECH') : '',
+      },
       {
         state: dhcpItemState,
         key: dhcpItemKey,

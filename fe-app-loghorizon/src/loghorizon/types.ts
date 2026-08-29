@@ -378,6 +378,8 @@ export namespace logIn {
     bootstrap_dns_status: 0 | 1;
     dhcp_config_status: 0 | 1;
     dont_touch_dhcp: 0 | 1;
+    dns_detoured: 0 | 1;
+    dns_ech: 0 | 1;
   }
 
   export interface NftRulesCheckResult {
