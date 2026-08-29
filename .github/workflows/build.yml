@@ -72,6 +72,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential curl fakeroot file gawk git patch perl tar unzip util-linux xz-utils zstd
 
+      # build.sh fetches two OpenWrt SDKs, one for ipk and one for apk, and that
+      # download is nearly the whole build: the packages are ucode and
+      # JavaScript, so there is nothing to compile. Only the archives are kept.
+      # The extracted trees are several gigabytes and unpacking them locally is
+      # far cheaper than pushing them through the cache. build.sh records the
+      # SDK URL beside each extraction and re-fetches when it stops matching,
+      # so an outdated restore cannot produce a stale build.
+      - name: Cache OpenWrt SDK archives
+        uses: actions/cache@v4.3.0
+        with:
+          path: |
+            ~/.cache/loghorizon/openwrt-sdk
+            !~/.cache/loghorizon/openwrt-sdk/extracted
+          key: openwrt-sdk-${{ hashFiles('build.sh') }}
+          restore-keys: |
+            openwrt-sdk-
+
       - name: Build release artifacts
         shell: bash
         run: |

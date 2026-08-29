@@ -639,7 +639,7 @@ msgid "Enable YACD WAN Access"
 msgstr "Включить доступ YACD WAN"
 
 msgid "Encrypted Client Hello (ECH)"
-msgstr "Encrypted Client Hello (ECH)"
+msgstr "Шифрование имени сервера (ECH)"
 
 msgid "Enter a complete sing-box inbound object"
 msgstr "Введите полный объект inbound sing-box"
@@ -1425,7 +1425,7 @@ msgid "Pad multiplexed streams"
 msgstr "Добивать потоки наполнителем"
 
 msgid "Padding"
-msgstr "Padding"
+msgstr "Наполнитель"
 
 msgid "Password"
 msgstr "Пароль"
