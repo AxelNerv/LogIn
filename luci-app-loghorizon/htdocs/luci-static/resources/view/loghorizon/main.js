@@ -14133,19 +14133,23 @@ ${PartialStyles}
     --lh-radius-lg: 10px;
     color-scheme: dark;
     box-sizing: border-box;
-    /* The theme wraps this in a padded container. Reclaiming a little of that
-     * padding gives the tables room without the panel touching the viewport. */
-    width: calc(100% + 24px);
-    margin-inline: -12px;
-    padding: 4px 14px 18px;
+    /* The theme centres its content in a narrow column, which left the tables
+     * cramped. Break out of it: keep the panel centred on the page and let it
+     * use the viewport, with a ceiling so it stays readable on wide monitors. */
+    width: min(calc(100vw - 32px), 1720px);
+    margin-inline: calc(50% - min(calc(50vw - 16px), 860px));
+    padding: 4px 20px 20px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
     background: var(--lh-canvas);
     font-family: Aptos, "Segoe UI Variable", "Noto Sans", sans-serif;
-    overflow-x: hidden;
 }
 
-.lh-shell * {
+/* Only the parts that must be allowed to shrink. A blanket rule here let row
+ * buttons collapse narrower than their own labels. */
+.lh-shell .lh-brand-header,
+.lh-shell .lh-brand-header > *,
+.lh-shell .cbi-tabmenu {
     min-width: 0;
 }
 
@@ -14232,23 +14236,35 @@ ${PartialStyles}
     border-radius: var(--lh-radius-md);
     background: var(--lh-surface);
     /* Wrapping instead of scrolling: overflow-x also produced a vertical
-     * scrollbar whenever the row was a pixel taller than its box. */
+     * scrollbar whenever the row was a pixel taller than its box. The theme
+     * paints a gradient rule under the tabs, which our own border replaces. */
+    background-image: none;
     overflow: visible;
 }
 
-.lh-shell .cbi-tabmenu li {
+/* The theme pins tab items to height 25px, caps them at 48% width and paints
+ * a gradient rule at 28px. Our taller tabs did not fit that box, which is what
+ * produced the scrollbar, so the whole geometry is replaced rather than nudged. */
+.lh-shell .cbi-tabmenu li,
+.lh-shell .cbi-tabmenu > li {
     flex: 0 0 auto;
-    /* The theme gives tab items a bottom margin that pushed the row a few
-     * pixels past its own border. */
+    height: auto;
+    max-width: none;
     margin: 0;
+    padding: 0;
     border: 0;
     border-radius: var(--lh-radius-sm);
     background: transparent;
+    overflow: visible;
     line-height: 1;
 }
 
-.lh-shell .cbi-tabmenu li a {
-    min-height: 36px;
+.lh-shell .cbi-tabmenu li a,
+.lh-shell .cbi-tabmenu > li > a {
+    height: auto;
+    min-height: 34px;
+    overflow: visible;
+    line-height: 1.2;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -14312,11 +14328,36 @@ ${PartialStyles}
     text-transform: uppercase;
 }
 
+/* Row actions keep their natural width; the label must never be clipped by a
+ * neighbouring button. */
 .lh-shell .cbi-section-table .td .btn,
 .lh-shell .table .td .btn,
 .lh-shell .cbi-section-table .td .cbi-button,
 .lh-shell .table .td .cbi-button {
     min-height: 32px;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: max-content;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.lh-shell .cbi-section-table .td.cbi-section-actions,
+.lh-shell .table .td.cbi-section-actions {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* One row of actions, never a column: the buttons must stay side by side
+ * and keep their labels. */
+.lh-shell .cbi-section-actions > * {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .lh-shell input,
