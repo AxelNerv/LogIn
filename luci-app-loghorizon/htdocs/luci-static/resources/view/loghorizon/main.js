@@ -14124,6 +14124,15 @@ ${PartialStyles}
  * fallbacks produced dark borders on a light page. Inside .lh-shell the
  * palette is ours regardless of the theme the router runs.
  */
+/* The theme caps its content column at 940px, which left the tables cramped.
+ * Lift that cap only on the page that hosts logIn, rather than dragging the
+ * panel out of the column with negative margins: that depended on the column
+ * being centred in the viewport and clipped the header when it was not. */
+.container:has(> .lh-shell),
+#maincontent:has(> .lh-shell) {
+    max-width: min(1720px, calc(100vw - 32px));
+}
+
 .lh-shell {
     --lh-canvas: #0d1113;
     --lh-surface: #151a1d;
@@ -14142,11 +14151,7 @@ ${PartialStyles}
     --lh-radius-lg: 10px;
     color-scheme: dark;
     box-sizing: border-box;
-    /* The theme centres its content in a narrow column, which left the tables
-     * cramped. Break out of it: keep the panel centred on the page and let it
-     * use the viewport, with a ceiling so it stays readable on wide monitors. */
-    width: min(calc(100vw - 32px), 1720px);
-    margin-inline: calc(50% - min(calc(50vw - 16px), 860px));
+    width: auto;
     padding: 6px 28px 22px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
