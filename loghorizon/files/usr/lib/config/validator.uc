@@ -552,16 +552,18 @@ function basic_rule_rows() {
     return rows;
 }
 
+// Zapret is packet mangling on the direct path, not a proxy: there is no
+// outbound for a download to travel through. Pointing the list and component
+// downloads at such a section made sing-box fetch its rule sets over a path
+// that is not up when it starts, and the service died outright with
+// "initial rule-set: ...youtube.srs: lookup github.com: context deadline
+// exceeded". ByeDPI stays, because it really does provide a local proxy.
 function download_section_action_available(action, byedpi_installed, zapret_installed, zapret2_installed) {
     action = as_string(action);
     if (connections.is_connections_action(action))
         return true;
     if (action == "byedpi")
         return bool_flag(byedpi_installed);
-    if (action == "zapret")
-        return bool_flag(zapret_installed);
-    if (action == "zapret2")
-        return bool_flag(zapret2_installed);
 
     return false;
 }
@@ -599,7 +601,7 @@ function validate_download_section_rows(target_section, byedpi_installed, zapret
 
     if (!outbound)
         fail_validation("Downloading external resources through a section references rule '" + target_section +
-            "', but it cannot provide an outbound. Select an enabled Connection, Zapret, Zapret2, or ByeDPI rule with its provider installed, or disable the option. Aborted.");
+            "', but it cannot provide an outbound. Select an enabled Connection or ByeDPI rule with its provider installed, or disable the option. Aborted.");
 }
 
 function validate_download_section(target_section, byedpi_installed, zapret_installed, zapret2_installed) {

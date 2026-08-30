@@ -45,14 +45,17 @@ assert_rejects() {
 assert_accepts proxy 0 0 0 proxy 1 proxy
 assert_accepts outbound 0 0 0 outbound 1 outbound
 assert_accepts vpn 0 0 0 vpn 1 vpn
-assert_accepts zap 0 1 0 zap 1 zapret
-assert_accepts zap2 0 0 1 zap2 1 zapret2
 assert_accepts bye 1 0 0 bye 1 byedpi
 
 assert_rejects "empty target" "no download section is selected" "" 0 0 0 proxy 1 proxy
 assert_rejects "missing target" "references missing rule 'missing'" missing 0 0 0 proxy 1 proxy
 assert_rejects "disabled target" "references disabled rule 'proxy'" proxy 0 0 0 proxy 0 proxy
-assert_rejects "provider missing" "cannot provide an outbound" zap 0 0 0 zap 1 zapret
+assert_rejects "provider missing" "cannot provide an outbound" bye 0 0 0 bye 1 byedpi
+# Zapret mangles packets on the direct path and offers no outbound at all, so
+# it is refused whether or not the provider is installed. Routing the rule-set
+# downloads through one stopped sing-box from starting on a live router.
+assert_rejects "zapret is not an outbound" "cannot provide an outbound" zap 0 1 0 zap 1 zapret
+assert_rejects "zapret2 is not an outbound" "cannot provide an outbound" zap2 0 0 1 zap2 1 zapret2
 assert_rejects "unsupported action" "cannot provide an outbound" bypass 0 0 0 bypass 1 bypass
 
 printf 'config validator download section checks passed\n'

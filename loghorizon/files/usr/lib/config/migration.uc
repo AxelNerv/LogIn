@@ -1351,11 +1351,40 @@ function migrate_legacy_list_options(ctx) {
     }
 }
 
+// A router already pointing its downloads at a Zapret section would fail
+// validation the moment it upgraded, and refuse to start over a setting the
+// user could no longer even see in the interface. Clear the pointer instead
+// and let the downloads go direct, which is what they did before the option
+// was ever set.
+function section_action_by_name(ctx, wanted) {
+    for (let section in ctx.model.sections)
+        if (section_name(section) == wanted)
+            return option(section, "action", "");
+    return "";
+}
+
+function migrate_download_via_dpi_section(ctx) {
+    let settings = ctx.model.settings;
+    if (type(settings) != "object")
+        return;
+
+    for (let key in [ "download_lists_via_proxy_section", "download_components_via_proxy_section" ]) {
+        let target = trim(as_string(option(settings, key, "")));
+        if (target == "")
+            continue;
+
+        let action = section_action_by_name(ctx, target);
+        if (action == "zapret" || action == "zapret2")
+            delete_option(ctx, settings, key);
+    }
+}
+
 const MIGRATIONS = [
     { id: "interface_sections", run: migrate_interface_sections },
     { id: "enable_component_checks", run: migrate_enable_component_checks },
     { id: "http_connection_urls", run: migrate_http_connection_urls },
-    { id: "legacy_list_options", run: migrate_legacy_list_options }
+    { id: "legacy_list_options", run: migrate_legacy_list_options },
+    { id: "download_via_dpi_section", run: migrate_download_via_dpi_section }
 ];
 
 function apply_migrations(ctx) {
