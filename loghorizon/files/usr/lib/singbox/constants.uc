@@ -32,6 +32,12 @@ const FAKEIP_INET6_RANGE = "fc00::/18";
 const DISABLED_UPDATE_INTERVAL = "876000h";
 const URLTEST_DEFAULT_IDLE_TIMEOUT = "30m";
 const CHECK_PROXY_IP_DOMAIN = "ip.podkop.fyi";
+// The package feed has to keep resolving to real addresses. Routed through
+// FakeIP it hands opkg an address the router cannot reach from its own
+// output path, and every install then dies on a dependency it cannot
+// download, leaving the router without the tool needed to repair it.
+const PACKAGE_FEED_DOMAIN_SUFFIXES = [ "openwrt.org" ];
+
 const FAKEIP_TEST_DOMAIN = "fakeip.podkop.fyi";
 const TMP_SING_BOX_FOLDER = "/tmp/sing-box";
 const TMP_RULESET_FOLDER = TMP_SING_BOX_FOLDER + "/rulesets";
@@ -117,6 +123,7 @@ return {
     URLTEST_DEFAULT_IDLE_TIMEOUT,
     CHECK_PROXY_IP_DOMAIN,
     FAKEIP_TEST_DOMAIN,
+    PACKAGE_FEED_DOMAIN_SUFFIXES,
     TMP_SING_BOX_FOLDER,
     TMP_RULESET_FOLDER,
     ZAPRET_ROUTE_MARK_BASE,

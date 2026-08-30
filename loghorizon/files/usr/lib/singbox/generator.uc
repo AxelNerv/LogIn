@@ -448,6 +448,16 @@ function base_config(settings, service_address, runtime_context) {
     ])
         push(dns_rules, rule);
 
+    // The bootstrap resolver is used on purpose: the package feed has to work
+    // when the tunnel does not, which is exactly when packages are wanted.
+    let feed_suffixes = array_or_empty(runtime_constants.PACKAGE_FEED_DOMAIN_SUFFIXES);
+    if (length(feed_suffixes) > 0)
+        push(dns_rules, {
+            action: "route",
+            server: runtime_constants.BOOTSTRAP_DNS_SERVER_TAG,
+            domain_suffix: feed_suffixes
+        });
+
     let dns_servers = [];
     for (let server in dns_config.servers)
         push(dns_servers, server);
