@@ -1284,10 +1284,78 @@ function migrate_http_connection_urls(ctx) {
     }
 }
 
+// podkop kept list references in options of its own. logIn expresses the same
+// thing through rule sets for the binary formats and through plain-text lists
+// otherwise, and the sing-box config generator refuses a section that still
+// carries the old names. The validator does not reject them, so a migrated
+// router passed every check and then failed to start for good, with only
+// "section has unsupported matcher remote_domain_lists" to go on.
+function legacy_list_is_binary_ruleset(value) {
+    let reference = lc(trim(as_string(value)));
+    let query = index(reference, "?");
+    if (query >= 0)
+        reference = substr(reference, 0, query);
+
+    return length(reference) > 4 &&
+        (substr(reference, -4) == ".srs" || substr(reference, -5) == ".json");
+}
+
+function migrate_legacy_list_options(ctx) {
+    for (let section in ctx.model.sections) {
+        let rule_sets = [];
+        let subnet_rule_sets = [];
+        let plain_lists = [];
+        let seen_rule_sets = {};
+        let seen_subnet_rule_sets = {};
+        let seen_plain_lists = {};
+        let touched = false;
+
+        // Whatever the section already holds stays; the legacy entries join it.
+        for (let value in option_list_values(section, "rule_set"))
+            add_unique_value(rule_sets, seen_rule_sets, value);
+        for (let value in option_list_values(section, "rule_set_with_subnets"))
+            add_unique_value(subnet_rule_sets, seen_subnet_rule_sets, value);
+        for (let value in option_list_values(section, "domain_ip_lists"))
+            add_unique_value(plain_lists, seen_plain_lists, value);
+
+        for (let key in [ "remote_domain_lists", "local_domain_lists" ]) {
+            for (let value in option_list_values(section, key)) {
+                touched = true;
+                if (legacy_list_is_binary_ruleset(value))
+                    add_unique_value(rule_sets, seen_rule_sets, value);
+                else
+                    add_unique_value(plain_lists, seen_plain_lists, value);
+            }
+            delete_option(ctx, section, key);
+        }
+
+        for (let key in [ "remote_subnet_lists", "local_subnet_lists" ]) {
+            for (let value in option_list_values(section, key)) {
+                touched = true;
+                // Subnet lists carry addresses, so a binary one belongs with the
+                // rule sets that are allowed to contain them.
+                if (legacy_list_is_binary_ruleset(value))
+                    add_unique_value(subnet_rule_sets, seen_subnet_rule_sets, value);
+                else
+                    add_unique_value(plain_lists, seen_plain_lists, value);
+            }
+            delete_option(ctx, section, key);
+        }
+
+        if (!touched)
+            continue;
+
+        set_list_option_if_not_empty(ctx, section, "rule_set", rule_sets);
+        set_list_option_if_not_empty(ctx, section, "rule_set_with_subnets", subnet_rule_sets);
+        set_list_option_if_not_empty(ctx, section, "domain_ip_lists", plain_lists);
+    }
+}
+
 const MIGRATIONS = [
     { id: "interface_sections", run: migrate_interface_sections },
     { id: "enable_component_checks", run: migrate_enable_component_checks },
-    { id: "http_connection_urls", run: migrate_http_connection_urls }
+    { id: "http_connection_urls", run: migrate_http_connection_urls },
+    { id: "legacy_list_options", run: migrate_legacy_list_options }
 ];
 
 function apply_migrations(ctx) {
