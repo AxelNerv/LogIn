@@ -13800,31 +13800,24 @@ var styles6 = `
     width: 100%;
 }
 
+/* Grid tracks of 1fr always fill the row, whatever the theme wraps this in.
+   The previous flex row sized its columns from their content, so a theme that
+   laid the surrounding CBI row out differently left the cards huddled against
+   the left edge with most of the width unused. auto-fit drops to a single
+   column on a narrow screen without a breakpoint of its own. */
 .lgh_updates-page__components {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    align-items: start;
+    gap: 12px;
     width: 100%;
-    flex-wrap: wrap;
 }
 
 .lgh_updates-page__components-column {
     display: flex;
-    flex: 1 1 auto;
     flex-direction: column;
-    gap: 10px;
-    min-width: max-content;
-}
-
-@media (max-width: 760px) {
-    .lgh_updates-page__components {
-        flex-direction: column;
-    }
-
-    .lgh_updates-page__components-column {
-        width: 100%;
-        min-width: 0;
-    }
+    gap: 12px;
+    min-width: 0;
 }
 
 .lgh_updates-page__component {
@@ -13834,7 +13827,7 @@ var styles6 = `
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: max-content;
+    min-width: 0;
 }
 
 .lgh_updates-page__component__header {
