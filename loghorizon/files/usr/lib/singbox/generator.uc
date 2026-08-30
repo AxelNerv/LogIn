@@ -1487,6 +1487,20 @@ function multiplex_supported_outbound_type(outbound_type) {
         outbound_type == "trojan" || outbound_type == "shadowsocks";
 }
 
+// The HTTP/2 based transports multiplex streams of their own. Stacking
+// sing-box multiplexing on top passes the configuration checker and then
+// tears the connection down in use: measured on XHTTP, an outbound that
+// answered in 154ms stopped answering at all, with "http2: client
+// connection force closed" on every probe. gRPC rests on the same HTTP/2
+// machinery and is excluded by the same reasoning.
+function transport_multiplexes_already(outbound) {
+    if (type(outbound.transport) != "object")
+        return false;
+
+    let transport_type = lc(as_string(outbound.transport.type || ""));
+    return transport_type == "xhttp" || transport_type == "grpc";
+}
+
 function apply_section_transport_tweaks(config, start_index, section, section_name) {
     let fragment = bool_option(section, "tls_fragment_enabled", false);
     let multiplex = bool_option(section, "multiplex_enabled", false);
@@ -1515,7 +1529,8 @@ function apply_section_transport_tweaks(config, start_index, section, section_na
             outbound.tls.fragment = true;
 
         if (multiplex) {
-            if (multiplex_supported_outbound_type(outbound_type))
+            if (multiplex_supported_outbound_type(outbound_type) &&
+                !transport_multiplexes_already(outbound))
                 outbound.multiplex = { enabled: true, protocol, padding };
             else
                 skipped_multiplex++;
@@ -1526,7 +1541,7 @@ function apply_section_transport_tweaks(config, start_index, section, section_na
     if (skipped_multiplex > 0)
         warn("multiplexing skipped for ", skipped_multiplex,
             " outbound(s) of rule '", section_name,
-            "': the protocol carries its own multiplexing\n");
+            "': the protocol or transport already multiplexes\n");
 }
 
 function mixed_proxy_enabled_action(action) {

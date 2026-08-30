@@ -66,6 +66,19 @@ if awk '
   fail "the QUIC protocols must not be listed as accepting multiplexing"
 fi
 
+# --- Transports that already multiplex are excluded too ---------------------
+
+# sing-box accepts multiplexing over XHTTP and then tears the connection down
+# in use. Measured: an outbound answering in 154ms stopped answering entirely.
+grep -Fq 'function transport_multiplexes_already(' "$GENERATOR" ||
+  fail "transports that multiplex on their own must be recognised"
+grep -Fq '!transport_multiplexes_already(outbound)' "$GENERATOR" ||
+  fail "multiplexing must be skipped for such transports"
+for transport in xhttp grpc; do
+  grep -Fq "transport_type == \"$transport\"" "$GENERATOR" ||
+    fail "the $transport transport must be excluded from multiplexing"
+done
+
 grep -Fq 'multiplexing skipped for ' "$GENERATOR" ||
   fail "outbounds skipped for multiplexing must be reported, not swallowed"
 
