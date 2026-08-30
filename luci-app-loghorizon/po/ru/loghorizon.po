@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 19:01+0300\n"
-"PO-Revision-Date: 2026-08-29 19:01+0300\n"
+"POT-Creation-Date: 2026-08-30 15:26+0300\n"
+"PO-Revision-Date: 2026-08-30 15:26+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -260,8 +260,8 @@ msgstr "Не удалось сохранить сервер"
 msgid "Cannot save settings"
 msgstr "Не удалось сохранить настройки"
 
-msgid "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own."
-msgstr "Ведёт несколько потоков через одно соединение и добивает их наполнителем. Прячет форму трафика и уменьшает число соединений. Для Hysteria2 и TUIC не применяется — они мультиплексируют сами."
+msgid "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Unavailable for connections that already multiplex, and for those using an XTLS flow, which multiplexing would strip."
+msgstr "Передаёт несколько потоков по одному соединению и добавляет к ним заполнитель. Скрывает форму трафика и уменьшает число соединений. Недоступно для соединений, которые уже мультиплексируют сами, и для тех, что используют поток XTLS: мультиплексирование его отбрасывает."
 
 msgid "Cascade connection"
 msgstr "Каскадное подключение"
@@ -602,6 +602,9 @@ msgstr "Такой тег JSON outbound уже используется"
 msgid "Duplicate value"
 msgstr "Дублирующееся значение"
 
+msgid "ECH needs a DNS server given by name, but %s is an address. Use the resolver's hostname, such as dns.google."
+msgstr "Для ECH нужен DNS-сервер, заданный именем, а %s — это адрес. Укажите имя сервера, например dns.google."
+
 msgid "Edit rule action"
 msgstr "Изменить"
 
@@ -856,6 +859,9 @@ msgstr "HTTP-хосты"
 
 msgid "HWID"
 msgstr "HWID"
+
+msgid "Hysteria2 and TUIC carry several streams of their own."
+msgstr "Hysteria2 и TUIC сами передают несколько потоков."
 
 msgid "Idle timeout"
 msgstr "Таймаут простоя"
@@ -1264,6 +1270,9 @@ msgstr "Мультиплексировать соединения"
 
 msgid "Multiplex protocol"
 msgstr "Протокол мультиплексирования"
+
+msgid "Multiplexing drops the XTLS flow, and the server then refuses every connection."
+msgstr "Мультиплексирование отбрасывает поток XTLS, и сервер начинает отклонять все соединения."
 
 msgid "Must be a number in the range of 0 - 10000"
 msgstr "Должно быть числом в диапазоне 0 - 10000"
@@ -1975,6 +1984,9 @@ msgstr "Номер NFQUEUE назначается logIn для каждого п
 
 msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
 msgstr "Правило применяется к домену и всем его поддоменам. Для полного совпадения, совпадению по слову или регулярному выражению используйте префиксы full:, keyword: или regex:."
+
+msgid "The XHTTP and gRPC transports already multiplex over HTTP/2."
+msgstr "Транспорты XHTTP и gRPC уже мультиплексируют поверх HTTP/2."
 
 msgid "There are rules using ByeDPI"
 msgstr "Есть правила, использующие ByeDPI"

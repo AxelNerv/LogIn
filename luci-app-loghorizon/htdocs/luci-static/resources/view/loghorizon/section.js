@@ -1725,6 +1725,148 @@ function refreshDashboardFilterChoiceWidgets(section_id) {
   }
 }
 
+// Some settings quietly cancel each other out. Multiplexing a VLESS outbound
+// that carries an XTLS flow makes sing-box drop the flow; the server then
+// refuses every connection with "flow mismatch: expected xtls-rprx-vision,
+// but got none" while the client only reports "http2: client connection
+// force closed". The configuration checker accepts it, so the first sign is
+// a tunnel that stopped answering. A control whose combination cannot work
+// is left visible but inert, with the reason beside it.
+const conflictGuardRefreshers = new Map();
+
+function proxyLinkMultiplexConflict(link) {
+  const raw = `${link || ""}`.trim();
+  if (!raw) {
+    return null;
+  }
+
+  const separator = raw.indexOf("://");
+  if (separator < 0) {
+    return null;
+  }
+
+  const scheme = raw.slice(0, separator).toLowerCase();
+  if (["hysteria2", "hy2", "tuic"].includes(scheme)) {
+    return _("Hysteria2 and TUIC carry several streams of their own.");
+  }
+
+  const question = raw.indexOf("?");
+  if (question < 0) {
+    return null;
+  }
+
+  const query = raw.slice(question + 1).split("#")[0];
+  let parameters;
+  try {
+    parameters = new URLSearchParams(query);
+  } catch (error) {
+    return null;
+  }
+
+  const transport = `${parameters.get("type") || ""}`.toLowerCase();
+  if (transport === "xhttp" || transport === "grpc") {
+    return _("The XHTTP and gRPC transports already multiplex over HTTP/2.");
+  }
+
+  const flow = `${parameters.get("flow") || ""}`.toLowerCase();
+  if (flow.startsWith("xtls-")) {
+    return _(
+      "Multiplexing drops the XTLS flow, and the server then refuses every connection.",
+    );
+  }
+
+  return null;
+}
+
+function multiplexConflictReason(section_id) {
+  // The guard runs before the links widget exists on the first pass, and the
+  // stored configuration is what matters then. Once the widget is there, an
+  // edit has to be reflected before it is saved.
+  const links =
+    currentSourceOptionValues(section_id, "selector_proxy_links") ||
+    L.toArray(uci.get(UCI_PACKAGE, section_id, "selector_proxy_links"));
+
+  for (let i = 0; i < links.length; i++) {
+    const reason = proxyLinkMultiplexConflict(links[i]);
+    if (reason) {
+      return reason;
+    }
+  }
+
+  return null;
+}
+
+function applyConflictState(option, section_id, node, reason) {
+  const holder = node.closest ? node.closest(".cbi-value") || node : node;
+  const previous = holder.querySelector(".lgh-conflict-note");
+  if (previous) {
+    previous.remove();
+  }
+
+  if (!reason) {
+    node.classList.remove("lgh-conflict-blocked");
+    node.querySelectorAll("input, select, textarea, button").forEach((el) => {
+      el.disabled = false;
+    });
+    return;
+  }
+
+  // Clearing the value as well keeps a combination that cannot work from
+  // being saved just because it was switched on before the conflict appeared.
+  const widget = option.getUIElement(section_id);
+  if (widget && typeof widget.setValue === "function") {
+    widget.setValue("0");
+  }
+
+  node.classList.add("lgh-conflict-blocked");
+  node.querySelectorAll("input, select, textarea, button").forEach((el) => {
+    el.disabled = true;
+  });
+  holder.appendChild(E("div", { class: "lgh-conflict-note" }, reason));
+}
+
+function guardOptionAgainstConflicts(option, describeConflict) {
+  const renderWidget = option.renderWidget;
+
+  option.renderWidget = function (section_id, option_index, cfgvalue) {
+    const node = renderWidget.call(this, section_id, option_index, cfgvalue);
+    const refresh = () => {
+      if (!node.isConnected) {
+        return false;
+      }
+
+      applyConflictState(this, section_id, node, describeConflict(section_id));
+      return true;
+    };
+
+    if (!conflictGuardRefreshers.has(section_id)) {
+      conflictGuardRefreshers.set(section_id, new Set());
+    }
+    conflictGuardRefreshers.get(section_id).add(refresh);
+    // The node is not in the document yet, so the first pass has to wait.
+    window.setTimeout(refresh, 0);
+
+    return node;
+  };
+}
+
+function refreshConflictGuards(section_id) {
+  const refreshers = conflictGuardRefreshers.get(section_id);
+  if (!refreshers) {
+    return;
+  }
+
+  refreshers.forEach((refresh) => {
+    if (refresh() === false) {
+      refreshers.delete(refresh);
+    }
+  });
+
+  if (refreshers.size === 0) {
+    conflictGuardRefreshers.delete(section_id);
+  }
+}
+
 function isDownloadThroughTargetSection(section, currentSectionId) {
   const sectionName = getUciSectionName(section);
   const action = (section && section.action) || "";
@@ -7230,6 +7372,7 @@ function createSectionContent(section) {
   };
   o.onchange = function (_event, section_id) {
     refreshDashboardFilterChoiceWidgets(section_id);
+    refreshConflictGuards(section_id);
   };
   outboundNameSourceOptions.set("selector_proxy_links", o);
 
@@ -7467,13 +7610,14 @@ function createSectionContent(section) {
     "multiplex_enabled",
     _("Multiplex connections"),
     _(
-      "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Ignored for Hysteria2 and TUIC, which multiplex on their own.",
+      "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Unavailable for connections that already multiplex, and for those using an XTLS flow, which multiplexing would strip.",
     ),
   );
   o.default = "0";
   o.rmempty = false;
   o.depends("action", "connection");
   o.modalonly = true;
+  guardOptionAgainstConflicts(o, multiplexConflictReason);
 
   o = section.taboption(
     "settings",

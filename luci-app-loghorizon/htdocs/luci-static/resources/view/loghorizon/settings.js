@@ -105,6 +105,35 @@ function optionListValues(option, section_id) {
     .filter(Boolean);
 }
 
+// ECH keys are published in the HTTPS record of the resolver's name. An
+// address literal has no name to ask about, so the setting produced a main
+// resolver that simply never answered, with nothing in the interface saying
+// why. Refusing the combination here keeps it from ever being saved.
+function dnsServerAddressLiteral(value) {
+  let host = `${value || ""}`.trim();
+  if (!host) {
+    return "";
+  }
+
+  const scheme = host.indexOf("://");
+  if (scheme >= 0) {
+    host = host.slice(scheme + 3);
+  }
+  host = host.split("/")[0];
+
+  if (host.startsWith("[")) {
+    const end = host.indexOf("]");
+    return end > 1 && main.isIPv6(host.slice(1, end)) ? host.slice(1, end) : "";
+  }
+
+  const colon = host.lastIndexOf(":");
+  if (colon > 0 && !host.includes(":", colon + 1)) {
+    host = host.slice(0, colon);
+  }
+
+  return main.isIPv4(host) || main.isIPv6(host) ? host : "";
+}
+
 function configureDnsList(option, choices, defaultValue) {
   Object.entries(choices).forEach(([key, label]) => {
     option.value(key, _(label));
@@ -260,6 +289,27 @@ function createSettingsContent(section, capabilities) {
   o.depends({ dns_type: "doq" });
   o.depends({ dns_type: "doh3" });
   o.default = "0";
+  o.validate = function (section_id, value) {
+    if (`${value || ""}` !== "1") {
+      return true;
+    }
+
+    const found = this.map.lookupOption("dns_server", section_id);
+    const dnsOption = found && found[0] ? found[0] : null;
+    if (!dnsOption) {
+      return true;
+    }
+
+    const literal = optionListValues(dnsOption, section_id)
+      .map(dnsServerAddressLiteral)
+      .find(Boolean);
+
+    return literal
+      ? _(
+          "ECH needs a DNS server given by name, but %s is an address. Use the resolver's hostname, such as dns.google.",
+        ).format(literal)
+      : true;
+  };
 
   o = section.option(
     form.Flag,

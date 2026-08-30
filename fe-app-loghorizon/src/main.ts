@@ -7,7 +7,7 @@
 if (typeof structuredClone !== 'function')
   globalThis.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 
-export { validateIP } from './validators/validateIp';
+export { validateIP, isIPv4, isIPv6 } from './validators/validateIp';
 export { validateDomain } from './validators/validateDomain';
 export { validateDNS } from './validators/validateDns';
 export { validateUrl } from './validators/validateUrl';

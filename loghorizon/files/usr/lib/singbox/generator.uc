@@ -1487,6 +1487,16 @@ function multiplex_supported_outbound_type(outbound_type) {
         outbound_type == "trojan" || outbound_type == "shadowsocks";
 }
 
+// XTLS flows carry the connection themselves, so sing-box drops the flow
+// when multiplexing is switched on. The server still expects it and refuses
+// every connection with "flow mismatch: expected xtls-rprx-vision, but got
+// none", while the client only reports "http2: client connection force
+// closed". Reality is nearly always paired with Vision, so this turned a
+// working tunnel into a dead one and the configuration checker accepted it.
+function outbound_carries_xtls_flow(outbound) {
+    return trim(as_string(outbound.flow || "")) != "";
+}
+
 // The HTTP/2 based transports multiplex streams of their own. Stacking
 // sing-box multiplexing on top passes the configuration checker and then
 // tears the connection down in use: measured on XHTTP, an outbound that
@@ -1530,7 +1540,8 @@ function apply_section_transport_tweaks(config, start_index, section, section_na
 
         if (multiplex) {
             if (multiplex_supported_outbound_type(outbound_type) &&
-                !transport_multiplexes_already(outbound))
+                !transport_multiplexes_already(outbound) &&
+                !outbound_carries_xtls_flow(outbound))
                 outbound.multiplex = { enabled: true, protocol, padding };
             else
                 skipped_multiplex++;
@@ -1541,7 +1552,8 @@ function apply_section_transport_tweaks(config, start_index, section, section_na
     if (skipped_multiplex > 0)
         warn("multiplexing skipped for ", skipped_multiplex,
             " outbound(s) of rule '", section_name,
-            "': the protocol or transport already multiplexes\n");
+            "': the protocol or transport already multiplexes, or the outbound ",
+            "uses an XTLS flow that multiplexing would strip\n");
 }
 
 function mixed_proxy_enabled_action(action) {

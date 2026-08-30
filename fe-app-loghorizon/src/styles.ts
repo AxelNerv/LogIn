@@ -552,6 +552,22 @@ ${PartialStyles}
     background: transparent;
 }
 
+/* A control whose combination cannot work stays visible but inert, so the
+   reason sits next to it instead of the option quietly disappearing. Modals
+   render outside the shell, so these rules are deliberately unscoped. */
+.lgh-conflict-blocked {
+    opacity: 0.45;
+    filter: grayscale(1);
+    pointer-events: none;
+}
+
+.lgh-conflict-note {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #ff8f8f;
+}
+
 @media (max-width: 700px) {
     .lh-shell {
         padding: 4px 12px 16px;
