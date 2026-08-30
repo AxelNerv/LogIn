@@ -900,8 +900,23 @@ function validate_dns_settings(settings, sections, context) {
     if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
         fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");
 
-    if (bool_option(settings, "dns_ech_enabled", false) && dns_type == "udp")
-        fail_validation("ECH needs an encrypted DNS protocol. Choose DoT, DoH, DoQ or DoH3, or turn ECH off. Aborted.");
+    if (bool_option(settings, "dns_ech_enabled", false)) {
+        if (dns_type == "udp")
+            fail_validation("ECH needs an encrypted DNS protocol. Choose DoT, DoH, DoQ or DoH3, or turn ECH off. Aborted.");
+
+        // ECH keys are published in the HTTPS record of the resolver's name.
+        // An address literal has no name to ask about, so the handshake has
+        // nothing to encrypt and nowhere to fetch keys from. Left unchecked
+        // this produced a main resolver that simply never answered.
+        for (let value in list_option(settings, "dns_server")) {
+            let host = core_url.host(as_string(value));
+            if (host == "")
+                host = trim(as_string(value));
+            if (host != "" && core_ip.valid_ip(host))
+                fail_validation("ECH needs a DNS server given by name, but '" + host +
+                    "' is an address. Use the resolver's hostname, or turn ECH off. Aborted.");
+        }
+    }
 
     let dns_strategy = option(settings, "dns_strategy", "prefer_ipv4");
     if (!contains([ "prefer_ipv4", "ipv4_only", "prefer_ipv6", "ipv6_only" ], dns_strategy))

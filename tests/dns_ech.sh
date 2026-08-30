@@ -95,6 +95,21 @@ awk '
 grep -Fq 'ECH needs an encrypted DNS protocol' "$VALIDATOR" ||
   fail "ECH over plain UDP must be rejected with an explanation"
 
+# --- A resolver given by address cannot do ECH ------------------------------
+
+# ECH keys live in the HTTPS record of the resolver's name. An address literal
+# has no name to ask about, so the setting silently produced a main resolver
+# that never answered.
+grep -Fq 'ECH needs a DNS server given by name' "$VALIDATOR" ||
+  fail "ECH with a resolver given by address must be refused with an explanation"
+awk '
+  /bool_option\(settings, "dns_ech_enabled", false\)/ { inside = 1 }
+  inside && /core_ip.valid_ip\(host\)/ { found = 1 }
+  inside && /^    }/ { exit }
+  END { exit found ? 0 : 1 }
+' "$VALIDATOR" ||
+  fail "the address check must sit inside the ECH branch"
+
 # --- The option exists in the config template and the interface -------------
 
 grep -Fq "option dns_ech_enabled '0'" "$CONFIG_TEMPLATE" ||
