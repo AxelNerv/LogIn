@@ -1374,7 +1374,7 @@ function migrate_download_via_dpi_section(ctx) {
             continue;
 
         let action = section_action_by_name(ctx, target);
-        if (action == "zapret" || action == "zapret2")
+        if (action == "zapret" || action == "zapret2" || action == "byedpi")
             delete_option(ctx, settings, key);
     }
 }
@@ -1384,7 +1384,8 @@ const MIGRATIONS = [
     { id: "enable_component_checks", run: migrate_enable_component_checks },
     { id: "http_connection_urls", run: migrate_http_connection_urls },
     { id: "legacy_list_options", run: migrate_legacy_list_options },
-    { id: "download_via_dpi_section", run: migrate_download_via_dpi_section }
+    { id: "download_via_dpi_section", run: migrate_download_via_dpi_section },
+    { id: "download_via_byedpi_section", run: migrate_download_via_dpi_section }
 ];
 
 function apply_migrations(ctx) {

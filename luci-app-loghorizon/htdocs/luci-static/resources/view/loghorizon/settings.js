@@ -22,19 +22,17 @@ function validateLatencyTestUrl(value) {
   return validation.valid ? true : validation.message;
 }
 
-// Zapret mangles packets on the direct path and offers no outbound, so a
-// download cannot travel "through" it. Choosing one sent sing-box to fetch
-// its rule sets over a path that is not up at startup, and the service
-// refused to start at all. ByeDPI provides a real local proxy and stays.
-function isDownloadSectionAction(action, capabilities) {
+// Downloads belong on a tunnel, never on a DPI bypass section. Choosing one
+// sent sing-box to fetch its rule sets over a path that is not up at startup,
+// and the service then refused to start at all - with no working interface
+// left to undo the setting from.
+function isDownloadSectionAction(action) {
   switch (action) {
     case "connection":
     case "proxy":
     case "outbound":
     case "vpn":
       return true;
-    case "byedpi":
-      return !capabilities?.loaded || Boolean(capabilities.byedpiInstalled);
     default:
       return false;
   }
@@ -51,7 +49,7 @@ function refreshDownloadSectionChoices(option, capabilities) {
     if (
       sec[".type"] === "section" &&
       sec.enabled !== "0" &&
-      isDownloadSectionAction(sec.action, capabilities)
+      isDownloadSectionAction(sec.action)
     ) {
       option.value(secName, sec.label || secName);
     }
