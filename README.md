@@ -16,6 +16,16 @@ sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/install.sh)
 
 Установщик берёт пакеты из релизов `AxelNerv/LogIn`, сам определяет формат (ipk для OpenWrt 24.10, apk для 25.12 и новее) и доставляет зависимости. Пакеты собираются с `PKGARCH:=all`, поэтому подходят любому роутеру.
 
+## Удаление
+
+```sh
+sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/uninstall.sh)
+```
+
+Останавливает службу, возвращает dnsmasq, снимает правила firewall и удаляет пакеты — включая sing-box и движки DPI, которые logIn ставил сам. После этого роутер готов принять другой пакет маршрутизации: проверено установкой podkop сразу следом.
+
+Флаг `--keep-config` сохраняет `/etc/config/loghorizon`, `--keep-components` оставляет sing-box и движки DPI.
+
 ## Текущий этап
 
 - Брендинг `logIn` в LuCI.

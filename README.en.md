@@ -16,6 +16,16 @@ sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/install.sh)
 
 The installer pulls packages from `AxelNerv/LogIn` releases, detects the package format (ipk for OpenWrt 24.10, apk for 25.12 and newer) and installs dependencies. Packages are built with `PKGARCH:=all`, so one build fits any router.
 
+## Removal
+
+```sh
+sh <(wget -O - https://raw.githubusercontent.com/AxelNerv/LogIn/main/uninstall.sh)
+```
+
+Stops the service, hands dnsmasq back, drops the firewall rules and removes the packages, including the sing-box build and DPI engines logIn installed on demand. The router is then ready for another routing package: verified by installing podkop straight afterwards.
+
+`--keep-config` keeps `/etc/config/loghorizon`; `--keep-components` leaves sing-box and the DPI engines in place.
+
 ## Current milestone
 
 - `logIn` branding in LuCI.
