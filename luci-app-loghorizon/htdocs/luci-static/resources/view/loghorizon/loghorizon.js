@@ -528,6 +528,7 @@ const EntryPoint = {
           ),
         ),
         "error",
+        "lgh-capability-error-notification",
       );
       return null;
     });

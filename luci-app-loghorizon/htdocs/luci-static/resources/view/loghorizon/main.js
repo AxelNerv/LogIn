@@ -14121,9 +14121,17 @@ ${PartialStyles}
  * Lift that cap only on the page that hosts logIn, rather than dragging the
  * panel out of the column with negative margins: that depended on the column
  * being centred in the viewport and clipped the header when it was not. */
+/* The cap keeps lines from running the full width of a large monitor, but a
+   theme that gives the column fixed side margins instead of automatic ones
+   then leaves the whole page pinned to the left with the slack piled up on
+   the right. Argon does exactly that, through a selector carrying an id, so
+   the centring has to be at least as specific to survive. */
+#maincontent > .container:has(.lh-shell),
 .container:has(.lh-shell),
 #maincontent:has(.lh-shell) {
     max-width: min(1720px, calc(100vw - 32px));
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .lh-shell {
@@ -14179,6 +14187,21 @@ ${PartialStyles}
     margin: 0 0 20px;
     padding: 16px 0 14px;
     border-bottom: 1px solid var(--lh-border);
+}
+
+/* Argon paints a bar over every <header> with a pseudo-element, absolutely
+   positioned and given its background with !important:
+
+     header::after { content: ""; position: absolute; height: 2rem;
+                     width: 100%; background-color: var(--primary) !important }
+
+   On our brand header that lands squarely on top of the wordmark, which is
+   why the name was a barely visible smudge under that theme while the stock
+   one showed it fine. The background cannot be overridden, so the pseudo
+   element is removed outright. */
+.lh-shell .lh-brand-header::before,
+.lh-shell .lh-brand-header::after {
+    content: none;
 }
 
 .lh-brand-header__identity {
@@ -14486,12 +14509,66 @@ ${PartialStyles}
     background: var(--lh-primary);
 }
 
+/* A theme may claim the danger buttons with !important, as Argon does:
+
+     .cbi-button-remove { background-color: darkorange !important }
+
+   Our colour is the more specific selector and won, its background did not,
+   and the result was red lettering on orange that could not be read at all.
+   An override that only half lands is worse than none, so all three
+   declarations carry the same weight. */
 .lh-shell .cbi-button-negative,
 .lh-shell .cbi-button-remove,
 .lh-shell .cbi-button-reset {
-    border-color: var(--lh-danger);
-    color: var(--lh-danger);
-    background: transparent;
+    border: 1px solid var(--lh-danger) !important;
+    color: var(--lh-danger) !important;
+    background: transparent !important;
+}
+
+/* Notifications render outside the shell, so these rules are unscoped and
+   matched by the classes our own calls pass to ui.addNotification.
+
+   Argon's dark theme gives an error notification a brown background but never
+   sets a text colour for the body, so the message came out dark on dark and
+   could not be read at all - on the one kind of message that most needs
+   reading. Rather than guess what each theme defines, both halves are set
+   here. The background carries !important because the theme sets its own the
+   same way. */
+.alert-message.lgh-log-error-notification,
+.alert-message.lgh-component-update-notification,
+.alert-message.lgh-capability-error-notification {
+    background: #241d16 !important;
+    color: #f0e6da;
+    border-left: 3px solid #ff6b6b;
+}
+
+.alert-message.lgh-component-update-notification {
+    border-left-color: #f5c451;
+}
+
+.alert-message.lgh-log-error-notification *,
+.alert-message.lgh-component-update-notification *,
+.alert-message.lgh-capability-error-notification * {
+    color: inherit;
+}
+
+.alert-message.lgh-log-error-notification h4,
+.alert-message.lgh-capability-error-notification h4 {
+    background: none;
+    color: #ff9c8a;
+}
+
+.alert-message.lgh-component-update-notification h4 {
+    background: none;
+    color: #f5c451;
+}
+
+.alert-message.lgh-log-error-notification .btn,
+.alert-message.lgh-component-update-notification .btn,
+.alert-message.lgh-capability-error-notification .btn {
+    color: #f0e6da;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 /* A control whose combination cannot work stays visible but inert, so the
