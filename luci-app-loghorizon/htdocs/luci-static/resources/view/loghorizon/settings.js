@@ -289,8 +289,13 @@ function createSettingsContent(section, capabilities) {
   o.depends({ dns_type: "doq" });
   o.depends({ dns_type: "doh3" });
   o.default = "0";
-  o.validate = function (section_id, value) {
-    if (`${value || ""}` !== "1") {
+  o.validate = function (section_id) {
+    // LuCI hands the validator the input's own value attribute, and a
+    // checkbox carries value="1" whether or not it is ticked. Reading the
+    // argument made this fire on every encrypted DNS type with the box
+    // clear, blocking the form with nothing the user could act on.
+    // formvalue asks the widget whether it is actually checked.
+    if (this.formvalue(section_id) !== this.enabled) {
       return true;
     }
 

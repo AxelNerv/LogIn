@@ -86,4 +86,18 @@ grep -Fq 'ECH needs a DNS server given by name' "$SETTINGS_JS" ||
 grep -Fq "export { validateIP, isIPv4, isIPv6 }" "$MAIN_TS" ||
   fail "the address checks must be reachable from the settings form"
 
+# A checkbox input carries value="1" whether or not it is ticked, and that
+# attribute is what LuCI passes to the validator. Reading the argument made
+# the check fire with the box clear, blocking the form on every encrypted DNS
+# type with nothing the user could do about it.
+grep -Fq 'if (this.formvalue(section_id) !== this.enabled) {' "$SETTINGS_JS" ||
+  fail "the ECH check must read the checkbox state, not the value it is handed"
+awk '
+  /o.validate = function \(section_id\) \{/ { inside = 1 }
+  inside && /\$\{value/ { bad = 1 }
+  inside && /^  \};/ { exit }
+  END { exit bad ? 1 : 0 }
+' "$SETTINGS_JS" ||
+  fail "the ECH check must not read the value argument"
+
 printf 'conflicting option checks passed\n'
