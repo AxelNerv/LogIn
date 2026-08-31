@@ -106,6 +106,14 @@ function patch_source_values(path, key, values) {
     let ruleset = object_or_empty(read_json_file(path));
     values = array_or_empty(values);
 
+    // Patching a file that is not there yet starts from an empty object, and
+    // writing that back produced a rule set with rules but no version. sing-box
+    // refuses to parse one - "missing rule-set version" - and refuses to start
+    // at all, which after a reboot left a router with no service and nothing
+    // pointing at the cause.
+    if (int(ruleset.version || 0) < 1)
+        ruleset.version = 3;
+
     if (type(ruleset.rules) != "array")
         ruleset.rules = [];
 

@@ -2153,9 +2153,37 @@ function import_builtin_subnets_from_rule(section, settings) {
         return true;
 
     let ok = true;
+    let ruleset_folder = require("singbox.constants").PERSISTENT_RULESET_FOLDER;
+
     for (let service in connections.community_lists(section)) {
         if (!singbox_rulesets_module().is_community(service))
             continue;
+
+        // sing-box used to fetch the rule set itself while starting, and a
+        // failure there was fatal. These live on GitHub, which is blocked on
+        // some networks until the tunnel is up - and the tunnel needs sing-box
+        // running, so after a reboot the service could not start at all.
+        // Fetching it here means the service starts from what is already on
+        // disk and picks up the rest once there is a route to fetch through.
+        let ruleset_target = ruleset_folder + "/" + as_string(service) + ".srs";
+        let ruleset_tmp = ensure_parent_dir(ruleset_target) ? temp_path() : "";
+        if (ruleset_tmp != "") {
+            // The previous copy stays on failure: an outdated list still
+            // routes traffic, an absent one silently stops routing any.
+            if (download_to_file(singbox_rulesets_module().community_url(service), ruleset_tmp,
+                    service_proxy_address(settings, "lists")) && file_nonempty(ruleset_tmp)) {
+                if (!command_success_from_args([ "mv", ruleset_tmp, ruleset_target ])) {
+                    ok = false;
+                    remove_file(ruleset_tmp);
+                }
+            }
+            else {
+                log_message("Failed to download the " + as_string(service) +
+                    " rule set; keeping the copy already on disk", "warn");
+                ok = false;
+                remove_file(ruleset_tmp);
+            }
+        }
 
         let urls = BUILTIN_SUBNET_URLS[as_string(service)];
         if (type(urls) != "array")

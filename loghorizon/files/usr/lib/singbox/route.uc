@@ -15,6 +15,17 @@ function bool_value(value) {
     return value === true || value == "1" || value == "true" || value == "yes" || value == "on";
 }
 
+// sing-box accepts prefer_ipv4, prefer_ipv6, ipv4_only and ipv6_only here.
+// Anything else is left out so sing-box applies its own default rather than
+// refusing the configuration.
+function dns_strategy_value(settings) {
+    let strategy = trim(as_string(option(settings, "dns_strategy", "prefer_ipv4")));
+    if (strategy == "prefer_ipv4" || strategy == "prefer_ipv6" ||
+        strategy == "ipv4_only" || strategy == "ipv6_only")
+        return strategy;
+    return "prefer_ipv4";
+}
+
 function config(settings, runtime) {
     let output_network_interface = option(settings, "output_network_interface", "");
     let mwan3_active = type(runtime) == "object" && bool_value(runtime.mwan3_active);
@@ -33,9 +44,18 @@ function config(settings, runtime) {
         rule_set: [],
         final: runtime_constants.DIRECT_OUTBOUND_TAG,
         auto_detect_interface: output_network_interface == "" && !mwan3_active,
-        default_domain_resolver: type(runtime) == "object" && as_string(runtime.default_domain_resolver) != ""
-            ? as_string(runtime.default_domain_resolver)
-            : runtime_constants.DNS_SERVER_TAG,
+        // Carrying the strategy here is what decides which addresses an
+        // outbound actually dials. Without it sing-box was handed both
+        // families and tried IPv6 only, which on a line without working IPv6
+        // means "network is unreachable" for a site that answers fine over
+        // IPv4 - measured on www.youtube.com, 0 of 8 through the tunnel and
+        // 4 of 4 when dialled by its own IPv4 address.
+        default_domain_resolver: {
+            server: type(runtime) == "object" && as_string(runtime.default_domain_resolver) != ""
+                ? as_string(runtime.default_domain_resolver)
+                : runtime_constants.DNS_SERVER_TAG,
+            strategy: dns_strategy_value(settings)
+        },
         default_mark: runtime_constants.OUTBOUND_MARK
     };
 

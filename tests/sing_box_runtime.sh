@@ -1393,7 +1393,13 @@ assert(inbound(download, "service-mixed-in") != null, "service mixed inbound");
 assert(route_rule(download, r => r.inbound == "service-mixed-in" && r.outbound == "proxy-out") != null, "service mixed route");
 assert(inbound(download, "service-components-in") != null, "components service mixed inbound");
 assert(route_rule(download, r => r.inbound == "service-components-in" && r.outbound == "components_proxy-out") != null, "components service mixed route");
-assert(ruleset(download, "proxy-discord-community-ruleset").download_detour == "proxy-out", "download_detour on community ruleset");
+// Community rule sets are no longer fetched by sing-box while it starts.
+// That fetch was fatal on failure, and the lists live on GitHub, which is
+// blocked on some networks until the tunnel is up - and the tunnel needs
+// sing-box running. They are read from disk instead, and refreshed by the
+// list update once there is a route to fetch through.
+assert(ruleset(download, "proxy-discord-community-ruleset").type == "local", "community rule sets are read from disk");
+assert(ruleset(download, "proxy-discord-community-ruleset").download_detour == null, "a local rule set has nothing to detour");
 assert(ruleset_url(download, "https://example.com/rules.srs").download_detour == "proxy-out", "download_detour on custom remote ruleset");
 
 let fully = cfg("fully-routed");

@@ -41,6 +41,13 @@ const PACKAGE_FEED_DOMAIN_SUFFIXES = [ "openwrt.org" ];
 const FAKEIP_TEST_DOMAIN = "fakeip.podkop.fyi";
 const TMP_SING_BOX_FOLDER = "/tmp/sing-box";
 const TMP_RULESET_FOLDER = TMP_SING_BOX_FOLDER + "/rulesets";
+
+// Community rule sets are fetched from GitHub, which is blocked on some
+// networks until the tunnel is up - and the tunnel cannot come up until
+// sing-box starts. Keeping a copy outside /tmp breaks that circle: the
+// service starts from what it already has, and the list update refreshes
+// it once there is a route to fetch through.
+const PERSISTENT_RULESET_FOLDER = "/etc/loghorizon/rulesets";
 const ZAPRET_ROUTE_MARK_BASE = 0x01000000;
 const ZAPRET2_ROUTE_MARK_BASE = 0x02000000;
 const BYEDPI_LISTEN_ADDRESS = "127.0.0.1";
@@ -126,6 +133,7 @@ return {
     PACKAGE_FEED_DOMAIN_SUFFIXES,
     TMP_SING_BOX_FOLDER,
     TMP_RULESET_FOLDER,
+    PERSISTENT_RULESET_FOLDER,
     ZAPRET_ROUTE_MARK_BASE,
     ZAPRET2_ROUTE_MARK_BASE,
     BYEDPI_LISTEN_ADDRESS,

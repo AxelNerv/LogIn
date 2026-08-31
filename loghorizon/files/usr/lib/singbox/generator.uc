@@ -2388,23 +2388,46 @@ function add_byedpi_outbound(config, section, sections) {
     });
 }
 
+function community_ruleset_cache_path(community) {
+    return runtime_constants.PERSISTENT_RULESET_FOLDER + "/" + as_string(community) + ".srs";
+}
+
+// A remote rule set is fetched by sing-box while it starts, and a failure
+// there is fatal: the whole service refuses to run. The lists live on GitHub,
+// which is blocked on some networks until the tunnel is up - and the tunnel
+// cannot come up until sing-box starts. After a reboot, with /tmp cleared and
+// nothing cached, that circle left a router with no service at all and only
+// "missing rule-set version" to go on.
+//
+// So the copy on disk is what starts the service. Where there is none yet, an
+// empty rule set stands in: it matches nothing, which is the same as the list
+// being unavailable, and the service comes up. The list update fills it in
+// once there is a route to fetch through, and reloads.
 function ensure_community_ruleset(config, section_name, community) {
     if (!runtime_rulesets.is_community(community))
         runtime_generate_unsupported("unknown community list " + community);
 
     let tag_name = ruleset_tag(section_name, community, "community");
     if (!ruleset_registered(config, tag_name)) {
-        let rule_set = {
-            type: "remote",
-            tag: tag_name,
-            format: "binary",
-            url: runtime_rulesets.community_url(community),
-            update_interval: remote_ruleset_update_interval()
-        };
-        let detour = download_detour_tag(runtime_settings(), "lists");
-        if (detour != "")
-            rule_set.download_detour = detour;
-        push(config.route.rule_set, rule_set);
+        let cached = community_ruleset_cache_path(community);
+        if (fs.readfile(cached) != null) {
+            push(config.route.rule_set, {
+                type: "local",
+                tag: tag_name,
+                format: "binary",
+                path: cached
+            });
+        }
+        else {
+            let placeholder = runtime_ruleset_folder + "/" + tag_name + ".json";
+            atomic_write_json_file(placeholder, { version: 3, rules: [] });
+            push(config.route.rule_set, {
+                type: "local",
+                tag: tag_name,
+                format: "source",
+                path: placeholder
+            });
+        }
     }
     return {
         tag: tag_name,

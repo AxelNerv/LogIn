@@ -102,7 +102,11 @@ assert(length(single.dns.servers) == 3, "singleton keeps the legacy three-server
 assert(length(single.inbounds) == 3, "singleton adds no health inbounds");
 assert(count_prefix(single.dns.servers, "dns-health-") == 0, "singleton adds no health servers");
 assert(find_tag(single.dns.servers, "dns-server").server == "77.88.8.8", "singleton main DNS preserved");
-assert(single.route.default_domain_resolver == "dns-server", "singleton keeps main default resolver");
+// The resolver carries the address strategy alongside the server: without
+// it an outbound dials whatever family it is handed, and on a line with
+// no working IPv6 that means unreachable for sites that answer over IPv4.
+assert(single.route.default_domain_resolver.server == "dns-server", "singleton keeps main default resolver");
+assert(single.route.default_domain_resolver.strategy == "prefer_ipv4", "the resolver carries an address strategy");
 
 let multi = cfg(ARGV[1]);
 assert(length(multi.dns.servers) == 7, "two main and two bootstrap candidates are generated");
@@ -115,7 +119,7 @@ assert(main.server == "cloudflare-dns.com", "runtime main index selects the seco
 assert(main.detour == "proxy-out", "main DNS uses selected section detour");
 assert(main.domain_resolver == "bootstrap-dns-server", "main hostname uses direct bootstrap resolver");
 assert(bootstrap.server == "8.8.8.8" && bootstrap.detour == null, "bootstrap index selects direct second server");
-assert(multi.route.default_domain_resolver == "bootstrap-dns-server", "detour mode breaks endpoint DNS cycles with bootstrap");
+assert(multi.route.default_domain_resolver.server == "bootstrap-dns-server", "detour mode breaks endpoint DNS cycles with bootstrap");
 let health_rules = 0;
 for (let rule in multi.dns.rules || []) {
     if (index(rule.inbound || "", "dns-health-") == 0) {
