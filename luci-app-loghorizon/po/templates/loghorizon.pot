@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-31 06:35+0300\n"
-"PO-Revision-Date: 2026-08-31 06:35+0300\n"
+"POT-Creation-Date: 2026-08-31 07:21+0300\n"
+"PO-Revision-Date: 2026-08-31 07:21+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -252,7 +252,7 @@ msgstr ""
 msgid "Automatically select the fastest node in the current level"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:43
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:45
 msgid "Available actions"
 msgstr ""
 
@@ -405,7 +405,7 @@ msgstr ""
 msgid "Check URL"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:1026
+#: src/loghorizon/tabs/diagnostic/initController.ts:1042
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15
@@ -422,14 +422,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 msgid "Checks failed"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -439,6 +439,10 @@ msgstr ""
 
 #: src/validators/validateSubnet.ts:35
 msgid "CIDR must be between 0 and 32 for IPv4 or 0 and 128 for IPv6"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:80
+msgid "Clear the FakeIP cache"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:572
@@ -464,10 +468,10 @@ msgstr ""
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3650
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714
 #: src/partials/modal/renderModal.ts:263
-#: src/loghorizon/tabs/monitoring/initController.ts:832
-#: src/loghorizon/tabs/monitoring/initController.ts:882
 #: src/loghorizon/tabs/dashboard/initController.ts:1017
 #: src/loghorizon/tabs/dashboard/initController.ts:1267
+#: src/loghorizon/tabs/monitoring/initController.ts:832
+#: src/loghorizon/tabs/monitoring/initController.ts:882
 msgid "Close"
 msgstr ""
 
@@ -637,7 +641,7 @@ msgstr ""
 msgid "Direct connection"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:79
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:90
 msgid "Disable autostart"
 msgstr ""
 
@@ -896,7 +900,7 @@ msgstr ""
 msgid "Enable automatic updates for remote lists and rule sets"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:89
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:100
 msgid "Enable autostart"
 msgstr ""
 
@@ -1051,12 +1055,12 @@ msgstr ""
 msgid "Failed to copy!"
 msgstr ""
 
-#: src/loghorizon/methods/shell/index.ts:170
-#: src/loghorizon/methods/shell/index.ts:177
 #: src/loghorizon/tabs/updates/initController.ts:511
 #: src/loghorizon/tabs/updates/initController.ts:512
 #: src/loghorizon/tabs/updates/initController.ts:572
 #: src/loghorizon/tabs/updates/initController.ts:722
+#: src/loghorizon/methods/shell/index.ts:170
+#: src/loghorizon/methods/shell/index.ts:177
 msgid "Failed to execute"
 msgstr ""
 
@@ -1140,11 +1144,11 @@ msgstr ""
 msgid "Generated inbound"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:98
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:109
 msgid "Get global check"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:685
+#: src/loghorizon/tabs/diagnostic/initController.ts:695
 msgid "Global check"
 msgstr ""
 
@@ -1587,8 +1591,8 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 msgid "Issues detected"
 msgstr ""
 
@@ -1987,7 +1991,7 @@ msgstr ""
 msgid "Not responding"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:125
+#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:128
 #: src/loghorizon/tabs/diagnostic/initController.ts:116
 #: src/loghorizon/tabs/diagnostic/initController.ts:348
 #: src/loghorizon/tabs/diagnostic/initController.ts:405
@@ -2297,7 +2301,7 @@ msgstr ""
 msgid "Resource selection by IP or CIDR inside nfqws2 is not supported here; sing-box selects resources before NFQUEUE."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:49
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:51
 msgid "Restart logIn"
 msgstr ""
 
@@ -2559,9 +2563,9 @@ msgstr ""
 msgid "Servers on dashboard"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/initController.ts:597
 #: src/loghorizon/methods/shell/index.ts:371
 #: src/loghorizon/methods/shell/index.ts:392
-#: src/loghorizon/tabs/diagnostic/initController.ts:597
 msgid "Service action failed"
 msgstr ""
 
@@ -2615,8 +2619,8 @@ msgstr ""
 msgid "Show servers whose names match the expression."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:755
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:116
+#: src/loghorizon/tabs/diagnostic/initController.ts:765
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127
 msgid "Show sing-box config"
 msgstr ""
 
@@ -2734,7 +2738,7 @@ msgstr ""
 msgid "Standalone Zapret2 service is inactive"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:69
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:71
 msgid "Start logIn"
 msgstr ""
 
@@ -2742,7 +2746,7 @@ msgstr ""
 msgid "Stop checking when URLTest group is not used. Use sing-box duration format like 1d, 12h or 30m."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:59
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:61
 msgid "Stop logIn"
 msgstr ""
 
@@ -3279,8 +3283,8 @@ msgstr ""
 msgid "Via country.is"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:720
-#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:107
+#: src/loghorizon/tabs/diagnostic/initController.ts:730
+#: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118
 msgid "View logs"
 msgstr ""
 

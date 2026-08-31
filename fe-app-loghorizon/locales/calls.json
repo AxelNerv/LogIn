@@ -404,7 +404,7 @@
     "call": "Available actions",
     "key": "Available actions",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:43"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:45"
     ]
   },
   {
@@ -659,7 +659,7 @@
     "call": "Checking, please wait",
     "key": "Checking, please wait",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:1026",
+      "src/loghorizon/tabs/diagnostic/initController.ts:1042",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
@@ -682,17 +682,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
     ]
   },
   {
@@ -707,6 +707,13 @@
     "key": "CIDR must be between 0 and 32 for IPv4 or 0 and 128 for IPv6",
     "places": [
       "src/validators/validateSubnet.ts:35"
+    ]
+  },
+  {
+    "call": "Clear the FakeIP cache",
+    "key": "Clear the FakeIP cache",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:80"
     ]
   },
   {
@@ -751,10 +758,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3650",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882",
       "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267"
+      "src/loghorizon/tabs/dashboard/initController.ts:1267",
+      "src/loghorizon/tabs/monitoring/initController.ts:832",
+      "src/loghorizon/tabs/monitoring/initController.ts:882"
     ]
   },
   {
@@ -1044,7 +1051,7 @@
     "call": "Disable autostart",
     "key": "Disable autostart",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:79"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:90"
     ]
   },
   {
@@ -1486,7 +1493,7 @@
     "call": "Enable autostart",
     "key": "Enable autostart",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:89"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:100"
     ]
   },
   {
@@ -1746,12 +1753,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722"
+      "src/loghorizon/tabs/updates/initController.ts:722",
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177"
     ]
   },
   {
@@ -1892,14 +1899,14 @@
     "call": "Get global check",
     "key": "Get global check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:98"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:109"
     ]
   },
   {
     "call": "Global check",
     "key": "Global check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:685"
+      "src/loghorizon/tabs/diagnostic/initController.ts:695"
     ]
   },
   {
@@ -2657,8 +2664,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
     ]
   },
   {
@@ -3333,7 +3340,7 @@
     "call": "Not running",
     "key": "Not running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:125",
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:128",
       "src/loghorizon/tabs/diagnostic/initController.ts:116",
       "src/loghorizon/tabs/diagnostic/initController.ts:348",
       "src/loghorizon/tabs/diagnostic/initController.ts:405",
@@ -3859,7 +3866,7 @@
     "call": "Restart logIn",
     "key": "Restart logIn",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:49"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:51"
     ]
   },
   {
@@ -4310,9 +4317,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/initController.ts:597",
       "src/loghorizon/methods/shell/index.ts:371",
-      "src/loghorizon/methods/shell/index.ts:392",
-      "src/loghorizon/tabs/diagnostic/initController.ts:597"
+      "src/loghorizon/methods/shell/index.ts:392"
     ]
   },
   {
@@ -4405,8 +4412,8 @@
     "call": "Show sing-box config",
     "key": "Show sing-box config",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:755",
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:116"
+      "src/loghorizon/tabs/diagnostic/initController.ts:765",
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127"
     ]
   },
   {
@@ -4611,7 +4618,7 @@
     "call": "Start logIn",
     "key": "Start logIn",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:69"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:71"
     ]
   },
   {
@@ -4625,7 +4632,7 @@
     "call": "Stop logIn",
     "key": "Stop logIn",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:59"
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:61"
     ]
   },
   {
@@ -5510,8 +5517,8 @@
     "call": "View logs",
     "key": "View logs",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:720",
-      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:107"
+      "src/loghorizon/tabs/diagnostic/initController.ts:730",
+      "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118"
     ]
   },
   {

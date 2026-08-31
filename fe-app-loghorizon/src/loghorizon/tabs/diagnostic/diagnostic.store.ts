@@ -105,6 +105,9 @@ export const initialDiagnosticStore: Pick<
     stop: {
       loading: false,
     },
+    reset_fakeip: {
+      loading: false,
+    },
     enable: {
       loading: false,
     },

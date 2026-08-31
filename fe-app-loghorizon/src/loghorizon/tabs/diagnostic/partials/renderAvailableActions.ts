@@ -24,6 +24,7 @@ interface IRenderAvailableActionsProps {
   stop: ActionProps;
   enable: ActionProps;
   disable: ActionProps;
+  resetFakeip: ActionProps;
   globalCheck: ActionProps;
   viewLogs: ActionProps;
   showSingBoxConfig: ActionProps;
@@ -35,6 +36,7 @@ export function renderAvailableActions({
   stop,
   enable,
   disable,
+  resetFakeip,
   globalCheck,
   viewLogs,
   showSingBoxConfig,
@@ -69,6 +71,15 @@ export function renderAvailableActions({
         text: _('Start logIn'),
         loading: start.loading,
         disabled: start.disabled,
+      }),
+    ]),
+    ...insertIf(resetFakeip.visible, [
+      renderButton({
+        onClick: resetFakeip.onClick,
+        icon: renderRotateCcwIcon24,
+        text: _('Clear the FakeIP cache'),
+        loading: resetFakeip.loading,
+        disabled: resetFakeip.disabled,
       }),
     ]),
     ...insertIf(disable.visible, [

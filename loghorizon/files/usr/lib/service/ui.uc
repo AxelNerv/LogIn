@@ -342,7 +342,8 @@ function action_start_response(success, job_id, message) {
 
 function service_action_valid(action) {
     action = as_string(action);
-    return action == "start" || action == "stop" || action == "restart" || action == "reload";
+    return action == "start" || action == "stop" || action == "restart" ||
+        action == "reload" || action == "reset_fakeip";
 }
 
 function latency_type_valid(latency_type) {
@@ -353,7 +354,8 @@ function latency_type_valid(latency_type) {
 function service_action_expected_running(action) {
     action = as_string(action);
 
-    if (action == "start" || action == "restart" || action == "reload")
+    if (action == "start" || action == "restart" || action == "reload" ||
+        action == "reset_fakeip")
         print("1\n");
     else if (action == "stop")
         print("0\n");
@@ -1115,7 +1117,8 @@ function current_ui_state_json() {
 
 function service_action_expected_running_value(action) {
     action = as_string(action);
-    if (action == "start" || action == "restart" || action == "reload")
+    if (action == "start" || action == "restart" || action == "reload" ||
+        action == "reset_fakeip")
         return 1;
     if (action == "stop")
         return 0;

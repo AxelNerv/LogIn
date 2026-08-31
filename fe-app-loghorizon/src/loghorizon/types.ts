@@ -502,7 +502,12 @@ export namespace logIn {
     server_inbounds_enabled_count: number;
   }
 
-  export type ServiceAction = 'start' | 'stop' | 'restart' | 'reload';
+  export type ServiceAction =
+    | 'start'
+    | 'stop'
+    | 'restart'
+    | 'reload'
+    | 'reset_fakeip';
 
   export interface UiActionStartResult {
     success: boolean;

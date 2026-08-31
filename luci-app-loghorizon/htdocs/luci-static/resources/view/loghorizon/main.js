@@ -4295,6 +4295,9 @@ var initialDiagnosticStore = {
     stop: {
       loading: false
     },
+    reset_fakeip: {
+      loading: false
+    },
     enable: {
       loading: false
     },
@@ -8837,6 +8840,7 @@ function renderAvailableActions({
   stop,
   enable,
   disable,
+  resetFakeip,
   globalCheck,
   viewLogs,
   showSingBoxConfig
@@ -8871,6 +8875,15 @@ function renderAvailableActions({
         text: _("Start logIn"),
         loading: start.loading,
         disabled: start.disabled
+      })
+    ]),
+    ...insertIf(resetFakeip.visible, [
+      renderButton({
+        onClick: resetFakeip.onClick,
+        icon: renderRotateCcwIcon24,
+        text: _("Clear the FakeIP cache"),
+        loading: resetFakeip.loading,
+        disabled: resetFakeip.disabled
       })
     ]),
     ...insertIf(disable.visible, [
@@ -10067,6 +10080,13 @@ async function handleRestart() {
     optimisticRunning: false
   });
 }
+async function handleResetFakeip() {
+  await handleServiceRuntimeAction({
+    action: "reset_fakeip",
+    expectedRunning: true,
+    optimisticRunning: false
+  });
+}
 async function handleStart() {
   await handleServiceRuntimeAction({
     action: "start",
@@ -10278,6 +10298,12 @@ function renderDiagnosticAvailableActionsWidget() {
       loading: diagnosticsActions.disable.loading,
       visible: loghorizonEnabled,
       onClick: handleDisable,
+      disabled: serviceControlsDisabled
+    },
+    resetFakeip: {
+      loading: diagnosticsActions.reset_fakeip.loading,
+      visible: loghorizonRunning,
+      onClick: handleResetFakeip,
       disabled: serviceControlsDisabled
     },
     globalCheck: {

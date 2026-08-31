@@ -180,6 +180,7 @@ export interface StoreType {
     restart: { loading: boolean };
     start: { loading: boolean };
     stop: { loading: boolean };
+    reset_fakeip: { loading: boolean };
     enable: { loading: boolean };
     disable: { loading: boolean };
     globalCheck: { loading: boolean };

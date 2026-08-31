@@ -84,7 +84,7 @@ let servicesInfoRefreshPromise: Promise<void> | null = null;
 const followedServiceActionJobs = new Set<string>();
 const handledServiceActionJobs = new Set<string>();
 
-type ServiceRuntimeAction = 'restart' | 'start' | 'stop';
+type ServiceRuntimeAction = 'restart' | 'start' | 'stop' | 'reset_fakeip';
 type DiagnosticRunner = {
   code: DIAGNOSTICS_CHECKS;
   run: () => Promise<void>;
@@ -625,6 +625,16 @@ async function handleRestart() {
   });
 }
 
+// Clearing the cache stops and starts the service, so it travels the same
+// path as a restart and reports progress the same way.
+async function handleResetFakeip() {
+  await handleServiceRuntimeAction({
+    action: 'reset_fakeip',
+    expectedRunning: true,
+    optimisticRunning: false,
+  });
+}
+
 async function handleStart() {
   await handleServiceRuntimeAction({
     action: 'start',
@@ -876,6 +886,12 @@ function renderDiagnosticAvailableActionsWidget() {
       loading: diagnosticsActions.disable.loading,
       visible: loghorizonEnabled,
       onClick: handleDisable,
+      disabled: serviceControlsDisabled,
+    },
+    resetFakeip: {
+      loading: diagnosticsActions.reset_fakeip.loading,
+      visible: loghorizonRunning,
+      onClick: handleResetFakeip,
       disabled: serviceControlsDisabled,
     },
     globalCheck: {

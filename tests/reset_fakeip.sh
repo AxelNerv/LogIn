@@ -46,3 +46,37 @@ grep -Fq 'reset_fakeip            Clear the FakeIP cache' "$CLI" ||
   fail "the command must be listed in the help output"
 
 printf 'reset fakeip checks passed\n'
+
+# --- The interface can trigger it too ---------------------------------------
+
+UI="$ROOT_DIR/loghorizon/files/usr/lib/service/ui.uc"
+INITD="$ROOT_DIR/loghorizon/files/etc/init.d/loghorizon"
+ACTIONS_TS="$ROOT_DIR/fe-app-loghorizon/src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts"
+DIAG_TS="$ROOT_DIR/fe-app-loghorizon/src/loghorizon/tabs/diagnostic/initController.ts"
+
+# The UI runs service actions through the init script, not the CLI, so the
+# action has to exist there or the button fails with nothing to explain why.
+grep -Fq 'EXTRA_COMMANDS="retry_start_on_wan_up handle_wan_up reset_fakeip"' "$INITD" ||
+  fail "the action must be declared, or rc.common will not dispatch it"
+grep -Fq '/usr/bin/loghorizon reset_fakeip' "$INITD" ||
+  fail "the init script must run the command"
+
+grep -Fq 'action == "reset_fakeip"' "$UI" ||
+  fail "the backend must accept the action from the interface"
+
+# The service is up again when it finishes, so the UI must expect it running or
+# it reports a success as a failure.
+awk '
+  /function service_action_expected_running\(/ { inside = 1 }
+  inside && /reset_fakeip/ { found = 1 }
+  inside && /^}/ { exit }
+  END { exit found ? 0 : 1 }
+' "$UI" ||
+  fail "the action must be expected to leave the service running"
+
+grep -Fq "text: _('Clear the FakeIP cache')," "$ACTIONS_TS" ||
+  fail "the diagnostics panel must offer the button"
+grep -Fq "action: 'reset_fakeip'," "$DIAG_TS" ||
+  fail "the button must trigger the service action"
+
+printf 'reset fakeip interface checks passed\n'

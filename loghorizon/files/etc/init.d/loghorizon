@@ -3,8 +3,8 @@
 
 START=99
 USE_PROCD=1
-EXTRA_COMMANDS="retry_start_on_wan_up handle_wan_up"
-EXTRA_HELP="        retry_start_on_wan_up Retry failed cold start after WAN comes up\n        handle_wan_up Reload or retry after monitored WAN comes up\n"
+EXTRA_COMMANDS="retry_start_on_wan_up handle_wan_up reset_fakeip"
+EXTRA_HELP="        retry_start_on_wan_up Retry failed cold start after WAN comes up\n        handle_wan_up Reload or retry after monitored WAN comes up\n        reset_fakeip Clear the FakeIP cache and restart\n"
 
 script=$(readlink "$initscript")
 NAME="$(basename ${script:-$initscript})"
@@ -41,6 +41,12 @@ service_started() {
 
 stop_service() {
     initd_ucode stop-service "$$"
+}
+
+# The UI runs service actions through this script, so the reset needs a name
+# here as well as on the command line.
+reset_fakeip() {
+    /usr/bin/loghorizon reset_fakeip
 }
 
 reload_service() {
