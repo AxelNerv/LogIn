@@ -7,3 +7,7 @@ fe-app-loghorizon/.env
 sandbox/
 .build/
 dist/
+
+# Рабочие заметки: планы, разборы, черновики. Не для чужих глаз.
+.notes/
+.harness/
