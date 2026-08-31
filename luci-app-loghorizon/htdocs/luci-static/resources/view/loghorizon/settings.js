@@ -568,6 +568,30 @@ function createSettingsContent(section, capabilities) {
 
   o = section.option(
     form.Flag,
+    "fakeip_reset_enabled",
+    _("Clear the FakeIP cache daily"),
+    _(
+      "sing-box remembers which fake address it handed out for each domain, and keeps that across restarts. Once the mapping goes stale, clients are sent to an address that no longer leads anywhere and pages stop loading with nothing to explain why.",
+    ),
+  );
+  o.default = "0";
+  o.rmempty = false;
+
+  o = section.option(
+    form.ListValue,
+    "fakeip_reset_hour",
+    _("Hour to clear it"),
+    _("The service restarts, so pick an hour when nobody is using the router."),
+  );
+  o.depends("fakeip_reset_enabled", "1");
+  for (let hour = 0; hour < 24; hour++) {
+    o.value(String(hour), `${String(hour).padStart(2, "0")}:00`);
+  }
+  o.default = "5";
+  o.rmempty = false;
+
+  o = section.option(
+    form.Flag,
     "component_update_check_enabled",
     _("Automatic component update checks"),
     _("Automatically check installed components for new versions"),

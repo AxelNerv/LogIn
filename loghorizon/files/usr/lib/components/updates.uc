@@ -677,7 +677,20 @@ function filter_cron_markers(markers) {
     print(filter_cron_markers_text(read_stdin(), markers));
 }
 
-function cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker) {
+// An hour of the day, 0 to 23. Anything else is a mistake worth reporting
+// rather than quietly rounding into a schedule the user did not ask for.
+function settings_fakeip_reset_hour(settings) {
+    let raw = trim(as_string(option(settings, "fakeip_reset_hour", "5")));
+    if (raw == "")
+        raw = "5";
+    if (match(raw, /^[0-9]{1,2}$/) == null)
+        return null;
+
+    let hour = int(raw);
+    return (hour >= 0 && hour <= 23) ? hour : null;
+}
+
+function cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     let status = 0;
     let rows = [];
 
@@ -739,6 +752,20 @@ function cron_refresh_plan_rows(settings, sections, bin, list_marker, subscripti
         }
     }
 
+    // sing-box keeps the FakeIP map across restarts. Once it goes stale the
+    // clients are handed addresses that no longer route and pages stop
+    // loading, so the map is worth dropping on a schedule.
+    if (bool_option(settings, "fakeip_reset_enabled", false)) {
+        let hour = settings_fakeip_reset_hour(settings);
+        if (hour == null) {
+            push(rows, "fakeip-error	" + as_string(option(settings, "fakeip_reset_hour", "")));
+            status = 1;
+        }
+        else {
+            push(rows, "fakeip	0 " + as_string(hour) + " * * * " + as_string(bin) + " reset_fakeip " + as_string(fakeip_marker));
+        }
+    }
+
     return {
         status,
         rows
@@ -752,13 +779,13 @@ function print_cron_refresh_plan(result) {
     exit(int(result.status || 0));
 }
 
-function cron_refresh_plan(settings, sections, bin, list_marker, subscription_marker, component_marker) {
-    print_cron_refresh_plan(cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker));
+function cron_refresh_plan(settings, sections, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
+    print_cron_refresh_plan(cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker, fakeip_marker));
 }
 
-function cron_refresh_apply_result(settings, sections, existing_crontab, bin, list_marker, subscription_marker, component_marker) {
-    let plan = cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker);
-    let filtered_crontab = filter_cron_markers_text(existing_crontab, [ list_marker, subscription_marker, component_marker ]);
+function cron_refresh_apply_result(settings, sections, existing_crontab, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
+    let plan = cron_refresh_plan_rows(settings, sections, bin, list_marker, subscription_marker, component_marker, fakeip_marker);
+    let filtered_crontab = filter_cron_markers_text(existing_crontab, [ list_marker, subscription_marker, component_marker, fakeip_marker ]);
     let cron_jobs = "";
     let logs = [ { level: "info", message: "The cron job removed" } ];
     let tab = "\t";
@@ -796,6 +823,14 @@ function cron_refresh_apply_result(settings, sections, existing_crontab, bin, li
         else if (type == "component-error") {
             push(logs, { level: "error", message: "Invalid component_update_check_interval value: " + rest });
         }
+        else if (type == "fakeip") {
+            cron_jobs += rest + "
+";
+            push(logs, { level: "info", message: "The FakeIP reset cron job has been created: " + rest });
+        }
+        else if (type == "fakeip-error") {
+            push(logs, { level: "error", message: "Invalid fakeip_reset_hour value: " + rest });
+        }
     }
 
     return {
@@ -825,10 +860,10 @@ function log_cron_apply_result(result) {
         log_message(item.message, item.level);
 }
 
-function remove_cron_jobs(list_marker, subscription_marker, component_marker) {
+function remove_cron_jobs(list_marker, subscription_marker, component_marker, fakeip_marker) {
     let crontab = command_output_from_args([ "crontab", "-l" ]);
     let result = {
-        crontab: filter_cron_markers_text(crontab, [ list_marker, subscription_marker, component_marker ]),
+        crontab: filter_cron_markers_text(crontab, [ list_marker, subscription_marker, component_marker, fakeip_marker ]),
         logs: [ { level: "info", message: "The cron job removed" } ]
     };
 
@@ -838,7 +873,7 @@ function remove_cron_jobs(list_marker, subscription_marker, component_marker) {
     log_cron_apply_result(result);
 }
 
-function refresh_cron_from_sources(settings, sections, bin, list_marker, subscription_marker, component_marker) {
+function refresh_cron_from_sources(settings, sections, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     let result = cron_refresh_apply_result(
         settings,
         sections,
@@ -846,7 +881,8 @@ function refresh_cron_from_sources(settings, sections, bin, list_marker, subscri
         bin,
         list_marker,
         subscription_marker,
-        component_marker
+        component_marker,
+        fakeip_marker
     );
 
     if (!write_crontab_text(result.crontab))
@@ -2777,7 +2813,7 @@ function fixture_section_list(data, type_name) {
     return type(plural) == "array" ? plural : [];
 }
 
-function fixture_cron_refresh_plan(path, bin, list_marker, subscription_marker, component_marker) {
+function fixture_cron_refresh_plan(path, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     let data = object_or_empty(read_json_file(path));
     connections.set_item_sections_from_data(data);
     cron_refresh_plan(
@@ -2786,11 +2822,12 @@ function fixture_cron_refresh_plan(path, bin, list_marker, subscription_marker, 
         bin,
         list_marker,
         subscription_marker,
-        component_marker
+        component_marker,
+        fakeip_marker
     );
 }
 
-function fixture_cron_refresh_apply(path, existing_crontab_path, bin, list_marker, subscription_marker, component_marker) {
+function fixture_cron_refresh_apply(path, existing_crontab_path, bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     let data = object_or_empty(read_json_file(path));
     connections.set_item_sections_from_data(data);
     let result = cron_refresh_apply_result(
@@ -2800,7 +2837,8 @@ function fixture_cron_refresh_apply(path, existing_crontab_path, bin, list_marke
         bin,
         list_marker,
         subscription_marker,
-        component_marker
+        component_marker,
+        fakeip_marker
     );
 
     write_json({
@@ -2818,18 +2856,19 @@ function fixture_section_by_name(data, target_name) {
     return {};
 }
 
-function uci_cron_refresh_plan(bin, list_marker, subscription_marker, component_marker) {
+function uci_cron_refresh_plan(bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     cron_refresh_plan(
         uci_settings(),
         uci_sections("section"),
         bin,
         list_marker,
         subscription_marker,
-        component_marker
+        component_marker,
+        fakeip_marker
     );
 }
 
-function uci_refresh_cron(bin, list_marker, subscription_marker, component_marker) {
+function uci_refresh_cron(bin, list_marker, subscription_marker, component_marker, fakeip_marker) {
     let settings = uci_settings();
     if (settings_component_update_check_interval(settings) == "")
         clear_component_update_check_cache();
@@ -2839,7 +2878,8 @@ function uci_refresh_cron(bin, list_marker, subscription_marker, component_marke
         bin,
         list_marker,
         subscription_marker,
-        component_marker
+        component_marker,
+        fakeip_marker
     );
 }
 
@@ -2887,15 +2927,15 @@ else if (mode == "subscription-update-cron-job")
 else if (mode == "subscription-update-interval-plan")
     subscription_update_interval_plan();
 else if (mode == "cron-refresh-plan")
-    uci_cron_refresh_plan(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
+    uci_cron_refresh_plan(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
 else if (mode == "cron-refresh-plan-fixture")
-    fixture_cron_refresh_plan(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
+    fixture_cron_refresh_plan(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6]);
 else if (mode == "refresh-cron-from-uci")
-    uci_refresh_cron(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
+    uci_refresh_cron(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
 else if (mode == "refresh-cron-fixture")
-    fixture_cron_refresh_apply(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6]);
+    fixture_cron_refresh_apply(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6], ARGV[7]);
 else if (mode == "remove-cron-jobs")
-    remove_cron_jobs(ARGV[1], ARGV[2], ARGV[3]);
+    remove_cron_jobs(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
 else if (mode == "list-update")
     list_update();
 else if (mode == "list-update-if-due")

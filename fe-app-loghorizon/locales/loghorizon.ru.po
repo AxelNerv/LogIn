@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 15:26+0300\n"
-"PO-Revision-Date: 2026-08-30 15:26+0300\n"
+"POT-Creation-Date: 2026-08-31 09:35+0300\n"
+"PO-Revision-Date: 2026-08-31 09:35+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -301,6 +301,9 @@ msgstr "Проверки пройдены с ручным DHCP"
 
 msgid "CIDR must be between 0 and 32 for IPv4 or 0 and 128 for IPv6"
 msgstr "CIDR должен быть от 0 до 32 для IPv4 или от 0 до 128 для IPv6"
+
+msgid "Clear the FakeIP cache daily"
+msgstr "Ежедневно чистить кеш FakeIP"
 
 msgid "Client fingerprint"
 msgstr "Отпечаток клиента"
@@ -838,6 +841,9 @@ msgstr "Проверка верхних DNS"
 
 msgid "Host"
 msgstr "Хост"
+
+msgid "Hour to clear it"
+msgstr "Во сколько чистить"
 
 msgid "How often higher priority levels are checked while a lower level is active"
 msgstr "Как часто проверять верхние уровни приоритета, пока активен нижний уровень"
@@ -1838,6 +1844,9 @@ msgstr "Sing-box слушает порты"
 msgid "Sing-box process running"
 msgstr "Процесс sing-box запущен"
 
+msgid "sing-box remembers which fake address it handed out for each domain, and keeps that across restarts. Once the mapping goes stale, clients are sent to an address that no longer leads anywhere and pages stop loading with nothing to explain why."
+msgstr "sing-box запоминает, какой поддельный адрес выдал каждому домену, и хранит это между перезапусками. Когда привязка устаревает, клиенты уходят на адрес, который больше никуда не ведёт, и страницы перестают грузиться без всяких объяснений."
+
 msgid "Sing-box service exist"
 msgstr "Сервис sing-box существует"
 
@@ -1984,6 +1993,9 @@ msgstr "Номер NFQUEUE назначается logIn для каждого п
 
 msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
 msgstr "Правило применяется к домену и всем его поддоменам. Для полного совпадения, совпадению по слову или регулярному выражению используйте префиксы full:, keyword: или regex:."
+
+msgid "The service restarts, so pick an hour when nobody is using the router."
+msgstr "Служба перезапустится, поэтому выбери час, когда роутером никто не пользуется."
 
 msgid "The XHTTP and gRPC transports already multiplex over HTTP/2."
 msgstr "Транспорты XHTTP и gRPC уже мультиплексируют поверх HTTP/2."
