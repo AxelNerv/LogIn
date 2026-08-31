@@ -1971,13 +1971,30 @@ function service_proxy_address(settings, purpose) {
         SB_SERVICE_MIXED_INBOUND_ADDRESS + ":" + service_proxy_port_for_purpose(purpose) : "";
 }
 
+// Through the service proxy busybox wget loses the address on a redirect and
+// asks the proxy itself for "/", which answers 400. GitHub redirects every
+// release download, so nothing that had to travel through the tunnel ever
+// arrived - lists and rule sets alike, silently, for as long as the option
+// was on. curl follows the redirect over SOCKS and fetches the same file.
+function download_command(url, filepath, proxy_address) {
+    proxy_address = as_string(proxy_address);
+    if (proxy_address == "")
+        return command_from_args([ "wget", "-O", filepath, url ]);
+
+    return command_from_args([
+        "curl", "-sSL", "--fail",
+        "--connect-timeout", "15",
+        "--max-time", "180",
+        "-x", "socks5h://" + proxy_address,
+        "-o", filepath,
+        url
+    ]);
+}
+
 function download_to_file(url, filepath, proxy_address) {
     let attempt = 1;
     while (attempt <= 3) {
-        let command = command_from_args([ "wget", "-O", filepath, url ]);
-        if (as_string(proxy_address) != "")
-            command = "http_proxy=" + shell_quote("http://" + as_string(proxy_address)) +
-                " https_proxy=" + shell_quote("http://" + as_string(proxy_address)) + " " + command;
+        let command = download_command(url, filepath, proxy_address);
 
         if (command_success(command))
             return true;
@@ -2946,6 +2963,8 @@ else if (mode == "duration-to-seconds")
     duration_to_seconds(ARGV[1]);
 else if (mode == "builtin-subnet-urls")
     print_builtin_subnet_urls(ARGV[1]);
+else if (mode == "download-command")
+    print(download_command(ARGV[1], ARGV[2], ARGV[3]), "\n");
 else if (mode == "due-check-cron-schedule")
     due_check_cron_schedule(ARGV[1]);
 else if (mode == "list-update-cron-job")
