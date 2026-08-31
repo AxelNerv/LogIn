@@ -1331,6 +1331,36 @@ function reload_tracked(reason) {
     return status;
 }
 
+// sing-box stores the FakeIP map with store_fakeip, so the addresses handed
+// out for a domain survive a restart. That is the point of it, until the
+// mapping goes stale: after a DNS change, or after a section's lists change,
+// clients keep being answered with an address that no longer routes anywhere,
+// and pages simply stop loading. Nothing in the interface hints at it, and a
+// plain restart does not clear it.
+function reset_fakeip() {
+    log_message("Clearing the FakeIP cache", "info");
+
+    let cache_path = config_get(CONFIG_NAME + ".settings.cache_path",
+        TMP_SING_BOX_FOLDER + "/cache.db");
+    if (cache_path == "")
+        cache_path = TMP_SING_BOX_FOLDER + "/cache.db";
+
+    // The file has to go while sing-box is down, or it is written back out.
+    let status = stop_impl();
+    if (status != 0)
+        return status;
+
+    remove_file(cache_path);
+
+    status = start_impl();
+    if (status != 0) {
+        cleanup_failed_runtime();
+        return status;
+    }
+
+    return 0;
+}
+
 function restart() {
     log_message("Restarting logIn", "info");
 
@@ -1436,6 +1466,8 @@ else if (mode == "reload")
     status = reload_tracked(ARGV[1] || "");
 else if (mode == "dns-failover-apply")
     status = dns_failover_apply(ARGV[1] || "");
+else if (mode == "reset-fakeip")
+    exit(reset_fakeip());
 else if (mode == "restart")
     status = restart();
 else if (mode == "enable")
@@ -1455,7 +1487,7 @@ else if (mode == "dnsmasq-restore" || mode == "restore-dnsmasq")
 else if (mode == "uninstall")
     status = uninstall();
 else {
-    warn("Usage: service/lifecycle.uc <start|stop|reload|restart|main|enable|disable|dnsmasq-restore|uninstall> ...\n");
+    warn("Usage: service/lifecycle.uc <start|stop|reload|restart|reset-fakeip|main|enable|disable|dnsmasq-restore|uninstall> ...\n");
     status = 1;
 }
 

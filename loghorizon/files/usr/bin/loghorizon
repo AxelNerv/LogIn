@@ -57,6 +57,8 @@ function show_help() {
     print("    stop                    Stop logIn service\n");
     print("    reload                  Reload logIn configuration\n");
     print("    restart                 Restart logIn service\n");
+    print("    reset_fakeip            Clear the FakeIP cache and restart, for when\n");
+    print("                            clients keep getting addresses that no longer route\n");
     print("    enable                  Enable logIn autostart\n");
     print("    disable                 Disable logIn autostart\n");
     print("    uninstall               Remove logIn files installed outside opkg/apk\n");
@@ -133,6 +135,7 @@ function command_spec(command) {
         reload: [ "service/lifecycle.uc", "reload", 1 ],
         dns_failover_apply: [ "service/lifecycle.uc", "dns-failover-apply", 1 ],
         restart: [ "service/lifecycle.uc", "restart", 0 ],
+        reset_fakeip: [ "service/lifecycle.uc", "reset-fakeip", 0 ],
         enable: [ "service/lifecycle.uc", "enable", 0 ],
         disable: [ "service/lifecycle.uc", "disable", 0 ],
         uninstall: [ "service/lifecycle.uc", "uninstall", 0 ],
