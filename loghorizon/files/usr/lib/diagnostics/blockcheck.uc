@@ -93,7 +93,8 @@ function parse_args(args) {
         }
         if (arg != "-s" && arg != "-f" && arg != "-t" && arg != "-n" && arg != "-w" && arg != "-c")
             fail("unknown argument: " + arg);
-        if (++i >= length(args))
+        i += 1;
+        if (i >= length(args))
             fail(arg + " requires a value");
         let value = as_string(args[i]);
         if (arg == "-s") options.section = value;
