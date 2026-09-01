@@ -98,7 +98,7 @@ run_blockcheck() {
   LOGHORIZON_BLOCKCHECK_CURL_BIN="$WORK_DIR/bin/curl" \
   LOGHORIZON_BLOCKCHECK_PGREP_BIN="$WORK_DIR/bin/pgrep" \
   LOGHORIZON_BLOCKCHECK_SLEEP_BIN="$WORK_DIR/bin/sleep" \
-    ucode -L "$UCODE_LIB" -L "$WORK_DIR" "$BLOCKCHECK" run \
+    ucode -L "$UCODE_LIB" -L "$WORK_DIR" -- "$BLOCKCHECK" run \
       -s test -f "$WORK_DIR/strategies.tsv" -t example.com -n 8 -w 20
 }
 
@@ -123,7 +123,7 @@ grep -Fq 'CRITICAL: failed to restore the original strategy' <<<"$output" ||
   fail "restore failure was not reported"
 
 if BLOCKCHECK_TEST_DIR="$WORK_DIR" ucode -L "$UCODE_LIB" -L "$WORK_DIR" \
-  "$BLOCKCHECK" run -s test -f "$WORK_DIR/strategies.tsv" -n 7 >/dev/null 2>&1; then
+  -- "$BLOCKCHECK" run -s test -f "$WORK_DIR/strategies.tsv" -n 7 >/dev/null 2>&1; then
   fail "unreliable request count was accepted"
 fi
 

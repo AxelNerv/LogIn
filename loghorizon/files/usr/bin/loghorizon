@@ -212,7 +212,7 @@ function run_spec(command, spec, user_args) {
         return 1;
     }
 
-    let args = [ "ucode", "-L", LIB_DIR, module, spec[1] ];
+    let args = [ "ucode", "-L", LIB_DIR, "--", module, spec[1] ];
     let count = int(spec[2] || 0);
     if (count < 0)
         count = length(user_args);
