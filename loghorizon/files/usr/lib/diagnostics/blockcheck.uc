@@ -232,7 +232,9 @@ function run_tests(options, plan, state) {
         }
         if (command_status([ SLEEP_BIN, "" + options.settle ], true) != 0)
             fail("settle wait failed");
-        if (command_status([ PGREP_BIN, "-x", plan.process ], true) != 0) {
+        // BusyBox pgrep -x matches the complete command line on some OpenWrt
+        // builds, so a process with arguments is missed despite an exact comm.
+        if (command_status([ PGREP_BIN, "^" + plan.process + "$" ], true) != 0) {
             printf("%-30s rejected: engine did not start\n", row.name);
             if (!restore_original(state)) fail("failed to restore after engine failure");
             continue;
