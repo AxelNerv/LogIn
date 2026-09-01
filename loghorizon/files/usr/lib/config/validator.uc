@@ -1246,22 +1246,26 @@ function validate_combined_domain_text_value(value, section) {
     fail_validation("Invalid domain conditions in rule '" + section + "'. Use plain domains or full:, keyword:, regex: prefixes. Aborted.");
 }
 
-function rule_condition_csv(section, key, kind) {
-    return rule_config.rule_condition_csv_value(
-        key,
-        kind,
-        option(section, key + "_text_mode", "0"),
-        option(section, "conditions_text_mode", "0"),
-        option(section, key + "_text", ""),
-        option(section, key, ""),
-        "",
-        ""
-    );
+function rule_condition_values(section, key) {
+    let raw_values = object_or_empty(section)[key];
+    let list_values = type(raw_values) == "array" ? raw_values : [];
+    let option_text_values = type(raw_values) == "array"
+        ? []
+        : rule_config.text_list_values(raw_values, "comma-space");
+    let text_values = rule_config.text_list_values(option(section, key + "_text", ""), "comma-space");
+
+    if (bool_option(section, key + "_text_mode", false) || bool_option(section, "conditions_text_mode", false))
+        return text_values;
+    if (length(list_values) > 0)
+        return list_values;
+    if (length(option_text_values) > 0)
+        return option_text_values;
+    return text_values;
 }
 
 function validate_ip_condition(section, key, label) {
     let name = section_name(section);
-    for (let value in split(rule_condition_csv(section, key, "subnets"), ",")) {
+    for (let value in rule_condition_values(section, key)) {
         value = trim(as_string(value));
         if (value != "" && !core_ip.nft_ip_or_cidr(value))
             fail_validation("Invalid " + label + " '" + value + "' in rule '" + name + "'. Use an IP address or CIDR subnet. Aborted.");
