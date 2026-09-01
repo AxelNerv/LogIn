@@ -85,18 +85,20 @@ function parse_args(args) {
         help: false
     };
 
-    for (let i = 0; i < length(args); i++) {
+    let i = 0;
+    while (i < length(args)) {
         let arg = as_string(args[i]);
+        i = i + 1;
         if (arg == "-h" || arg == "--help") {
             options.help = true;
             continue;
         }
         if (arg != "-s" && arg != "-f" && arg != "-t" && arg != "-n" && arg != "-w" && arg != "-c")
             fail("unknown argument: " + arg);
-        i += 1;
         if (i >= length(args))
             fail(arg + " requires a value");
         let value = as_string(args[i]);
+        i = i + 1;
         if (arg == "-s") options.section = value;
         else if (arg == "-f") options.file = value;
         else if (arg == "-t") options.hosts = value;
