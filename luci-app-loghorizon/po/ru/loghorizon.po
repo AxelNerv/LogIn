@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-31 10:21+0300\n"
-"PO-Revision-Date: 2026-08-31 10:21+0300\n"
+"POT-Creation-Date: 2026-09-01 14:24+0300\n"
+"PO-Revision-Date: 2026-09-01 14:24+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -1307,6 +1307,12 @@ msgstr "Диапазон NFQUEUE свободен"
 msgid "NFQUEUE range overlaps with another rule"
 msgstr "Диапазон NFQUEUE пересекается с другим правилом"
 
+msgid "NFQUEUE rules are missing for rule %s"
+msgstr "Для правила %s отсутствуют правила NFQUEUE"
+
+msgid "NFQUEUE traffic reaches rule %s"
+msgstr "Трафик NFQUEUE доходит до правила %s"
+
 msgid "NFQWS Strategy"
 msgstr "Стратегия NFQWS"
 
@@ -1333,6 +1339,9 @@ msgstr "Конфликт не обнаружен"
 
 msgid "No enabled server inbounds configured"
 msgstr "Включённые серверные inbounds не настроены"
+
+msgid "No NFQUEUE traffic observed for rule %s"
+msgstr "Для правила %s трафик NFQUEUE пока не обнаружен"
 
 msgid "No other marking rules found"
 msgstr "Другие правила маркировки не найдены"
@@ -1534,6 +1543,9 @@ msgstr "Публичный хост"
 
 msgid "QR code is too large"
 msgstr "QR-код слишком большой"
+
+msgid "Queue %s · TCP %s · UDP %s"
+msgstr "Очередь %s · TCP %s · UDP %s"
 
 msgid "Reality fake site"
 msgstr "Fake-сайт Reality"

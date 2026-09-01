@@ -128,6 +128,24 @@ if (value.configured !== false || value.enabled_rule_count !== 0 || typeof value
 }
 NODE
 
+queue_counters_json="$({
+  printf '%s\n' \
+    'meta mark 0x01000001 meta l4proto tcp counter packets 27 bytes 4096 queue flags bypass to 4000' \
+    'meta mark 0x01000001 meta l4proto udp counter packets 3 bytes 512 queue flags bypass to 4000' \
+    'meta mark 0x01000002 meta l4proto tcp counter packets 0 bytes 0 queue num 4001 bypass' \
+    'meta mark 0x01000002 meta l4proto udp counter packets 0 bytes 0 queue num 4001 bypass'
+} | ZAPRET_QUEUE_BASE=4000 ucode -L "$LOGHORIZON_LIB" "$ZAPRET_RUNTIME" queue-counters-fixture 2)"
+JSON_VALUE="$queue_counters_json" node - <<'NODE'
+const value = JSON.parse(process.env.JSON_VALUE);
+if (value.length !== 2 || value[0].section !== 'rule1' || value[0].queue !== 4000 ||
+    value[0].tcp_packets !== 27 || value[0].udp_packets !== 3 || value[0].total_packets !== 30 ||
+    value[0].rule_present !== true || value[1].queue !== 4001 ||
+    value[1].total_packets !== 0 || value[1].rule_present !== true) {
+  console.error('NFQUEUE counter parser mismatch', value);
+  process.exit(1);
+}
+NODE
+
 check_json="$(ucode -L "$LOGHORIZON_LIB" "$ZAPRET2_RUNTIME" check)"
 JSON_VALUE="$check_json" node - <<'NODE'
 const value = JSON.parse(process.env.JSON_VALUE);

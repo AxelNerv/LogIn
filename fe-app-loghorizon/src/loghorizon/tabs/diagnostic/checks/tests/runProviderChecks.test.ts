@@ -111,6 +111,82 @@ describe('provider diagnostics checks', () => {
     );
   });
 
+  it('shows per-rule NFQUEUE counters without calling zero traffic a failure', async () => {
+    mocks.getZapretStatus.mockResolvedValue({
+      success: true,
+      data: {
+        ...zapretOkData,
+        provider_path: '/usr/bin/nfqws',
+        queue_counters: [
+          {
+            section: 'dpiYT',
+            queue: 4000,
+            rule_present: true,
+            tcp_packets: 27,
+            udp_packets: 3,
+            total_packets: 30,
+          },
+          {
+            section: 'idle',
+            queue: 4001,
+            rule_present: true,
+            tcp_packets: 0,
+            udp_packets: 0,
+            total_packets: 0,
+          },
+        ],
+      },
+    });
+
+    await expect(runZapretCheck()).resolves.toBeUndefined();
+
+    const result = mocks.updateCheckStore.mock.calls.slice(-1)[0]?.[0];
+    expect(result).toMatchObject({ state: 'warning' });
+    expect(result.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          state: 'success',
+          key: 'NFQUEUE traffic reaches rule dpiYT',
+          value: 'Queue 4000 · TCP 27 · UDP 3',
+        }),
+        expect.objectContaining({
+          state: 'warning',
+          key: 'No NFQUEUE traffic observed for rule idle',
+        }),
+      ]),
+    );
+  });
+
+  it('fails when an enabled rule has no NFQUEUE rules', async () => {
+    mocks.getZapret2Status.mockResolvedValue({
+      success: true,
+      data: {
+        ...zapretOkData,
+        provider_path: '/usr/bin/nfqws2',
+        queue_counters: [
+          {
+            section: 'dpiDS',
+            queue: 4300,
+            rule_present: false,
+            total_packets: 0,
+          },
+        ],
+      },
+    });
+
+    await expect(runZapret2Check()).resolves.toBeUndefined();
+    const result = mocks.updateCheckStore.mock.calls.slice(-1)[0]?.[0];
+    expect(result).toMatchObject({ state: 'error' });
+    expect(result.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          state: 'error',
+          key: 'NFQUEUE rules are missing for rule dpiDS',
+        }),
+      ]),
+    );
+  });
+
   it('removes Zapret2 route checks while keeping provider path visible', async () => {
     mocks.getZapret2Status.mockResolvedValue({
       success: true,

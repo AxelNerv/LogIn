@@ -612,6 +612,17 @@ export namespace logIn {
     updated_at?: number | null;
   }
 
+  export interface NfqueueRuleCounters {
+    section: string;
+    queue: number;
+    rule_present: boolean | 0 | 1;
+    tcp_packets: number;
+    tcp_bytes: number;
+    udp_packets: number;
+    udp_bytes: number;
+    total_packets: number;
+  }
+
   export interface GetZapretStatus {
     installed: 0 | 1;
     package_installed: 0 | 1;
@@ -640,6 +651,7 @@ export namespace logIn {
     conflict: 0 | 1;
     outbounds_configured: 0 | 1;
     routes_configured: 0 | 1;
+    queue_counters: Array<NfqueueRuleCounters>;
     status_message: string;
   }
 
@@ -674,6 +686,7 @@ export namespace logIn {
     conflict: 0 | 1;
     outbounds_configured: 0 | 1;
     routes_configured: 0 | 1;
+    queue_counters: Array<NfqueueRuleCounters>;
     status_message: string;
   }
 

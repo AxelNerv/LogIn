@@ -8091,6 +8091,36 @@ function getCheckItemsMeta(items) {
   };
 }
 
+// src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts
+function getNfqueueCounterItems(counters) {
+  if (!Array.isArray(counters)) return [];
+  return counters.map((raw) => {
+    const section = String(raw.section || "?");
+    const queue = Number(raw.queue || 0);
+    const tcpPackets = Number(raw.tcp_packets || 0);
+    const udpPackets = Number(raw.udp_packets || 0);
+    const totalPackets = Number(raw.total_packets ?? tcpPackets + udpPackets);
+    const rulePresent = Boolean(raw.rule_present);
+    let state = "warning";
+    let key = _("No NFQUEUE traffic observed for rule %s").replace(
+      "%s",
+      section
+    );
+    if (!rulePresent) {
+      state = "error";
+      key = _("NFQUEUE rules are missing for rule %s").replace("%s", section);
+    } else if (totalPackets > 0) {
+      state = "success";
+      key = _("NFQUEUE traffic reaches rule %s").replace("%s", section);
+    }
+    return {
+      state,
+      key,
+      value: _("Queue %s \xB7 TCP %s \xB7 UDP %s").replace("%s", String(queue)).replace("%s", String(tcpPackets)).replace("%s", String(udpPackets))
+    };
+  });
+}
+
 // src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts
 async function runZapretCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.ZAPRET;
@@ -8162,7 +8192,8 @@ async function runZapretCheck() {
       state: standaloneConflict ? "warning" : "success",
       key: standaloneServiceRunning ? hasZapretRules ? _("Standalone Zapret is active together with logIn Zapret rules") : _("Standalone Zapret service is active") : _("Standalone Zapret service is inactive"),
       value: ""
-    }
+    },
+    ...getNfqueueCounterItems(data.queue_counters)
   ];
   const { state, description } = getCheckItemsMeta(items);
   updateCheckStore({
@@ -8248,7 +8279,8 @@ async function runZapret2Check() {
       state: standaloneConflict ? "error" : standaloneAutostartRisk ? "warning" : "success",
       key: standaloneServiceRunning ? hasZapret2Rules ? _("Standalone Zapret2 is active together with logIn Zapret2 rules") : _("Standalone Zapret2 service is active") : standaloneAutostartRisk ? _("Standalone Zapret2 autostart is enabled") : _("Standalone Zapret2 service is inactive"),
       value: ""
-    }
+    },
+    ...getNfqueueCounterItems(data.queue_counters)
   ];
   const { state, description } = getCheckItemsMeta(items);
   updateCheckStore({

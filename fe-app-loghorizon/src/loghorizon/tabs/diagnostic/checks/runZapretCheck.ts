@@ -3,6 +3,7 @@ import { LogHorizonShellMethods } from '../../../methods';
 import { updateCheckStore } from './updateCheckStore';
 import { IDiagnosticsChecksItem } from '../../../services';
 import { getCheckItemsMeta } from './getCheckItemsMeta';
+import { getNfqueueCounterItems } from './getNfqueueCounterItems';
 
 export async function runZapretCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.ZAPRET;
@@ -113,6 +114,7 @@ export async function runZapretCheck() {
         : _('Standalone Zapret service is inactive'),
       value: '',
     },
+    ...getNfqueueCounterItems(data.queue_counters),
   ];
   const { state, description } = getCheckItemsMeta(items);
 

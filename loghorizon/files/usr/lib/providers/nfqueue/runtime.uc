@@ -23,6 +23,15 @@ function write_json(value) {
     print(sprintf("%J", value), "\n");
 }
 
+function read_stdin() {
+    let input = fs.open("/dev/stdin", "r");
+    if (!input)
+        return "";
+    let data = input.read("all");
+    input.close();
+    return data == null ? "" : as_string(data);
+}
+
 function shell_quote(value) {
     return "'" + replace(as_string(value), /'/g, "'\\''") + "'";
 }
@@ -189,6 +198,46 @@ function queue_number(cfg, index_value) {
 
 function queue_range_end(cfg) {
     return int(cfg.queue_base) + int(cfg.queue_range_size) - 1;
+}
+
+function queue_counters(cfg, sections, ruleset) {
+    let by_queue = {};
+    for (let line in split(as_string(ruleset), "\n")) {
+        let matched = match(line, /meta l4proto (tcp|udp) counter packets ([0-9]+) bytes ([0-9]+) queue[^0-9]*([0-9]+)/);
+        if (matched == null)
+            continue;
+
+        let queue = as_string(int(matched[4]));
+        if (by_queue[queue] == null)
+            by_queue[queue] = { tcp_packets: 0, tcp_bytes: 0, udp_packets: 0, udp_bytes: 0, rule_count: 0 };
+
+        let item = by_queue[queue];
+        let protocol = as_string(matched[1]);
+        item[protocol + "_packets"] += int(matched[2]);
+        item[protocol + "_bytes"] += int(matched[3]);
+        item.rule_count++;
+    }
+
+    let result = [];
+    let index_value = 1;
+    for (let section in sections) {
+        let queue = queue_number(cfg, index_value);
+        let counters = object_or_empty(by_queue[as_string(queue)]);
+        let tcp_packets = int(counters.tcp_packets || 0);
+        let udp_packets = int(counters.udp_packets || 0);
+        push(result, {
+            section: section_name(section),
+            queue,
+            rule_present: int(counters.rule_count || 0) >= 2,
+            tcp_packets,
+            tcp_bytes: int(counters.tcp_bytes || 0),
+            udp_packets,
+            udp_bytes: int(counters.udp_bytes || 0),
+            total_packets: tcp_packets + udp_packets
+        });
+        index_value++;
+    }
+    return result;
 }
 
 function provider_available(cfg) {
@@ -581,6 +630,8 @@ function status_json(cfg) {
     let legacy_runtime = legacy_runtime_path_present(cfg);
     let luci_installed = luci_app_installed(cfg);
     let config_state = runtime_config_status(cfg, sections);
+    let nft_ruleset = command_output_from_args([ "nft", "list", "chain", "inet", NFT_TABLE_NAME, "mangle_output" ]);
+    let counters = queue_counters(cfg, sections, nft_ruleset);
     let conflict = running > expected || queue_overlap || legacy_runtime;
     let ready = configured &&
         provider &&
@@ -633,6 +684,7 @@ function status_json(cfg) {
         conflict,
         outbounds_configured: config_state.outbounds_configured,
         routes_configured: config_state.routes_configured,
+        queue_counters: counters,
         status_message: message
     };
 
@@ -682,6 +734,13 @@ function run(provider, argv) {
         stop_runtime(cfg);
     else if (mode == "create-nft-rules")
         create_nft_rules(cfg);
+    else if (mode == "queue-counters-fixture") {
+        let count = int(argv[1] || "0");
+        let sections = [];
+        for (let i = 1; i <= count; i++)
+            push(sections, { ".name": "rule" + i });
+        write_json(queue_counters(cfg, sections, read_stdin()));
+    }
     else if (mode == "status")
         status_json(cfg);
     else if (mode == "check")
@@ -695,7 +754,7 @@ function run(provider, argv) {
     else if (mode == "enabled-rule-count")
         print(length(enabled_sections(cfg)), "\n");
     else {
-        warn("Usage: providers/" + kind + "/runtime.uc <start-runtime|stop-runtime|create-nft-rules|status|check|installed|package-installed|package-version|enabled-rule-count>\n");
+        warn("Usage: providers/" + kind + "/runtime.uc <start-runtime|stop-runtime|create-nft-rules|queue-counters-fixture|status|check|installed|package-installed|package-version|enabled-rule-count>\n");
         exit(1);
     }
 }

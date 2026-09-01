@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-31 07:21+0300\n"
-"PO-Revision-Date: 2026-08-31 07:21+0300\n"
+"POT-Creation-Date: 2026-09-01 11:24+0300\n"
+"PO-Revision-Date: 2026-09-01 11:24+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -356,8 +356,8 @@ msgstr ""
 #: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28
 #: src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:48
 #: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:25
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:26
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:26
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:27
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:27
 msgid "Cannot receive checks result"
 msgstr ""
 
@@ -413,8 +413,8 @@ msgstr ""
 #: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:34
 #: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:13
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:14
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:14
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:15
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:15
 msgid "Checking, please wait"
 msgstr ""
 
@@ -1055,12 +1055,12 @@ msgstr ""
 msgid "Failed to copy!"
 msgstr ""
 
+#: src/loghorizon/methods/shell/index.ts:170
+#: src/loghorizon/methods/shell/index.ts:177
 #: src/loghorizon/tabs/updates/initController.ts:511
 #: src/loghorizon/tabs/updates/initController.ts:512
 #: src/loghorizon/tabs/updates/initController.ts:572
 #: src/loghorizon/tabs/updates/initController.ts:722
-#: src/loghorizon/methods/shell/index.ts:170
-#: src/loghorizon/methods/shell/index.ts:177
 msgid "Failed to execute"
 msgstr ""
 
@@ -1754,27 +1754,27 @@ msgstr ""
 msgid "logIn-managed ciadpi runtime is ready"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:87
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:88
 msgid "logIn-managed nfqws runtime is not ready"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:90
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:91
 msgid "logIn-managed nfqws runtime is not running"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:86
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:87
 msgid "logIn-managed nfqws runtime is ready"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:90
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:91
 msgid "logIn-managed nfqws2 runtime is not ready"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:93
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:94
 msgid "logIn-managed nfqws2 runtime is not running"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:89
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:90
 msgid "logIn-managed nfqws2 runtime is ready"
 msgstr ""
 
@@ -1869,14 +1869,22 @@ msgstr ""
 msgid "New version %s is available for %s"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:100
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:97
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:101
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:98
 msgid "NFQUEUE range is available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:99
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:96
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:100
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:97
 msgid "NFQUEUE range overlaps with another rule"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:32
+msgid "NFQUEUE rules are missing for rule %s"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:35
+msgid "NFQUEUE traffic reaches rule %s"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7229
@@ -1918,6 +1926,10 @@ msgstr ""
 msgid "No enabled server inbounds configured"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:26
+msgid "No NFQUEUE traffic observed for rule %s"
+msgstr ""
+
 #: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:105
 msgid "No other marking rules found"
 msgstr ""
@@ -1930,11 +1942,11 @@ msgstr ""
 msgid "No rules use ByeDPI"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:79
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:80
 msgid "No rules use Zapret"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:82
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:83
 msgid "No rules use Zapret2"
 msgstr ""
 
@@ -2219,6 +2231,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1609
 msgid "QR code is too large"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:41
+msgid "Queue %s · TCP %s · UDP %s"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2684
@@ -2563,9 +2579,9 @@ msgstr ""
 msgid "Servers on dashboard"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:597
 #: src/loghorizon/methods/shell/index.ts:371
 #: src/loghorizon/methods/shell/index.ts:392
+#: src/loghorizon/tabs/diagnostic/initController.ts:597
 msgid "Service action failed"
 msgstr ""
 
@@ -2710,31 +2726,31 @@ msgstr ""
 msgid "Standalone ByeDPI service is inactive"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:111
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:112
 msgid "Standalone Zapret is active together with logIn Zapret rules"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:112
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:113
 msgid "Standalone Zapret service is active"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:113
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:114
 msgid "Standalone Zapret service is inactive"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:121
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:122
 msgid "Standalone Zapret2 autostart is enabled"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:118
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:119
 msgid "Standalone Zapret2 is active together with logIn Zapret2 rules"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:119
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:120
 msgid "Standalone Zapret2 service is active"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:122
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:123
 msgid "Standalone Zapret2 service is inactive"
 msgstr ""
 
@@ -2871,11 +2887,11 @@ msgstr ""
 msgid "There are rules using ByeDPI"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:78
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:79
 msgid "There are rules using Zapret"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:81
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:82
 msgid "There are rules using Zapret2"
 msgstr ""
 
@@ -3032,11 +3048,11 @@ msgstr ""
 msgid "Unexpected logIn-managed ciadpi runtime is running"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:89
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:90
 msgid "Unexpected logIn-managed nfqws runtime is running"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:92
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:93
 msgid "Unexpected logIn-managed nfqws2 runtime is running"
 msgstr ""
 
@@ -3340,27 +3356,27 @@ msgstr ""
 msgid "Zapret hostlist templates are not supported here because logIn does not expand them for per-rule NFQWS strategies."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:71
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:72
 msgid "Zapret package is installed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:72
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:73
 msgid "Zapret package is not installed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:60
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:61
 msgid "Zapret provider binary is available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:61
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:62
 msgid "Zapret provider binary is not available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:103
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:104
 msgid "Zapret sing-box outbound is configured"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:104
+#: src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:105
 msgid "Zapret sing-box outbound is not configured"
 msgstr ""
 
@@ -3368,26 +3384,26 @@ msgstr ""
 msgid "Zapret2 hostlist templates are not supported here because logIn does not expand them for per-rule NFQWS2 strategies."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:74
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:75
 msgid "Zapret2 package is installed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:75
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:76
 msgid "Zapret2 package is not installed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:63
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:64
 msgid "Zapret2 provider binary is available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:64
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:65
 msgid "Zapret2 provider binary is not available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:106
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:107
 msgid "Zapret2 sing-box outbound is configured"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:107
+#: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:108
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr ""

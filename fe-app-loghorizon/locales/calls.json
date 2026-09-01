@@ -577,8 +577,8 @@
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
       "src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:48",
       "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:25",
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:26"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:27",
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:27"
     ]
   },
   {
@@ -667,8 +667,8 @@
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:34",
       "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:13",
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:14",
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:14"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:15",
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:15"
     ]
   },
   {
@@ -1753,12 +1753,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722",
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177"
+      "src/loghorizon/tabs/updates/initController.ts:722"
     ]
   },
   {
@@ -2941,42 +2941,42 @@
     "call": "logIn-managed nfqws runtime is not ready",
     "key": "logIn-managed nfqws runtime is not ready",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:87"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:88"
     ]
   },
   {
     "call": "logIn-managed nfqws runtime is not running",
     "key": "logIn-managed nfqws runtime is not running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:90"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:91"
     ]
   },
   {
     "call": "logIn-managed nfqws runtime is ready",
     "key": "logIn-managed nfqws runtime is ready",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:86"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:87"
     ]
   },
   {
     "call": "logIn-managed nfqws2 runtime is not ready",
     "key": "logIn-managed nfqws2 runtime is not ready",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:90"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:91"
     ]
   },
   {
     "call": "logIn-managed nfqws2 runtime is not running",
     "key": "logIn-managed nfqws2 runtime is not running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:93"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:94"
     ]
   },
   {
     "call": "logIn-managed nfqws2 runtime is ready",
     "key": "logIn-managed nfqws2 runtime is ready",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:89"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:90"
     ]
   },
   {
@@ -3140,16 +3140,30 @@
     "call": "NFQUEUE range is available",
     "key": "NFQUEUE range is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:100",
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:97"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:101",
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:98"
     ]
   },
   {
     "call": "NFQUEUE range overlaps with another rule",
     "key": "NFQUEUE range overlaps with another rule",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:99",
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:96"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:100",
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:97"
+    ]
+  },
+  {
+    "call": "NFQUEUE rules are missing for rule %s",
+    "key": "NFQUEUE rules are missing for rule %s",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:32"
+    ]
+  },
+  {
+    "call": "NFQUEUE traffic reaches rule %s",
+    "key": "NFQUEUE traffic reaches rule %s",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:35"
     ]
   },
   {
@@ -3219,6 +3233,13 @@
     ]
   },
   {
+    "call": "No NFQUEUE traffic observed for rule %s",
+    "key": "No NFQUEUE traffic observed for rule %s",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:26"
+    ]
+  },
+  {
     "call": "No other marking rules found",
     "key": "No other marking rules found",
     "places": [
@@ -3243,14 +3264,14 @@
     "call": "No rules use Zapret",
     "key": "No rules use Zapret",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:79"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:80"
     ]
   },
   {
     "call": "No rules use Zapret2",
     "key": "No rules use Zapret2",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:82"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:83"
     ]
   },
   {
@@ -3720,6 +3741,13 @@
     "key": "QR code is too large",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1609"
+    ]
+  },
+  {
+    "call": "Queue %s · TCP %s · UDP %s",
+    "key": "Queue %s · TCP %s · UDP %s",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/getNfqueueCounterItems.ts:41"
     ]
   },
   {
@@ -4317,9 +4345,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:597",
       "src/loghorizon/methods/shell/index.ts:371",
-      "src/loghorizon/methods/shell/index.ts:392"
+      "src/loghorizon/methods/shell/index.ts:392",
+      "src/loghorizon/tabs/diagnostic/initController.ts:597"
     ]
   },
   {
@@ -4569,49 +4597,49 @@
     "call": "Standalone Zapret is active together with logIn Zapret rules",
     "key": "Standalone Zapret is active together with logIn Zapret rules",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:111"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:112"
     ]
   },
   {
     "call": "Standalone Zapret service is active",
     "key": "Standalone Zapret service is active",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:112"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:113"
     ]
   },
   {
     "call": "Standalone Zapret service is inactive",
     "key": "Standalone Zapret service is inactive",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:113"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:114"
     ]
   },
   {
     "call": "Standalone Zapret2 autostart is enabled",
     "key": "Standalone Zapret2 autostart is enabled",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:121"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:122"
     ]
   },
   {
     "call": "Standalone Zapret2 is active together with logIn Zapret2 rules",
     "key": "Standalone Zapret2 is active together with logIn Zapret2 rules",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:118"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:119"
     ]
   },
   {
     "call": "Standalone Zapret2 service is active",
     "key": "Standalone Zapret2 service is active",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:119"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:120"
     ]
   },
   {
     "call": "Standalone Zapret2 service is inactive",
     "key": "Standalone Zapret2 service is inactive",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:122"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:123"
     ]
   },
   {
@@ -4847,14 +4875,14 @@
     "call": "There are rules using Zapret",
     "key": "There are rules using Zapret",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:78"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:79"
     ]
   },
   {
     "call": "There are rules using Zapret2",
     "key": "There are rules using Zapret2",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:81"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:82"
     ]
   },
   {
@@ -5116,14 +5144,14 @@
     "call": "Unexpected logIn-managed nfqws runtime is running",
     "key": "Unexpected logIn-managed nfqws runtime is running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:89"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:90"
     ]
   },
   {
     "call": "Unexpected logIn-managed nfqws2 runtime is running",
     "key": "Unexpected logIn-managed nfqws2 runtime is running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:92"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:93"
     ]
   },
   {
@@ -5616,42 +5644,42 @@
     "call": "Zapret package is installed",
     "key": "Zapret package is installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:71"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:72"
     ]
   },
   {
     "call": "Zapret package is not installed",
     "key": "Zapret package is not installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:72"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:73"
     ]
   },
   {
     "call": "Zapret provider binary is available",
     "key": "Zapret provider binary is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:60"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:61"
     ]
   },
   {
     "call": "Zapret provider binary is not available",
     "key": "Zapret provider binary is not available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:61"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:62"
     ]
   },
   {
     "call": "Zapret sing-box outbound is configured",
     "key": "Zapret sing-box outbound is configured",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:103"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:104"
     ]
   },
   {
     "call": "Zapret sing-box outbound is not configured",
     "key": "Zapret sing-box outbound is not configured",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:104"
+      "src/loghorizon/tabs/diagnostic/checks/runZapretCheck.ts:105"
     ]
   },
   {
@@ -5665,42 +5693,42 @@
     "call": "Zapret2 package is installed",
     "key": "Zapret2 package is installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:74"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:75"
     ]
   },
   {
     "call": "Zapret2 package is not installed",
     "key": "Zapret2 package is not installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:75"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:76"
     ]
   },
   {
     "call": "Zapret2 provider binary is available",
     "key": "Zapret2 provider binary is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:63"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:64"
     ]
   },
   {
     "call": "Zapret2 provider binary is not available",
     "key": "Zapret2 provider binary is not available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:64"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:65"
     ]
   },
   {
     "call": "Zapret2 sing-box outbound is configured",
     "key": "Zapret2 sing-box outbound is configured",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:106"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:107"
     ]
   },
   {
     "call": "Zapret2 sing-box outbound is not configured",
     "key": "Zapret2 sing-box outbound is not configured",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:107"
+      "src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:108"
     ]
   }
 ]
