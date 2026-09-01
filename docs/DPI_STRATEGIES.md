@@ -127,12 +127,12 @@ nft list ruleset | grep 'queue flags bypass'
 
 ## Тестер
 
-В установленном пакете `loghorizon-blockcheck` перебирает строки из файла и
+В установленном пакете `loghorizon blockcheck` перебирает строки из файла и
 меряет каждую. Репозиторный `tools/dpi-strategy-test.sh` запускает тот же
 backend. Запускать на самом роутере:
 
 ```sh
-loghorizon-blockcheck -s dpiDS -f strategies.txt -t discord.com,www.youtube.com
+loghorizon blockcheck -s dpiDS -f strategies.txt -t discord.com,www.youtube.com
 ```
 
 Формат файла — имя, символ табуляции, строка стратегии. Скрипт применяет

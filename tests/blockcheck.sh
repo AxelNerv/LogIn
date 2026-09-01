@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BLOCKCHECK="$ROOT_DIR/loghorizon/files/usr/bin/loghorizon-blockcheck"
+UCODE_LIB="$ROOT_DIR/loghorizon/files/usr/lib"
+BLOCKCHECK="$UCODE_LIB/diagnostics/blockcheck.uc"
 WORK_DIR="$(mktemp -d)"
 
 cleanup() {
@@ -18,18 +19,42 @@ fail() {
 mkdir -p "$WORK_DIR/bin"
 printf '%s\n' original >"$WORK_DIR/current"
 
-cat >"$WORK_DIR/bin/uci" <<'SH'
-#!/bin/sh
-[ "$1" = "-q" ] && shift
-case "$1:$2" in
-  get:loghorizon.test.action) printf '%s\n' zapret ;;
-  get:loghorizon.test.nfqws_opt) cat "$BLOCKCHECK_TEST_DIR/current" ;;
-  set:*) printf '%s\n' "${2#*=}" >"$BLOCKCHECK_TEST_DIR/current" ;;
-  commit:loghorizon) : ;;
-  delete:*) rm -f "$BLOCKCHECK_TEST_DIR/current" ;;
-  *) exit 1 ;;
-esac
-SH
+cat >"$WORK_DIR/uci.uc" <<'UCODE'
+let fs = require("fs");
+let state = {
+    action: "zapret",
+    nfqws_opt: "original"
+};
+
+function write_current() {
+    fs.writefile(getenv("BLOCKCHECK_TEST_DIR") + "/current", "" + (state.nfqws_opt || "") + "\n");
+}
+
+function cursor() {
+    return {
+        load: function(_package_name) { return true; },
+        get: function(package_name, section_name, option_name) {
+            if (package_name != "loghorizon" || section_name != "test") return null;
+            return state["" + option_name];
+        },
+        set: function(package_name, section_name, option_name, value) {
+            if (package_name != "loghorizon" || section_name != "test") return false;
+            state["" + option_name] = value;
+            write_current();
+            return true;
+        },
+        delete: function(package_name, section_name, option_name) {
+            if (package_name != "loghorizon" || section_name != "test") return false;
+            delete state["" + option_name];
+            write_current();
+            return true;
+        },
+        commit: function(_package_name) { return true; }
+    };
+}
+
+return { cursor };
+UCODE
 
 cat >"$WORK_DIR/bin/service" <<'SH'
 #!/bin/sh
@@ -69,12 +94,12 @@ printf 'candidate\t--dpi-desync=fake\n' >"$WORK_DIR/strategies.tsv"
 run_blockcheck() {
   BLOCKCHECK_TEST_DIR="$WORK_DIR" \
   LOGHORIZON_BLOCKCHECK_LOCK_DIR="$WORK_DIR/lock" \
-  LOGHORIZON_BLOCKCHECK_UCI_BIN="$WORK_DIR/bin/uci" \
   LOGHORIZON_BLOCKCHECK_SERVICE_INIT="$WORK_DIR/bin/service" \
   LOGHORIZON_BLOCKCHECK_CURL_BIN="$WORK_DIR/bin/curl" \
   LOGHORIZON_BLOCKCHECK_PGREP_BIN="$WORK_DIR/bin/pgrep" \
   LOGHORIZON_BLOCKCHECK_SLEEP_BIN="$WORK_DIR/bin/sleep" \
-    "$BLOCKCHECK" -s test -f "$WORK_DIR/strategies.tsv" -t example.com -n 8 -w 20
+    ucode -L "$UCODE_LIB" -L "$WORK_DIR" "$BLOCKCHECK" run \
+      -s test -f "$WORK_DIR/strategies.tsv" -t example.com -n 8 -w 20
 }
 
 output="$(run_blockcheck)" || fail "successful test failed"
@@ -97,7 +122,8 @@ fi
 grep -Fq 'CRITICAL: failed to restore the original strategy' <<<"$output" ||
   fail "restore failure was not reported"
 
-if "$BLOCKCHECK" -s test -f "$WORK_DIR/strategies.tsv" -n 7 >/dev/null 2>&1; then
+if BLOCKCHECK_TEST_DIR="$WORK_DIR" ucode -L "$UCODE_LIB" -L "$WORK_DIR" \
+  "$BLOCKCHECK" run -s test -f "$WORK_DIR/strategies.tsv" -n 7 >/dev/null 2>&1; then
   fail "unreliable request count was accepted"
 fi
 
