@@ -100,6 +100,9 @@ cat >"$WORK_DIR/valid.json" <<'JSON'
       "domain": "commented.example # keep this note\nfull:exact-comment.example // and this note\nkeyword:clip",
       "domain_suffix": [ "example.org", "сайт.рф", "full:exact.example", "full:full:legacy.example", "full:пример.испытание", "keyword:video", "keyword:пример", "regex:^api[.]example$", "regex:^сайт[.]рф$" ],
       "domain_suffix_text": "text.example\nmünich.example\nkeyword:stream",
+      "ip_cidr": "192.0.2.1 # single IP\n2001:db8::/32",
+      "source_ip_cidr_text_mode": "1",
+      "source_ip_cidr_text": "192.168.1.10/32 # local device",
       "community_lists": [ "discord" ],
       "rule_set": [ "https://example.com/rules.srs" ],
       "rule_set_with_subnets": [ "/tmp/local.json" ],
@@ -156,6 +159,54 @@ cat >"$WORK_DIR/valid.json" <<'JSON'
 JSON
 
 validate_fixture "$WORK_DIR/valid.json"
+
+cat >"$WORK_DIR/bad-rule-addresses.json" <<'JSON'
+{
+  "section": [
+    {
+      ".name": "bad_destination",
+      ".type": "section",
+      "enabled": "1",
+      "action": "bypass",
+      "ip_cidr": [ "192.0.2.1", "999.1.1.1/24" ]
+    }
+  ]
+}
+JSON
+assert_rejects "bad destination subnet" "$WORK_DIR/bad-rule-addresses.json" "Invalid destination IP or subnet '999.1.1.1/24'"
+
+cat >"$WORK_DIR/bad-device-address.json" <<'JSON'
+{
+  "section": [
+    {
+      ".name": "bad_device",
+      ".type": "section",
+      "enabled": "1",
+      "action": "bypass",
+      "domain_suffix": [ "example.org" ],
+      "source_ip_cidr_text_mode": "1",
+      "source_ip_cidr_text": "192.168.1.10 # valid device\nnot-an-ip"
+    }
+  ]
+}
+JSON
+assert_rejects "bad device address" "$WORK_DIR/bad-device-address.json" "Invalid device IP or subnet 'not-an-ip'"
+
+cat >"$WORK_DIR/bad-fully-routed-address.json" <<'JSON'
+{
+  "section": [
+    {
+      ".name": "bad_fully_routed",
+      ".type": "section",
+      "enabled": "1",
+      "action": "connection",
+      "outbound_jsons": [ "{\"type\":\"direct\",\"tag\":\"direct-test\"}" ],
+      "fully_routed_ips": [ "192.168.1.20/33" ]
+    }
+  ]
+}
+JSON
+assert_rejects "bad fully routed address" "$WORK_DIR/bad-fully-routed-address.json" "Invalid fully routed IP or subnet '192.168.1.20/33'"
 
 cat >"$WORK_DIR/bad-dns-duration.json" <<'JSON'
 {

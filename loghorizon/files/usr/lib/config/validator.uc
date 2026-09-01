@@ -1246,6 +1246,35 @@ function validate_combined_domain_text_value(value, section) {
     fail_validation("Invalid domain conditions in rule '" + section + "'. Use plain domains or full:, keyword:, regex: prefixes. Aborted.");
 }
 
+function rule_condition_csv(section, key, kind) {
+    return rule_config.rule_condition_csv_value(
+        key,
+        kind,
+        option(section, key + "_text_mode", "0"),
+        option(section, "conditions_text_mode", "0"),
+        option(section, key + "_text", ""),
+        option(section, key, ""),
+        "",
+        ""
+    );
+}
+
+function validate_ip_condition(section, key, label) {
+    let name = section_name(section);
+    for (let value in split(rule_condition_csv(section, key, "subnets"), ",")) {
+        value = trim(as_string(value));
+        if (value != "" && !core_ip.nft_ip_or_cidr(value))
+            fail_validation("Invalid " + label + " '" + value + "' in rule '" + name + "'. Use an IP address or CIDR subnet. Aborted.");
+    }
+}
+
+function validate_fully_routed_ips(section) {
+    let name = section_name(section);
+    for (let value in list_option(section, "fully_routed_ips"))
+        if (!core_ip.nft_ip_or_cidr(value))
+            fail_validation("Invalid fully routed IP or subnet '" + value + "' in rule '" + name + "'. Aborted.");
+}
+
 function validate_service_value(service, context) {
     if (community_service_valid(service, context.community_services))
         return;
@@ -1436,6 +1465,11 @@ function validate_rule(section, sections, context) {
         fail_validation("Enabled rule '" + name + "' has no action. Aborted.");
     if (!rule_action_supported(action))
         fail_validation("Enabled rule '" + name + "' uses unsupported action '" + action + "'. Aborted.");
+
+    if (action != "dns")
+        validate_ip_condition(section, "ip_cidr", "destination IP or subnet");
+    validate_ip_condition(section, "source_ip_cidr", "device IP or subnet");
+    validate_fully_routed_ips(section);
 
     if (action != "dns")
         for (let value in list_option(section, "ports"))
