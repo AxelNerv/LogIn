@@ -187,6 +187,10 @@ const ZAPRET2_DEFAULT_NFQWS2_OPT =
   "--filter-tcp=80 --filter-l7=http --payload=http_req --lua-desync=fake:blob=fake_default_http:tcp_md5 --lua-desync=multisplit:pos=method+2 --new --filter-tcp=443 --filter-l7=tls --payload=tls_client_hello --lua-desync=fake:blob=fake_default_tls:tcp_md5:tcp_seq=-10000 --lua-desync=multidisorder:pos=1,midsld --new --filter-udp=443 --filter-l7=quic --payload=quic_initial --lua-desync=fake:blob=fake_default_quic:repeats=6";
 
 const BYEDPI_DEFAULT_CMD_OPTS = "-o 2 --auto=t,r,a,s -d 2";
+const BLOCKCHECK_COMMAND = "/usr/bin/loghorizon";
+const BLOCKCHECK_HOSTS = "discord.com,www.youtube.com";
+const BLOCKCHECK_COUNT = "8";
+const BLOCKCHECK_SETTLE = "22";
 const ANNOTATED_TEXTAREA_STYLE_ID = "lgh-annotated-textarea-styles";
 const CONNECTIONS_DYNLIST_STYLE_ID = "lgh-connections-dynlist-styles";
 const NFQWS_REMOTE_VALIDATION_DEBOUNCE_MS = 500;
@@ -197,6 +201,94 @@ const nfqws2RemoteValidationCache = new Map();
 const nfqws2RemoteValidationInflight = new Map();
 const byedpiRemoteValidationCache = new Map();
 const byedpiRemoteValidationInflight = new Map();
+
+function parseCommandJson(response) {
+  try {
+    return JSON.parse((response && response.stdout) || "{}");
+  } catch (_error) {
+    return null;
+  }
+}
+
+function blockcheckResultModal(state) {
+  const output = `${(state && state.output) || state.message || ""}`;
+  ui.showModal(_("BlockCheck result"), [
+    E(
+      "pre",
+      { style: "white-space:pre-wrap;max-height:60vh;overflow:auto" },
+      output,
+    ),
+    E("div", { class: "right" }, [
+      E("button", { class: "btn", click: ui.hideModal }, _("Close")),
+    ]),
+  ]);
+}
+
+async function waitForBlockcheck(jobId, deadline) {
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => window.setTimeout(resolve, 2500));
+    try {
+      const response = await fs.exec(BLOCKCHECK_COMMAND, [
+        "blockcheck_test_status",
+        jobId,
+      ]);
+      const state = parseCommandJson(response);
+      if (state && state.running === false) {
+        blockcheckResultModal(state);
+        return;
+      }
+    } catch (_error) {
+      // A candidate restart can briefly make LuCI unreachable. Keep polling;
+      // the worker is detached on the router and continues independently.
+    }
+  }
+  ui.addNotification(
+    null,
+    E(
+      "p",
+      {},
+      _("BlockCheck is still running. Reopen the section to check it later."),
+    ),
+    "warning",
+  );
+}
+
+async function startBlockcheck(sectionId, strategy) {
+  try {
+    const response = await fs.exec(BLOCKCHECK_COMMAND, [
+      "blockcheck_test_async",
+      sectionId,
+      strategy,
+      BLOCKCHECK_HOSTS,
+      BLOCKCHECK_COUNT,
+      BLOCKCHECK_SETTLE,
+    ]);
+    const result = parseCommandJson(response);
+    if (!result || result.success !== true || !result.job_id) {
+      throw new Error(
+        (result && result.message) || _("Unable to start BlockCheck"),
+      );
+    }
+    ui.addNotification(
+      null,
+      E(
+        "p",
+        {},
+        _(
+          "BlockCheck started. Internet may briefly reconnect while the strategy is tested.",
+        ),
+      ),
+      "info",
+    );
+    waitForBlockcheck(result.job_id, Date.now() + 12 * 60 * 1000);
+  } catch (error) {
+    ui.addNotification(
+      null,
+      E("p", {}, error.message || _("Unable to start BlockCheck")),
+      "error",
+    );
+  }
+}
 const BYEDPI_LONG_VALUE_OPTIONS = new Set([
   "--max-conn",
   "--conn-ip",
@@ -7101,6 +7193,7 @@ function writeDnsRulesetReferences(section_id, values) {
 
 function createSectionContent(section) {
   let o;
+  const dpiStrategyOptions = {};
 
   section.tab("settings", _("Settings"));
   section.tab("conditions", _("Conditions"));
@@ -7268,6 +7361,7 @@ function createSectionContent(section) {
   };
   o.parse = parseNfqwsStrategyOnSave;
   configureTextareaOption(o, analyzeNfqwsStrategy, attachNfqwsRemoteValidation);
+  dpiStrategyOptions.zapret = o;
 
   o = section.taboption(
     "settings",
@@ -7311,6 +7405,7 @@ function createSectionContent(section) {
     analyzeNfqws2Strategy,
     attachNfqws2RemoteValidation,
   );
+  dpiStrategyOptions.zapret2 = o;
 
   o = section.taboption(
     "settings",
@@ -7349,6 +7444,39 @@ function createSectionContent(section) {
     return analysis.valid ? true : analysis.message;
   };
   configureTextareaOption(o, analyzeByedpiStrategy);
+  dpiStrategyOptions.byedpi = o;
+
+  o = section.taboption(
+    "settings",
+    form.Button,
+    "_blockcheck_test",
+    _("Test DPI strategy"),
+    _(
+      "Safely tests the current strategy on Discord and YouTube, then restores the saved strategy.",
+    ),
+  );
+  o.depends("action", "zapret");
+  o.depends("action", "zapret2");
+  o.depends("action", "byedpi");
+  o.modalonly = true;
+  o.inputstyle = "action";
+  o.inputtitle = _("Run BlockCheck");
+  o.onclick = function (_event, sectionId) {
+    const action = uci.get(UCI_PACKAGE, sectionId, "action") || "";
+    const strategyOption = dpiStrategyOptions[action];
+    const strategy = strategyOption
+      ? `${strategyOption.formvalue(sectionId) || ""}`.trim()
+      : "";
+    if (!strategy) {
+      ui.addNotification(
+        null,
+        E("p", {}, _("DPI strategy cannot be empty")),
+        "error",
+      );
+      return Promise.resolve();
+    }
+    return startBlockcheck(sectionId, strategy);
+  };
 
   o = section.taboption(
     "settings",

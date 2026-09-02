@@ -21,6 +21,9 @@
         "/var/run/loghorizon/ui-state/latency-actions/*": [
           "read"
         ],
+        "/var/run/loghorizon/ui-state/blockcheck-actions/*": [
+          "read"
+        ],
         "/usr/bin/loghorizon": [
           "exec"
         ]
@@ -50,6 +53,9 @@
           "write"
         ],
         "/var/run/loghorizon/ui-state/latency-actions/*": [
+          "write"
+        ],
+        "/var/run/loghorizon/ui-state/blockcheck-actions/*": [
           "write"
         ]
       },

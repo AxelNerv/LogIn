@@ -181,9 +181,9 @@ function probe_host(host, count) {
     let ok = 0;
     let total_ms = 0;
     for (let attempt = 0; attempt < count; attempt++) {
-        let output = command_output([ CURL_BIN, "-sS", "--fail", "-o", "/dev/null",
+        let output = command_output([ CURL_BIN, "-s", "--fail", "-o", "/dev/null",
             "--connect-timeout", "3", "--max-time", "6", "-w", "%{time_total}",
-            "https://" + host + "/favicon.ico" ]);
+            "https://" + host + "/" ]);
         if (output == null)
             continue;
         let seconds = +trim(output);

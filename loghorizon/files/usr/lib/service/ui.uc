@@ -15,6 +15,7 @@ const PENDING_RELOAD_FILE = getenv("LOGHORIZON_PENDING_RELOAD_FILE") || "/var/ru
 const SERVICE_ACTION_DIR = getenv("LOGHORIZON_UI_SERVICE_ACTION_DIR") || STATE_DIR + "/service-actions";
 const SERVICE_ACTION_LOCK_DIR = getenv("LOGHORIZON_UI_SERVICE_ACTION_LOCK_DIR") || STATE_DIR + "/service-actions.lock";
 const LATENCY_ACTION_DIR = getenv("LOGHORIZON_UI_LATENCY_ACTION_DIR") || STATE_DIR + "/latency-actions";
+const BLOCKCHECK_ACTION_DIR = getenv("LOGHORIZON_UI_BLOCKCHECK_ACTION_DIR") || STATE_DIR + "/blockcheck-actions";
 const COMPONENT_ACTION_DIR = getenv("LOGHORIZON_UI_COMPONENT_ACTION_DIR") || getenv("UPDATES_JOB_DIR") || "/var/run/loghorizon/component-actions";
 const SUBSCRIPTION_ACTION_DIR = getenv("LOGHORIZON_UI_SUBSCRIPTION_ACTION_DIR") || getenv("LOGHORIZON_SUBSCRIPTION_UPDATE_JOB_DIR") || "/var/run/loghorizon/subscription-update-jobs";
 const SING_BOX_VERSION_CACHE_FILE = getenv("LOGHORIZON_UI_SING_BOX_VERSION_CACHE_FILE") || STATE_DIR + "/sing-box-version";
@@ -152,6 +153,7 @@ function ensure_dirs() {
         STATE_DIR,
         SERVICE_ACTION_DIR,
         LATENCY_ACTION_DIR,
+        BLOCKCHECK_ACTION_DIR,
         COMPONENT_ACTION_DIR,
         SUBSCRIPTION_ACTION_DIR
     ])
@@ -195,6 +197,7 @@ function remove_state_file(path) {
     remove_file(path);
     remove_file(base + ".out");
     remove_file(base + ".out.json");
+    remove_file(base + ".input");
 }
 
 function arg_bool(value) {
@@ -621,6 +624,21 @@ function running_latency_action_value(latency_type, section, tag, started_at) {
     return value;
 }
 
+function running_blockcheck_action_value(section, started_at) {
+    return {
+        success: true,
+        running: true,
+        kind: "blockcheck",
+        section: as_string(section),
+        message: "BlockCheck is running",
+        output: "",
+        pid: null,
+        started_at: arg_number(started_at),
+        updated_at: null,
+        exit_code: null
+    };
+}
+
 function latency_action_path_allowed(path) {
     path = as_string(path);
     let prefix = LATENCY_ACTION_DIR + "/";
@@ -767,6 +785,7 @@ function refresh_action_dirs() {
     ensure_dirs();
     cleanup_dir(SERVICE_ACTION_DIR);
     cleanup_dir(LATENCY_ACTION_DIR);
+    cleanup_dir(BLOCKCHECK_ACTION_DIR);
     cleanup_dir(COMPONENT_ACTION_DIR);
     cleanup_dir(SUBSCRIPTION_ACTION_DIR);
 
@@ -774,6 +793,8 @@ function refresh_action_dirs() {
         refresh_pid_job_state(path, "Service action worker exited unexpectedly");
     for (let path in fs.glob(LATENCY_ACTION_DIR + "/*.json"))
         refresh_pid_job_state(path, "Latency test worker exited unexpectedly");
+    for (let path in fs.glob(BLOCKCHECK_ACTION_DIR + "/*.json"))
+        refresh_pid_job_state(path, "BlockCheck worker exited unexpectedly");
     for (let path in fs.glob(COMPONENT_ACTION_DIR + "/*.json"))
         refresh_pid_job_state(path, "Component action worker exited unexpectedly");
     for (let path in fs.glob(SUBSCRIPTION_ACTION_DIR + "/*.json"))
@@ -804,6 +825,7 @@ function action_state_from_dirs() {
     return {
         service: action_state_from_dir(SERVICE_ACTION_DIR),
         latency: action_state_from_dir(LATENCY_ACTION_DIR),
+        blockcheck: action_state_from_dir(BLOCKCHECK_ACTION_DIR),
         component: action_state_from_dir(COMPONENT_ACTION_DIR),
         subscription: action_state_from_dir(SUBSCRIPTION_ACTION_DIR)
     };
@@ -1214,6 +1236,7 @@ function launch_worker(args) {
         LOGHORIZON_UI_SERVICE_ACTION_DIR: SERVICE_ACTION_DIR,
         LOGHORIZON_UI_SERVICE_ACTION_LOCK_DIR: SERVICE_ACTION_LOCK_DIR,
         LOGHORIZON_UI_LATENCY_ACTION_DIR: LATENCY_ACTION_DIR,
+        LOGHORIZON_UI_BLOCKCHECK_ACTION_DIR: BLOCKCHECK_ACTION_DIR,
         LOGHORIZON_UI_COMPONENT_ACTION_DIR: COMPONENT_ACTION_DIR,
         LOGHORIZON_UI_SUBSCRIPTION_ACTION_DIR: SUBSCRIPTION_ACTION_DIR,
         LOGHORIZON_UI_SING_BOX_VERSION_CACHE_FILE: SING_BOX_VERSION_CACHE_FILE,
@@ -1467,12 +1490,91 @@ function latency_test_status(job_id_value) {
     print(as_string(fs.readfile(path)));
 }
 
+function blockcheck_value_valid(value, pattern) {
+    value = as_string(value);
+    return value != "" && match(value, pattern) == null;
+}
+
+function blockcheck_worker(path, input_path, section, hosts, count, settle) {
+    let output_path = replace(as_string(path), /\.json$/, ".out");
+    let args = [ BIN_PATH, "blockcheck", "-s", section, "-f", input_path,
+        "-t", hosts, "-n", count, "-w", settle ];
+    let status = command_status(command_from_args(args) + " >" + shell_quote(output_path) + " 2>&1");
+    let value = finished_action_state_value(path, status == 0,
+        status == 0 ? "BlockCheck completed" : "BlockCheck failed", status, now_seconds());
+    value.output = as_string(fs.readfile(output_path));
+    if (length(value.output) > 65536)
+        value.output = substr(value.output, length(value.output) - 65536);
+    write_state_file(path, value);
+    remove_file(input_path);
+    remove_file(output_path);
+}
+
+function blockcheck_test_async(section, strategy, hosts, requested_count, requested_settle) {
+    section = as_string(section);
+    strategy = as_string(strategy);
+    hosts = as_string(hosts || "discord.com,www.youtube.com");
+    let count = unsigned_number(requested_count);
+    let settle = unsigned_number(requested_settle);
+
+    if (!blockcheck_value_valid(section, /[^A-Za-z0-9_-]/) ||
+        !blockcheck_value_valid(strategy, /[\r\n\t]/) ||
+        !blockcheck_value_valid(hosts, /[^A-Za-z0-9.,-]/) ||
+        count == null || count < 8 || count > 30 ||
+        settle == null || settle < 20 || settle > 120) {
+        action_start_response(false, "", "Invalid BlockCheck parameters");
+        exit(1);
+    }
+
+    ensure_dirs();
+    for (let existing in fs.glob(BLOCKCHECK_ACTION_DIR + "/*.json")) {
+        let state = read_json_file(existing);
+        if (type(state) == "object" && state.running === true) {
+            action_start_response(false, "", "Another BlockCheck is already running");
+            exit(1);
+        }
+    }
+
+    let id = job_id();
+    let path = job_state_path_value(BLOCKCHECK_ACTION_DIR, id);
+    let input_path = replace(path, /\.json$/, ".input");
+    if (path == "" || !write_file(input_path, "current\t" + strategy + "\n") ||
+        !write_state_file(path, running_blockcheck_action_value(section, now_seconds()))) {
+        remove_file(input_path);
+        action_start_response(false, "", "Failed to create BlockCheck job");
+        exit(1);
+    }
+
+    let pid = launch_worker([ "blockcheck-worker", path, input_path, section, hosts,
+        as_string(count), as_string(settle) ]);
+    if (pid == "" || !set_running_job_pid_file(path, pid)) {
+        if (pid != "") command_success_from_args([ "kill", pid ]);
+        remove_file(input_path);
+        write_finished_action_state(path, false, "Failed to start BlockCheck worker", 1);
+        action_start_response(false, id, "Failed to start BlockCheck worker");
+        exit(1);
+    }
+    action_start_response(true, id, "BlockCheck started");
+}
+
+function blockcheck_test_status(job_id_value) {
+    let path = job_state_path_value(BLOCKCHECK_ACTION_DIR, job_id_value);
+    if (path == "" || fs.stat(path) == null) {
+        action_start_response(false, "", "BlockCheck job was not found");
+        exit(1);
+    }
+    refresh_pid_job_state(path, "BlockCheck worker exited unexpectedly");
+    print(as_string(fs.readfile(path)));
+}
+
 function action_dir(kind) {
     kind = as_string(kind);
     if (kind == "service")
         return SERVICE_ACTION_DIR;
     if (kind == "latency")
         return LATENCY_ACTION_DIR;
+    if (kind == "blockcheck")
+        return BLOCKCHECK_ACTION_DIR;
     if (kind == "component")
         return COMPONENT_ACTION_DIR;
     if (kind == "subscription")
@@ -1578,6 +1680,12 @@ else if (mode == "latency-test-async")
     latency_test_async(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
 else if (mode == "latency-test-status")
     latency_test_status(ARGV[1]);
+else if (mode == "blockcheck-worker")
+    blockcheck_worker(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6]);
+else if (mode == "blockcheck-test-async")
+    blockcheck_test_async(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
+else if (mode == "blockcheck-test-status")
+    blockcheck_test_status(ARGV[1]);
 else if (mode == "action-ack")
     action_ack(ARGV[1], ARGV[2]);
 else if (mode == "cleanup-action-dir-fixture")
