@@ -80,15 +80,15 @@ if ! output="$(run_check wanted wanted.example 2>&1)"; then
   printf '%s\n' "$output" >&2
   fail "valid route failed"
 fi
-grep -Fq '"success":true' <<<"$output" || fail "success result missing"
+grep -Fq '"success": true' <<<"$output" || fail "success result missing"
 grep -Fq 'rule_set:wanted-set' <<<"$output" || fail "ruleset matcher missing"
-grep -Fq '"delay":42' <<<"$output" || fail "API delay missing"
+grep -Fq '"delay": 42' <<<"$output" || fail "API delay missing"
 
 if output="$(run_check wanted intercepted.example 2>&1)"; then
   fail "intercepted route passed"
 fi
 grep -Fq 'intercepted by another section' <<<"$output" || fail "interception was not reported"
-grep -Fq '"actual_outbound":"other-out"' <<<"$output" || fail "intercepting outbound missing"
+grep -Fq '"actual_outbound": "other-out"' <<<"$output" || fail "intercepting outbound missing"
 
 if output="$(run_check dpi dpi.example 2>&1)"; then
   fail "unexpected FakeIP answer passed"
