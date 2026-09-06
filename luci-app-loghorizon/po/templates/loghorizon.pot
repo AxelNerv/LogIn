@@ -3407,3 +3407,33 @@ msgstr ""
 #: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:108
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr ""
+
+msgid "Rule path result"
+msgstr ""
+
+msgid "The complete rule path works."
+msgstr ""
+
+msgid "The rule path is broken. The failed stage is shown below."
+msgstr ""
+
+msgid "Technical details"
+msgstr ""
+
+msgid "Unable to read the rule path diagnostic result"
+msgstr ""
+
+msgid "Check rule path"
+msgstr ""
+
+msgid "Enter a domain to verify its list, route, DNS answer, outbound, and API response."
+msgstr ""
+
+msgid "Enter a valid domain"
+msgstr ""
+
+msgid "Verify that a domain reaches this section through the complete generated routing chain."
+msgstr ""
+
+msgid "Run check"
+msgstr ""

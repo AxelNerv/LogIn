@@ -111,6 +111,8 @@ function show_help() {
     print("    blockcheck              Safely compare DPI strategies on this router\n");
     print("    blockcheck_test_async   Test one DPI strategy in a detached worker\n");
     print("    blockcheck_test_status  Get detached BlockCheck status\n");
+    print("    check_rule_path SECTION DOMAIN\n");
+    print("                            Verify list, route, DNS, outbound, and API chain\n");
     print("    ui_action_ack           Acknowledge a finished UI action state\n");
     print("    generate_reality_keypair\n");
     print("                            Generate a sing-box Reality key pair in JSON format\n");
@@ -187,6 +189,7 @@ function command_spec(command) {
         blockcheck: [ "diagnostics/blockcheck.uc", "run", -1 ],
         blockcheck_test_async: [ "service/ui.uc", "blockcheck-test-async", 5 ],
         blockcheck_test_status: [ "service/ui.uc", "blockcheck-test-status", 1 ],
+        check_rule_path: [ "diagnostics/rule_path.uc", "run", 2 ],
         ui_action_ack: [ "service/ui.uc", "action-ack", 2 ],
         generate_reality_keypair: [ "server/service.uc", "generate-reality-keypair", 0 ],
         get_tls_certificate_sha256: [ "server/service.uc", "tls-certificate-sha256", 1 ],

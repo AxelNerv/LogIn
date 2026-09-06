@@ -2356,3 +2356,33 @@ msgstr "sing-box outbound для Zapret2 настроен"
 
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr "sing-box outbound для Zapret2 не настроен"
+
+msgid "Rule path result"
+msgstr "Результат проверки маршрута"
+
+msgid "The complete rule path works."
+msgstr "Вся цепочка правила работает."
+
+msgid "The rule path is broken. The failed stage is shown below."
+msgstr "Цепочка правила разорвана. Проблемный этап указан ниже."
+
+msgid "Technical details"
+msgstr "Технические подробности"
+
+msgid "Unable to read the rule path diagnostic result"
+msgstr "Не удалось прочитать результат проверки маршрута"
+
+msgid "Check rule path"
+msgstr "Проверить маршрут правила"
+
+msgid "Enter a domain to verify its list, route, DNS answer, outbound, and API response."
+msgstr "Введите домен для проверки списка, маршрута, DNS, outbound и ответа API."
+
+msgid "Enter a valid domain"
+msgstr "Введите корректный домен"
+
+msgid "Verify that a domain reaches this section through the complete generated routing chain."
+msgstr "Проверить, что домен попадает в эту секцию через всю сгенерированную цепочку маршрутизации."
+
+msgid "Run check"
+msgstr "Запустить проверку"

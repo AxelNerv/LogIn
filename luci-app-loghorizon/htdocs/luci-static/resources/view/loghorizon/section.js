@@ -289,6 +289,102 @@ async function startBlockcheck(sectionId, strategy) {
     );
   }
 }
+
+function showRulePathResult(result) {
+  const rows = ((result && result.steps) || []).map((item) =>
+    E("div", { style: "margin:.6rem 0" }, [
+      E("strong", {}, `${item.success ? "✓" : "✕"} ${item.name}`),
+      E("div", {}, item.message || ""),
+    ]),
+  );
+  ui.showModal(_("Rule path result"), [
+    E(
+      "p",
+      {},
+      result && result.success
+        ? _("The complete rule path works.")
+        : _("The rule path is broken. The failed stage is shown below."),
+    ),
+    E("div", {}, rows),
+    E("details", {}, [
+      E("summary", {}, _("Technical details")),
+      E(
+        "pre",
+        { style: "white-space:pre-wrap;max-height:40vh;overflow:auto" },
+        JSON.stringify(result || {}, null, 2),
+      ),
+    ]),
+    E("div", { class: "right" }, [
+      E("button", { class: "btn", click: ui.hideModal }, _("Close")),
+    ]),
+  ]);
+}
+
+async function runRulePathCheck(sectionId, domain) {
+  let response;
+  try {
+    response = await fs.exec(BLOCKCHECK_COMMAND, [
+      "check_rule_path",
+      sectionId,
+      domain,
+    ]);
+  } catch (error) {
+    response = error || {};
+  }
+  const result = parseCommandJson(response);
+  if (!result) {
+    ui.addNotification(
+      null,
+      E("p", {}, _("Unable to read the rule path diagnostic result")),
+      "error",
+    );
+    return;
+  }
+  showRulePathResult(result);
+}
+
+function showRulePathDialog(sectionId) {
+  const input = E("input", {
+    class: "cbi-input-text",
+    type: "text",
+    placeholder: "discord.com",
+    style: "width:100%",
+  });
+  ui.showModal(_("Check rule path"), [
+    E(
+      "p",
+      {},
+      _(
+        "Enter a domain to verify its list, route, DNS answer, outbound, and API response.",
+      ),
+    ),
+    input,
+    E("div", { class: "right", style: "margin-top:1rem" }, [
+      E("button", { class: "btn", click: ui.hideModal }, _("Cancel")),
+      E(
+        "button",
+        {
+          class: "btn cbi-button-positive",
+          click: async () => {
+            const domain = `${input.value || ""}`.trim().toLowerCase();
+            if (!main.validateDomain(domain).valid) {
+              ui.addNotification(
+                null,
+                E("p", {}, _("Enter a valid domain")),
+                "error",
+              );
+              return;
+            }
+            ui.hideModal();
+            await runRulePathCheck(sectionId, domain);
+          },
+        },
+        _("Check"),
+      ),
+    ]),
+  ]);
+  window.setTimeout(() => input.focus(), 0);
+}
 const BYEDPI_LONG_VALUE_OPTIONS = new Set([
   "--max-conn",
   "--conn-ip",
@@ -7476,6 +7572,33 @@ function createSectionContent(section) {
       return Promise.resolve();
     }
     return startBlockcheck(sectionId, strategy);
+  };
+
+  o = section.taboption(
+    "settings",
+    form.Button,
+    "_rule_path_check",
+    _("Check rule path"),
+    _(
+      "Verify that a domain reaches this section through the complete generated routing chain.",
+    ),
+  );
+  [
+    "connection",
+    "proxy",
+    "outbound",
+    "vpn",
+    "bypass",
+    "zapret",
+    "zapret2",
+    "byedpi",
+  ].forEach((action) => o.depends("action", action));
+  o.modalonly = true;
+  o.inputstyle = "action";
+  o.inputtitle = _("Run check");
+  o.onclick = function (_event, sectionId) {
+    showRulePathDialog(sectionId);
+    return Promise.resolve();
   };
 
   o = section.taboption(
