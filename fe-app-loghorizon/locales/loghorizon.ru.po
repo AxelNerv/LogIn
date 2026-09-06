@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 22:22+0300\n"
-"PO-Revision-Date: 2026-09-06 22:22+0300\n"
+"POT-Creation-Date: 2026-09-06 22:41+0300\n"
+"PO-Revision-Date: 2026-09-06 22:41+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -58,6 +58,9 @@ msgstr "Активные соединения"
 
 msgid "Active Main DNS"
 msgstr "Активный основной DNS"
+
+msgid "adapted files"
+msgstr "заменённые файлы"
 
 msgid "Add a section"
 msgstr "Добавить секцию"
@@ -189,13 +192,13 @@ msgid "Backend validation failed: %s"
 msgstr "Backend-проверка завершилась ошибкой: %s"
 
 msgid "BlockCheck is still running. Reopen the section to check it later."
-msgstr ""
+msgstr "BlockCheck ещё выполняется. Откройте секцию позже, чтобы проверить результат."
 
 msgid "BlockCheck result"
-msgstr ""
+msgstr "Результат BlockCheck"
 
 msgid "BlockCheck started. Internet may briefly reconnect while the strategy is tested."
-msgstr ""
+msgstr "BlockCheck запущен. Во время проверки стратегии интернет может кратковременно переподключиться."
 
 msgid "Bootstrap DNS"
 msgstr "Bootstrap DNS"
@@ -261,7 +264,7 @@ msgid "Cache file path cannot be empty"
 msgstr "Путь к файлу кэша не может быть пустым"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 msgid "Cannot receive checks result"
 msgstr "Не удалось получить результаты проверки"
@@ -285,7 +288,7 @@ msgid "Certificate pin is unavailable. Apply or restart the server to generate t
 msgstr "Пин сертификата недоступен. Примените или перезапустите сервер, чтобы сгенерировать дефолтный сертификат, затем откройте это окно снова."
 
 msgid "Check"
-msgstr ""
+msgstr "Проверить"
 
 msgid "Check interval"
 msgstr "Интервал проверки"
@@ -413,6 +416,9 @@ msgstr "Временно недоступно"
 msgid "Custom outbound configurations in JSON format"
 msgstr "Пользовательские конфигурации outbound в формате JSON"
 
+msgid "Custom strategy"
+msgstr "Своя стратегия"
+
 msgid "Dashboard"
 msgstr "Дашборд"
 
@@ -469,6 +475,9 @@ msgstr "Отключить QUIC протокол для улучшения со�
 
 msgid "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE."
 msgstr "Отключение перехвата несовместимо с action=zapret2, потому что logIn отправляет совпавший трафик через NFQUEUE."
+
+msgid "Discord test: %s"
+msgstr "Тест Discord: %s"
 
 msgid "Display name"
 msgstr "Отображаемое имя"
@@ -617,8 +626,14 @@ msgstr "Скачивать через"
 msgid "Downloaded"
 msgstr "Загружено"
 
+msgid "DPI preset catalog is invalid"
+msgstr "Каталог DPI-пресетов повреждён"
+
 msgid "DPI strategy cannot be empty"
-msgstr ""
+msgstr "DPI-стратегия не может быть пустой"
+
+msgid "DPI strategy preset"
+msgstr "Пресет DPI-стратегии"
 
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr "Перетаскивайте строки, чтобы изменить приоритет. Правило сверху проверяется первым."
@@ -1692,7 +1707,7 @@ msgid "Rules proxy exist"
 msgstr "Правила прокси существуют"
 
 msgid "Run BlockCheck"
-msgstr ""
+msgstr "Запустить BlockCheck"
 
 msgid "Run check"
 msgstr "Запустить проверку"
@@ -1701,7 +1716,7 @@ msgid "Run Diagnostic"
 msgstr "Запустить диагностику"
 
 msgid "Safely tests the current strategy on Discord and YouTube, then restores the saved strategy."
-msgstr ""
+msgstr "Безопасно проверяет текущую стратегию на Discord и YouTube, затем восстанавливает сохранённую стратегию."
 
 msgid "Save"
 msgstr "Сохранить"
@@ -1789,6 +1804,9 @@ msgstr "Выбран"
 
 msgid "Selected section"
 msgstr "Выбранная секция"
+
+msgid "Selecting a preset copies it into the editable strategy field. Presets are filtered by the selected DPI engine."
+msgstr "Выбор пресета копирует его в редактируемое поле стратегии. Пресеты фильтруются по выбранному DPI-движку."
 
 msgid "Selector and URLTest outbounds must contain a non-empty outbounds array"
 msgstr "Selector и URLTest outbound должны содержать непустой массив outbounds"
@@ -2019,7 +2037,7 @@ msgid "Technical details"
 msgstr "Технические подробности"
 
 msgid "Test DPI strategy"
-msgstr ""
+msgstr "Проверить DPI-стратегию"
 
 msgid "Test latency"
 msgstr "Тестирование задержки"
@@ -2096,6 +2114,9 @@ msgstr "Это поле должно запускать рабочую стра�
 msgid "This flag does not accept a value."
 msgstr "Этот флаг не принимает значение."
 
+msgid "This Flowseal preset uses replacement fake files available on OpenWrt. Test it before regular use."
+msgstr "В этом пресете Flowseal используются доступные в OpenWrt заменители fake-файлов. Проверьте его перед постоянным использованием."
+
 msgid "This option requires a value."
 msgstr "Этой опции требуется значение."
 
@@ -2159,11 +2180,14 @@ msgstr "Тип"
 msgid "UDP (Unprotected DNS)"
 msgstr "UDP (Незащищённый DNS)"
 
+msgid "Unable to apply the selected DPI preset"
+msgstr "Не удалось применить выбранный DPI-пресет"
+
 msgid "Unable to read the rule path diagnostic result"
 msgstr "Не удалось прочитать результат проверки маршрута"
 
 msgid "Unable to start BlockCheck"
-msgstr ""
+msgstr "Не удалось запустить BlockCheck"
 
 msgid "Unable to validate the ByeDPI strategy through the backend parser."
 msgstr "Не удалось проверить стратегию ByeDPI через backend-парсер."

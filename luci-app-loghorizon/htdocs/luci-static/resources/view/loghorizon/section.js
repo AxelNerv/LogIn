@@ -191,6 +191,8 @@ const BLOCKCHECK_COMMAND = "/usr/bin/loghorizon";
 const BLOCKCHECK_HOSTS = "discord.com,www.youtube.com";
 const BLOCKCHECK_COUNT = "8";
 const BLOCKCHECK_SETTLE = "22";
+const DPI_PRESET_CATALOG_PATH = "/usr/lib/loghorizon/dpi-presets.json";
+let dpiPresetCatalogPromise = null;
 const ANNOTATED_TEXTAREA_STYLE_ID = "lgh-annotated-textarea-styles";
 const CONNECTIONS_DYNLIST_STYLE_ID = "lgh-connections-dynlist-styles";
 const NFQWS_REMOTE_VALIDATION_DEBOUNCE_MS = 500;
@@ -201,6 +203,32 @@ const nfqws2RemoteValidationCache = new Map();
 const nfqws2RemoteValidationInflight = new Map();
 const byedpiRemoteValidationCache = new Map();
 const byedpiRemoteValidationInflight = new Map();
+
+function loadDpiPresetCatalog() {
+  if (!dpiPresetCatalogPromise) {
+    dpiPresetCatalogPromise = fs.read(DPI_PRESET_CATALOG_PATH).then((raw) => {
+      const catalog = JSON.parse(raw);
+      if (!catalog || !Array.isArray(catalog.presets)) {
+        throw new Error(_("DPI preset catalog is invalid"));
+      }
+      return catalog.presets;
+    });
+  }
+  return dpiPresetCatalogPromise;
+}
+
+function dpiPresetLabel(preset) {
+  const details = [];
+  if (preset.tested_discord) {
+    details.push(_("Discord test: %s").format(preset.tested_discord));
+  }
+  if (preset.adapted_assets) {
+    details.push(_("adapted files"));
+  }
+  return details.length
+    ? `${preset.label} — ${details.join(", ")}`
+    : preset.label;
+}
 
 function parseCommandJson(response) {
   try {
@@ -7541,6 +7569,70 @@ function createSectionContent(section) {
   };
   configureTextareaOption(o, analyzeByedpiStrategy);
   dpiStrategyOptions.byedpi = o;
+
+  o = section.taboption(
+    "settings",
+    form.ListValue,
+    "_dpi_strategy_preset",
+    _("DPI strategy preset"),
+    _(
+      "Selecting a preset copies it into the editable strategy field. Presets are filtered by the selected DPI engine.",
+    ),
+  );
+  o.depends("action", "zapret");
+  o.depends("action", "zapret2");
+  o.modalonly = true;
+  o.rmempty = true;
+  o.load = async function (sectionId) {
+    const engine = uci.get(UCI_PACKAGE, sectionId, "action") || "";
+    const presets = (await loadDpiPresetCatalog()).filter(
+      (preset) => preset.engine === engine,
+    );
+    this.keylist = [];
+    this.vallist = [];
+    this.value("", _("Custom strategy"));
+    presets.forEach((preset) => this.value(preset.id, dpiPresetLabel(preset)));
+    const option = dpiStrategyOptions[engine];
+    const current = option ? `${await option.load(sectionId)}`.trim() : "";
+    const matched = presets.find(
+      (preset) => `${preset.strategy || ""}`.trim() === current,
+    );
+    return matched ? matched.id : "";
+  };
+  o.write = function () {};
+  o.remove = function () {};
+  o.onchange = async function (_event, sectionId, presetId) {
+    if (!presetId) return;
+    const engine = uci.get(UCI_PACKAGE, sectionId, "action") || "";
+    const presets = await loadDpiPresetCatalog();
+    const preset = presets.find(
+      (item) => item.id === presetId && item.engine === engine,
+    );
+    const option = dpiStrategyOptions[engine];
+    const widget = option && option.getUIElement(sectionId);
+    if (!preset || !widget || typeof widget.setValue !== "function") {
+      ui.addNotification(
+        null,
+        E("p", {}, _("Unable to apply the selected DPI preset")),
+        "error",
+      );
+      return;
+    }
+    widget.setValue(preset.strategy);
+    if (preset.adapted_assets) {
+      ui.addNotification(
+        null,
+        E(
+          "p",
+          {},
+          _(
+            "This Flowseal preset uses replacement fake files available on OpenWrt. Test it before regular use.",
+          ),
+        ),
+        "warning",
+      );
+    }
+  };
 
   o = section.taboption(
     "settings",

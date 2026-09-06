@@ -26,6 +26,9 @@
         ],
         "/usr/bin/loghorizon": [
           "exec"
+        ],
+        "/usr/lib/loghorizon/dpi-presets.json": [
+          "read"
         ]
       },
       "ubus": {

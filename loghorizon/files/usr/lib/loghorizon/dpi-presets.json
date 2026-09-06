@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "presets": [
+    {
+      "id": "login-youtube-mgts",
+      "label": "logIn: YouTube (МГТС)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--filter-tcp=80 --dpi-desync=fake,multisplit --dpi-desync-split-pos=method+2 --dpi-desync-fooling=badseq --new --filter-tcp=443 --dpi-desync=fake,multisplit --dpi-desync-split-pos=1,midsld --dpi-desync-split-seqovl=681 --dpi-desync-fooling=badseq --dpi-desync-repeats=6 --new --filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=/opt/zapret/files/fake/quic_initial_www_google_com.bin"
+    },
+    {
+      "id": "login-discord-mgts",
+      "label": "logIn: Discord (МГТС)",
+      "engine": "zapret2",
+      "tested_discord": "12/12",
+      "adapted_assets": false,
+      "strategy": "--filter-tcp=80 --filter-l7=http --payload=http_req --lua-desync=fake:blob=fake_default_http:tcp_md5 --lua-desync=multisplit:pos=method+2 --new --filter-tcp=443 --filter-l7=tls --payload=tls_client_hello --lua-desync=fake:blob=fake_default_tls:tcp_md5:tcp_seq=-10000 --lua-desync=multidisorder:pos=1,midsld --new --filter-udp=443 --filter-l7=quic --payload=quic_initial --lua-desync=fake:blob=fake_default_quic:repeats=6"
+    },
+    {
+      "id": "flowseal-general-alt",
+      "label": "Flowseal: general (ALT)",
+      "engine": "zapret",
+      "tested_discord": "1/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt10",
+      "label": "Flowseal: general (ALT10)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_max_ru.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt11",
+      "label": "Flowseal: general (ALT11)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_max_ru.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_max_ru.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt13",
+      "label": "Flowseal: general (ALT13)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake,hostfakesplit --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=mail.ru,altorder=1 --dpi-desync-repeats=5 --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_max_ru.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt2",
+      "label": "Flowseal: general (ALT2)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin"
+    },
+    {
+      "id": "flowseal-general-alt3",
+      "label": "Flowseal: general (ALT3)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,hostfakesplit --dpi-desync-fake-tls-mod=rnd,dupsid,sni=ya.ru --dpi-desync-hostfakesplit-mod=host=ya.ru,altorder=1 --dpi-desync-fooling=ts --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt4",
+      "label": "Flowseal: general (ALT4)",
+      "engine": "zapret",
+      "tested_discord": "3/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt5",
+      "label": "Flowseal: general (ALT5)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=syndata,multidisorder"
+    },
+    {
+      "id": "flowseal-general-alt6",
+      "label": "Flowseal: general (ALT6)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin"
+    },
+    {
+      "id": "flowseal-general-alt7",
+      "label": "Flowseal: general (ALT7)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=multisplit --dpi-desync-split-pos=2,sniext+1 --dpi-desync-split-seqovl=679 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin"
+    },
+    {
+      "id": "flowseal-general-alt8",
+      "label": "Flowseal: general (ALT8)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-alt9",
+      "label": "Flowseal: general (ALT9)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=hostfakesplit --dpi-desync-repeats=4 --dpi-desync-fooling=ts,md5sig --dpi-desync-hostfakesplit-mod=host=ozon.ru"
+    },
+    {
+      "id": "flowseal-general-exp",
+      "label": "Flowseal: general (EXP)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake,multisplit --dpi-desync-split-seqovl=480 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=4 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_max_ru.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-fake-tls-auto-alt",
+      "label": "Flowseal: general (FAKE TLS AUTO ALT)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --dpi-desync-repeats=8 --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-fake-tls-auto-alt2",
+      "label": "Flowseal: general (FAKE TLS AUTO ALT2)",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-fake-tls-auto-alt3",
+      "label": "Flowseal: general (FAKE TLS AUTO ALT3)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-fake-tls-auto",
+      "label": "Flowseal: general (FAKE TLS AUTO)",
+      "engine": "zapret",
+      "tested_discord": "не стартует",
+      "adapted_assets": false,
+      "strategy": "--dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,midsld --dpi-desync-repeats=11 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=^! --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-simple-fake-alt",
+      "label": "Flowseal: general (SIMPLE FAKE ALT)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --dpi-desync-fake-tls=/opt/zapret/files/fake/stun.bin --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general-simple-fake",
+      "label": "Flowseal: general (SIMPLE FAKE)",
+      "engine": "zapret",
+      "tested_discord": "4/4",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    },
+    {
+      "id": "flowseal-general",
+      "label": "Flowseal: general",
+      "engine": "zapret",
+      "tested_discord": "",
+      "adapted_assets": true,
+      "strategy": "--dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
+    }
+  ]
+}
