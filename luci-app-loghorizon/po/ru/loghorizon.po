@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 14:24+0300\n"
-"PO-Revision-Date: 2026-09-01 14:24+0300\n"
+"POT-Creation-Date: 2026-09-06 22:22+0300\n"
+"PO-Revision-Date: 2026-09-06 22:22+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -188,6 +188,15 @@ msgstr "Доступные действия"
 msgid "Backend validation failed: %s"
 msgstr "Backend-проверка завершилась ошибкой: %s"
 
+msgid "BlockCheck is still running. Reopen the section to check it later."
+msgstr ""
+
+msgid "BlockCheck result"
+msgstr ""
+
+msgid "BlockCheck started. Internet may briefly reconnect while the strategy is tested."
+msgstr ""
+
 msgid "Bootstrap DNS"
 msgstr "Bootstrap DNS"
 
@@ -251,6 +260,9 @@ msgstr "Путь к файлу кэша"
 msgid "Cache file path cannot be empty"
 msgstr "Путь к файлу кэша не может быть пустым"
 
+msgid "Cancel"
+msgstr ""
+
 msgid "Cannot receive checks result"
 msgstr "Не удалось получить результаты проверки"
 
@@ -272,8 +284,14 @@ msgstr "Путь к сертификату"
 msgid "Certificate pin is unavailable. Apply or restart the server to generate the default certificate, then open this dialog again."
 msgstr "Пин сертификата недоступен. Примените или перезапустите сервер, чтобы сгенерировать дефолтный сертификат, затем откройте это окно снова."
 
+msgid "Check"
+msgstr ""
+
 msgid "Check interval"
 msgstr "Интервал проверки"
+
+msgid "Check rule path"
+msgstr "Проверить маршрут правила"
 
 msgid "Check timeout after which the server is considered dead"
 msgstr "Таймаут проверки, после которого сервер считается мёртвым"
@@ -599,6 +617,9 @@ msgstr "Скачивать через"
 msgid "Downloaded"
 msgstr "Загружено"
 
+msgid "DPI strategy cannot be empty"
+msgstr ""
+
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr "Перетаскивайте строки, чтобы изменить приоритет. Правило сверху проверяется первым."
 
@@ -659,11 +680,17 @@ msgstr "Введите полный объект outbound sing-box"
 msgid "Enter a display name"
 msgstr "Введите отображаемое имя"
 
+msgid "Enter a domain to verify its list, route, DNS answer, outbound, and API response."
+msgstr "Введите домен для проверки списка, маршрута, DNS, outbound и ответа API."
+
 msgid "Enter a level name"
 msgstr "Введите название уровня"
 
 msgid "Enter a valid DNS server address"
 msgstr "Укажите корректный адрес DNS-сервера"
+
+msgid "Enter a valid domain"
+msgstr "Введите корректный домен"
 
 msgid "Enter HWID"
 msgstr "Укажите HWID"
@@ -1631,6 +1658,9 @@ msgstr "Секция маршрутизации"
 msgid "Routing, subscriptions and DPI control for OpenWrt"
 msgstr "Маршрутизация, подписки и управление DPI для OpenWrt"
 
+msgid "Rule path result"
+msgstr "Результат проверки маршрута"
+
 msgid "Rule set must be an HTTP(S) URL or a local .srs / .json path"
 msgstr "Набор правил должен быть HTTP(S) URL или локальным путём .srs / .json"
 
@@ -1661,8 +1691,17 @@ msgstr "Счётчики правил proxy"
 msgid "Rules proxy exist"
 msgstr "Правила прокси существуют"
 
+msgid "Run BlockCheck"
+msgstr ""
+
+msgid "Run check"
+msgstr "Запустить проверку"
+
 msgid "Run Diagnostic"
 msgstr "Запустить диагностику"
+
+msgid "Safely tests the current strategy on Discord and YouTube, then restores the saved strategy."
+msgstr ""
 
 msgid "Save"
 msgstr "Сохранить"
@@ -1976,6 +2015,12 @@ msgstr "Tailscale endpoint"
 msgid "Tailscale hostname"
 msgstr "Hostname Tailscale"
 
+msgid "Technical details"
+msgstr "Технические подробности"
+
+msgid "Test DPI strategy"
+msgstr ""
+
 msgid "Test latency"
 msgstr "Тестирование задержки"
 
@@ -2000,6 +2045,9 @@ msgstr "Тестировать серверы, имена которых сов�
 msgid "Testing URL"
 msgstr "URL проверки"
 
+msgid "The complete rule path works."
+msgstr "Вся цепочка правила работает."
+
 msgid "The desync fwmark is managed by logIn for loop prevention and must not be overridden here."
 msgstr "Desync fwmark управляется logIn для защиты от циклов и не должен переопределяться здесь."
 
@@ -2008,6 +2056,9 @@ msgstr "Номер NFQUEUE назначается logIn для каждого п
 
 msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
 msgstr "Правило применяется к домену и всем его поддоменам. Для полного совпадения, совпадению по слову или регулярному выражению используйте префиксы full:, keyword: или regex:."
+
+msgid "The rule path is broken. The failed stage is shown below."
+msgstr "Цепочка правила разорвана. Проблемный этап указан ниже."
 
 msgid "The service restarts, so pick an hour when nobody is using the router."
 msgstr "Служба перезапустится, поэтому выбери час, когда роутером никто не пользуется."
@@ -2107,6 +2158,12 @@ msgstr "Тип"
 
 msgid "UDP (Unprotected DNS)"
 msgstr "UDP (Незащищённый DNS)"
+
+msgid "Unable to read the rule path diagnostic result"
+msgstr "Не удалось прочитать результат проверки маршрута"
+
+msgid "Unable to start BlockCheck"
+msgstr ""
 
 msgid "Unable to validate the ByeDPI strategy through the backend parser."
 msgstr "Не удалось проверить стратегию ByeDPI через backend-парсер."
@@ -2273,6 +2330,9 @@ msgstr "Значение не может быть пустым"
 msgid "Value must not contain control characters"
 msgstr "Значение не должно содержать управляющие символы"
 
+msgid "Verify that a domain reaches this section through the complete generated routing chain."
+msgstr "Проверить, что домен попадает в эту секцию через всю сгенерированную цепочку маршрутизации."
+
 msgid "Via country.is"
 msgstr "Через сервис country.is"
 
@@ -2356,33 +2416,3 @@ msgstr "sing-box outbound для Zapret2 настроен"
 
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr "sing-box outbound для Zapret2 не настроен"
-
-msgid "Rule path result"
-msgstr "Результат проверки маршрута"
-
-msgid "The complete rule path works."
-msgstr "Вся цепочка правила работает."
-
-msgid "The rule path is broken. The failed stage is shown below."
-msgstr "Цепочка правила разорвана. Проблемный этап указан ниже."
-
-msgid "Technical details"
-msgstr "Технические подробности"
-
-msgid "Unable to read the rule path diagnostic result"
-msgstr "Не удалось прочитать результат проверки маршрута"
-
-msgid "Check rule path"
-msgstr "Проверить маршрут правила"
-
-msgid "Enter a domain to verify its list, route, DNS answer, outbound, and API response."
-msgstr "Введите домен для проверки списка, маршрута, DNS, outbound и ответа API."
-
-msgid "Enter a valid domain"
-msgstr "Введите корректный домен"
-
-msgid "Verify that a domain reaches this section through the complete generated routing chain."
-msgstr "Проверить, что домен попадает в эту секцию через всю сгенерированную цепочку маршрутизации."
-
-msgid "Run check"
-msgstr "Запустить проверку"

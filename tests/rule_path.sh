@@ -79,7 +79,10 @@ run_check() {
     ucode -L "$UCODE_LIB" -L "$WORK_DIR" -- "$CHECK" run "$1" "$2"
 }
 
-output="$(run_check wanted wanted.example)" || fail "valid route failed"
+if ! output="$(run_check wanted wanted.example 2>&1)"; then
+  printf '%s\n' "$output" >&2
+  fail "valid route failed"
+fi
 grep -Fq '"success":true' <<<"$output" || fail "success result missing"
 grep -Fq 'rule_set:wanted-set' <<<"$output" || fail "ruleset matcher missing"
 grep -Fq '"delay":42' <<<"$output" || fail "API delay missing"
