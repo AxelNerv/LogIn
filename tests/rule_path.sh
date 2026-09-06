@@ -10,16 +10,12 @@ trap 'rm -rf "$WORK_DIR"' EXIT
 fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
 mkdir -p "$WORK_DIR/bin"
 
-cat >"$WORK_DIR/uci.uc" <<'UCODE'
-function get(path) {
-    if (path == "loghorizon.wanted.enabled") return "1";
-    if (path == "loghorizon.wanted.action") return "connection";
-    if (path == "loghorizon.dpi.enabled") return "1";
-    if (path == "loghorizon.dpi.action") return "zapret";
-    return null;
-}
-return { get };
-UCODE
+cat >"$WORK_DIR/uci.state" <<'STATE'
+loghorizon.wanted.enabled=1
+loghorizon.wanted.action=connection
+loghorizon.dpi.enabled=1
+loghorizon.dpi.action=zapret
+STATE
 
 cat >"$WORK_DIR/config.json" <<JSON
 {
@@ -73,6 +69,7 @@ chmod +x "$WORK_DIR/bin/"*
 
 run_check() {
   LOGHORIZON_RULE_PATH_CONFIG="$WORK_DIR/config.json" \
+  LOGHORIZON_UCI_STATE_FILE="$WORK_DIR/uci.state" \
   LOGHORIZON_RULE_PATH_SING_BOX="$WORK_DIR/bin/sing-box" \
   LOGHORIZON_RULE_PATH_DIG="$WORK_DIR/bin/dig" \
   LOGHORIZON_RULE_PATH_BIN="$WORK_DIR/bin/loghorizon" \
