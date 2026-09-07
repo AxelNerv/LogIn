@@ -183,7 +183,7 @@
     "call": "Additional marking rules found",
     "key": "Additional marking rules found",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:106"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:108"
     ]
   },
   {
@@ -732,17 +732,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
     ]
   },
   {
@@ -810,10 +810,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3866",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267",
       "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882"
+      "src/loghorizon/tabs/monitoring/initController.ts:882",
+      "src/loghorizon/tabs/dashboard/initController.ts:1017",
+      "src/loghorizon/tabs/dashboard/initController.ts:1267"
     ]
   },
   {
@@ -1519,6 +1519,13 @@
     ]
   },
   {
+    "call": "DPI traffic may bypass NFQUEUE entirely",
+    "key": "DPI traffic may bypass NFQUEUE entirely",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:126"
+    ]
+  },
+  {
     "call": "Drag rows to change priority. The rule at the top is checked first.",
     "key": "Drag rows to change priority. The rule at the top is checked first.",
     "places": [
@@ -1711,6 +1718,13 @@
     "key": "Enter the subscription URL",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7727"
+    ]
+  },
+  {
+    "call": "Established flows may bypass packet inspection",
+    "key": "Established flows may bypass packet inspection",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:117"
     ]
   },
   {
@@ -2022,6 +2036,20 @@
     "key": "Handshake timeout",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3069"
+    ]
+  },
+  {
+    "call": "Hardware flow offloading is disabled",
+    "key": "Hardware flow offloading is disabled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:124"
+    ]
+  },
+  {
+    "call": "Hardware flow offloading is enabled",
+    "key": "Hardware flow offloading is enabled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:123"
     ]
   },
   {
@@ -2765,8 +2793,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
     ]
   },
   {
@@ -3344,7 +3372,7 @@
     "call": "No other marking rules found",
     "key": "No other marking rules found",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:105"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:107"
     ]
   },
   {
@@ -4090,42 +4118,42 @@
     "call": "Rules mangle counters",
     "key": "Rules mangle counters",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:79"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:81"
     ]
   },
   {
     "call": "Rules mangle exist",
     "key": "Rules mangle exist",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:74"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:76"
     ]
   },
   {
     "call": "Rules mangle output counters",
     "key": "Rules mangle output counters",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:89"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:91"
     ]
   },
   {
     "call": "Rules mangle output exist",
     "key": "Rules mangle output exist",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:84"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:86"
     ]
   },
   {
     "call": "Rules proxy counters",
     "key": "Rules proxy counters",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:99"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:101"
     ]
   },
   {
     "call": "Rules proxy exist",
     "key": "Rules proxy exist",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:94"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:96"
     ]
   },
   {
@@ -4651,6 +4679,20 @@
     ]
   },
   {
+    "call": "Software flow offloading is disabled",
+    "key": "Software flow offloading is disabled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:115"
+    ]
+  },
+  {
+    "call": "Software flow offloading is enabled",
+    "key": "Software flow offloading is enabled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:114"
+    ]
+  },
+  {
     "call": "Sort by latency",
     "key": "Sort by latency",
     "places": [
@@ -4874,7 +4916,7 @@
     "call": "Table exist",
     "key": "Table exist",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:69"
+      "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:71"
     ]
   },
   {

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 19:41+0300\n"
-"PO-Revision-Date: 2026-09-06 19:41+0300\n"
+"POT-Creation-Date: 2026-09-07 22:12+0300\n"
+"PO-Revision-Date: 2026-09-07 22:12+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "Add URLTest / Priority group"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:106
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:108
 msgid "Additional marking rules found"
 msgstr ""
 
@@ -451,14 +451,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 msgid "Checks failed"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -499,10 +499,10 @@ msgstr ""
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3866
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714
 #: src/partials/modal/renderModal.ts:263
-#: src/loghorizon/tabs/dashboard/initController.ts:1017
-#: src/loghorizon/tabs/dashboard/initController.ts:1267
 #: src/loghorizon/tabs/monitoring/initController.ts:832
 #: src/loghorizon/tabs/monitoring/initController.ts:882
+#: src/loghorizon/tabs/dashboard/initController.ts:1017
+#: src/loghorizon/tabs/dashboard/initController.ts:1267
 msgid "Close"
 msgstr ""
 
@@ -917,6 +917,10 @@ msgstr ""
 msgid "DPI strategy preset"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:126
+msgid "DPI traffic may bypass NFQUEUE entirely"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:425
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr ""
@@ -1029,6 +1033,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7727
 msgid "Enter the subscription URL"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:117
+msgid "Established flows may bypass packet inspection"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2962
@@ -1217,6 +1225,14 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3069
 msgid "Handshake timeout"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:124
+msgid "Hardware flow offloading is disabled"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:123
+msgid "Hardware flow offloading is enabled"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2780
@@ -1650,8 +1666,8 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 msgid "Issues detected"
 msgstr ""
 
@@ -1989,7 +2005,7 @@ msgstr ""
 msgid "No NFQUEUE traffic observed for rule %s"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:105
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:107
 msgid "No other marking rules found"
 msgstr ""
 
@@ -2432,27 +2448,27 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:79
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:81
 msgid "Rules mangle counters"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:74
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:76
 msgid "Rules mangle exist"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:89
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:91
 msgid "Rules mangle output counters"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:84
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:86
 msgid "Rules mangle output exist"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:99
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:101
 msgid "Rules proxy counters"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:94
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:96
 msgid "Rules proxy exist"
 msgstr ""
 
@@ -2759,6 +2775,14 @@ msgstr ""
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:115
+msgid "Software flow offloading is disabled"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:114
+msgid "Software flow offloading is enabled"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8059
 msgid "Sort by latency"
 msgstr ""
@@ -2886,7 +2910,7 @@ msgstr ""
 msgid "System information"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:69
+#: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:71
 msgid "Table exist"
 msgstr ""
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 22:41+0300\n"
-"PO-Revision-Date: 2026-09-06 22:41+0300\n"
+"POT-Creation-Date: 2026-09-07 01:12+0300\n"
+"PO-Revision-Date: 2026-09-07 01:12+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -635,6 +635,9 @@ msgstr "DPI-стратегия не может быть пустой"
 msgid "DPI strategy preset"
 msgstr "Пресет DPI-стратегии"
 
+msgid "DPI traffic may bypass NFQUEUE entirely"
+msgstr "DPI-трафик может полностью обходить NFQUEUE"
+
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr "Перетаскивайте строки, чтобы изменить приоритет. Правило сверху проверяется первым."
 
@@ -715,6 +718,9 @@ msgstr "HWID, который будет отправляться при запр
 
 msgid "Enter the subscription URL"
 msgstr "Введите URL подписки"
+
+msgid "Established flows may bypass packet inspection"
+msgstr "Установленные соединения могут обходить проверку пакетов"
 
 msgid "Exclude by proxy parameters"
 msgstr "Исключить по параметрам прокси"
@@ -838,6 +844,12 @@ msgstr "gRPC-сервис"
 
 msgid "Handshake timeout"
 msgstr "Таймаут рукопожатия"
+
+msgid "Hardware flow offloading is disabled"
+msgstr "Аппаратный Flow Offloading выключен"
+
+msgid "Hardware flow offloading is enabled"
+msgstr "Аппаратный Flow Offloading включён"
 
 msgid "Hide cascade connection nodes"
 msgstr "Скрывать узлы каскадных подключений"
@@ -1924,6 +1936,12 @@ msgstr "Сервис sing-box существует"
 
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr "Версия Sing-box совместима (новее 1.12.4)"
+
+msgid "Software flow offloading is disabled"
+msgstr "Программный Flow Offloading выключен"
+
+msgid "Software flow offloading is enabled"
+msgstr "Программный Flow Offloading включён"
 
 msgid "Sort by latency"
 msgstr "Сортировать по задержке"

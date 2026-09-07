@@ -391,6 +391,8 @@ export namespace logIn {
     rules_proxy_exist: 0 | 1;
     rules_proxy_counters: 0 | 1;
     rules_other_mark_exist: 0 | 1;
+    flow_offloading_enabled: 0 | 1;
+    flow_offloading_hw_enabled: 0 | 1;
   }
 
   export interface SingBoxCheckResult {

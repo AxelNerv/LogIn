@@ -7953,7 +7953,7 @@ async function runNftCheck() {
     throw new Error("Nftables checks failed");
   }
   const data = nftablesChecks.data;
-  const allGood = Boolean(data.table_exist) && Boolean(data.rules_mangle_exist) && Boolean(data.rules_mangle_counters) && Boolean(data.rules_mangle_output_exist) && Boolean(data.rules_mangle_output_counters) && Boolean(data.rules_proxy_exist) && Boolean(data.rules_proxy_counters) && !data.rules_other_mark_exist;
+  const allGood = Boolean(data.table_exist) && Boolean(data.rules_mangle_exist) && Boolean(data.rules_mangle_counters) && Boolean(data.rules_mangle_output_exist) && Boolean(data.rules_mangle_output_counters) && Boolean(data.rules_proxy_exist) && Boolean(data.rules_proxy_counters) && !data.rules_other_mark_exist && !data.flow_offloading_enabled && !data.flow_offloading_hw_enabled;
   const atLeastOneGood = Boolean(data.table_exist) || Boolean(data.rules_mangle_exist) || Boolean(data.rules_mangle_counters) || Boolean(data.rules_mangle_output_exist) || Boolean(data.rules_mangle_output_counters) || Boolean(data.rules_proxy_exist) || Boolean(data.rules_proxy_counters) || !data.rules_other_mark_exist;
   const { state, description } = getMeta({ atLeastOneGood, allGood });
   updateCheckStore({
@@ -8002,6 +8002,16 @@ async function runNftCheck() {
         state: !data.rules_other_mark_exist ? "success" : "warning",
         key: !data.rules_other_mark_exist ? _("No other marking rules found") : _("Additional marking rules found"),
         value: ""
+      },
+      {
+        state: data.flow_offloading_enabled ? "warning" : "success",
+        key: data.flow_offloading_enabled ? _("Software flow offloading is enabled") : _("Software flow offloading is disabled"),
+        value: data.flow_offloading_enabled ? _("Established flows may bypass packet inspection") : ""
+      },
+      {
+        state: data.flow_offloading_hw_enabled ? "warning" : "success",
+        key: data.flow_offloading_hw_enabled ? _("Hardware flow offloading is enabled") : _("Hardware flow offloading is disabled"),
+        value: data.flow_offloading_hw_enabled ? _("DPI traffic may bypass NFQUEUE entirely") : ""
       }
     ]
   });

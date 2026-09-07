@@ -1414,6 +1414,13 @@ function nft_table_has_other_mark_rules(family, table_name) {
     return status_success([ "stdin-contains", "meta mark set" ], output);
 }
 
+function flow_offloading_status() {
+    return {
+        software: arg_bool(uci_get("firewall.@defaults[0].flow_offloading")) ? 1 : 0,
+        hardware: arg_bool(uci_get("firewall.@defaults[0].flow_offloading_hw")) ? 1 : 0
+    };
+}
+
 function check_nft_rules() {
     command_status("sh -c " + shell_quote(
         "curl -m 3 -s " + shell_quote("https://" + CHECK_PROXY_IP_DOMAIN + "/check") + " >/dev/null 2>&1 & pid1=$!; " +
@@ -1429,6 +1436,7 @@ function check_nft_rules() {
     let rules_proxy_exist = 0;
     let rules_proxy_counters = 0;
     let rules_other_mark_exist = 0;
+    let flow_offloading = flow_offloading_status();
 
     if (command_success_from_args([ "nft", "list", "table", "inet", NFT_TABLE_NAME ])) {
         table_exist = 1;
@@ -1471,7 +1479,9 @@ function check_nft_rules() {
         rules_mangle_output_counters,
         rules_proxy_exist,
         rules_proxy_counters,
-        rules_other_mark_exist
+        rules_other_mark_exist,
+        flow_offloading_enabled: flow_offloading.software,
+        flow_offloading_hw_enabled: flow_offloading.hardware
     });
     return 0;
 }
@@ -1832,6 +1842,11 @@ function global_check(arg1, arg2) {
         let nft_render = render_or_fail([ "global-nft-check" ], nft_check_json, "❌ Failed to parse NFT rules info", [ 0 ]);
         if (nft_render == 0 && status_success([ "global-nft-other-mark-exists" ], nft_check_json))
             print(status_output([ "nft-ruleset-other-mark-lines", NFT_TABLE_NAME ], command_output_from_args([ "nft", "list", "ruleset" ])));
+        let nft_info = object_or_empty(parse_json_or_null(nft_check_json));
+        if (arg_bool(nft_info.flow_offloading_enabled))
+            print_global("⚠️ Software flow offloading is enabled. Established flows may bypass packet inspection.");
+        if (arg_bool(nft_info.flow_offloading_hw_enabled))
+            print_global("⚠️ Hardware flow offloading is enabled. DPI traffic may bypass NFQUEUE entirely.");
     }
     else
         print_global("❌ Failed to get NFT rules info");
@@ -1914,6 +1929,8 @@ else if (mode == "check-nft")
     exit(check_nft());
 else if (mode == "check-nft-rules")
     exit(check_nft_rules());
+else if (mode == "flow-offloading-fixture")
+    write_json(flow_offloading_status());
 else if (mode == "check-sing-box")
     exit(check_sing_box());
 else if (mode == "sing-box-standard-ports-listening-fixture")

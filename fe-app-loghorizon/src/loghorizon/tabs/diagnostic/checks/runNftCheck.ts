@@ -43,7 +43,9 @@ export async function runNftCheck() {
     Boolean(data.rules_mangle_output_counters) &&
     Boolean(data.rules_proxy_exist) &&
     Boolean(data.rules_proxy_counters) &&
-    !data.rules_other_mark_exist;
+    !data.rules_other_mark_exist &&
+    !data.flow_offloading_enabled &&
+    !data.flow_offloading_hw_enabled;
 
   const atLeastOneGood =
     Boolean(data.table_exist) ||
@@ -105,6 +107,24 @@ export async function runNftCheck() {
           ? _('No other marking rules found')
           : _('Additional marking rules found'),
         value: '',
+      },
+      {
+        state: data.flow_offloading_enabled ? 'warning' : 'success',
+        key: data.flow_offloading_enabled
+          ? _('Software flow offloading is enabled')
+          : _('Software flow offloading is disabled'),
+        value: data.flow_offloading_enabled
+          ? _('Established flows may bypass packet inspection')
+          : '',
+      },
+      {
+        state: data.flow_offloading_hw_enabled ? 'warning' : 'success',
+        key: data.flow_offloading_hw_enabled
+          ? _('Hardware flow offloading is enabled')
+          : _('Hardware flow offloading is disabled'),
+        value: data.flow_offloading_hw_enabled
+          ? _('DPI traffic may bypass NFQUEUE entirely')
+          : '',
       },
     ],
   });
