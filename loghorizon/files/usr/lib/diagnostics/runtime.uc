@@ -1415,9 +1415,11 @@ function nft_table_has_other_mark_rules(family, table_name) {
 }
 
 function flow_offloading_status() {
+    let defaults = uci_core.section_objects("firewall", "defaults");
+    let config = length(defaults) > 0 ? object_or_empty(defaults[0]) : {};
     return {
-        software: arg_bool(uci_get("firewall.@defaults[0].flow_offloading")) ? 1 : 0,
-        hardware: arg_bool(uci_get("firewall.@defaults[0].flow_offloading_hw")) ? 1 : 0
+        software: bool_option(config, "flow_offloading", false) ? 1 : 0,
+        hardware: bool_option(config, "flow_offloading_hw", false) ? 1 : 0
     };
 }
 
