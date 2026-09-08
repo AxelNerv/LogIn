@@ -3,8 +3,8 @@ set -eo pipefail
 
 # Covers the DNS transports the resolver can speak. DoQ and DoH3 were added
 # after Russian ISPs started killing DoT and DoH at the TLS handshake in
-# August 2026; both run over QUIC, so a ClientHello inspector on 853/443
-# has nothing to match.
+# August 2026. They offer another transport path, but are not inherently
+# invisible to traffic analysis and therefore need a TCP/TLS fallback.
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 UCODE_LIB="$ROOT_DIR/loghorizon/files/usr/lib"
@@ -62,7 +62,7 @@ doq="$(run_server doq dns.adguard-dns.com)"
 expect_field "$doq" type quic "doq"
 expect_field "$doq" server_port 853 "doq"
 
-doh3="$(run_server doh3 https://dns.adguard-dns.com/dns-query)"
+doh3="$(run_server doh3 h3://dns.adguard-dns.com/dns-query)"
 expect_field "$doh3" type h3 "doh3"
 expect_field "$doh3" server_port 443 "doh3"
 expect_field "$doh3" path /dns-query "doh3"

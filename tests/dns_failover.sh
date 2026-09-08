@@ -98,9 +98,9 @@ function find_tag(values, tag) { for (let value in values || []) if (value.tag =
 function count_prefix(values, prefix) { let count = 0; for (let value in values || []) if (index(value.tag || "", prefix) == 0) count++; return count; }
 
 let single = cfg(ARGV[0]);
-assert(length(single.dns.servers) == 3, "singleton keeps the legacy three-server shape");
-assert(length(single.inbounds) == 3, "singleton adds no health inbounds");
-assert(count_prefix(single.dns.servers, "dns-health-") == 0, "singleton adds no health servers");
+assert(length(single.dns.servers) == 4, "singleton adds a bootstrap health server");
+assert(length(single.inbounds) == 4, "singleton adds a bootstrap health inbound");
+assert(count_prefix(single.dns.servers, "dns-health-bootstrap-") == 1, "singleton bootstrap can be probed through sing-box");
 assert(find_tag(single.dns.servers, "dns-server").server == "77.88.8.8", "singleton main DNS preserved");
 // The resolver carries the address strategy alongside the server: without
 // it an outbound dials whatever family it is handed, and on a line with
