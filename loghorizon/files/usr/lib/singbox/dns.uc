@@ -61,7 +61,7 @@ function state_matches(template, state) {
     state = object_or_empty(state);
     return int(state.version || 0) == 1 &&
         as_string(state.dns_type) == template.dns_type &&
-        state.dns_ech === template.dns_ech &&
+        bool_option(state, "dns_ech", false) == template.dns_ech &&
         as_string(state.dns_detour) == template.dns_detour &&
         arrays_equal(state.main_servers, template.main_servers) &&
         arrays_equal(state.bootstrap_servers, template.bootstrap_servers);
