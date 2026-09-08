@@ -157,6 +157,7 @@ cat >"$WORK_DIR/upgrade-init" <<'SH'
 #!/usr/bin/env bash
 case "$1" in
   status) exit "${LOGHORIZON_FAKE_STATUS:-0}" ;;
+  enabled) exit "${LOGHORIZON_FAKE_ENABLED:-1}" ;;
   start) printf '%s\n' start >>"${LOGHORIZON_START_LOG:?}" ;;
   *) exit 1 ;;
 esac
@@ -207,5 +208,17 @@ LOGHORIZON_RT_TABLES="$WORK_DIR/rt_tables_upgrade" \
   ucode -L "$LOGHORIZON_LIB" "$PACKAGE_UC" prerm upgrade
 [ ! -e "$LOGHORIZON_PACKAGE_UPGRADE_STATE" ] ||
   fail "package pre-upgrade must not mark an already stopped service"
+
+# The old package hook may not create the marker. The rc.d autostart link
+# survives opkg replacement, so the new postinst must use it as a bridge when
+# upgrading from an affected release.
+: >"$WORK_DIR/upgrade-start.log"
+LOGHORIZON_PACKAGE_TEST_MODE=1 \
+LOGHORIZON_FAKE_ENABLED=0 \
+LOGHORIZON_INIT="$WORK_DIR/upgrade-init" \
+LOGHORIZON_START_LOG="$WORK_DIR/upgrade-start.log" \
+  ucode -L "$LOGHORIZON_LIB" "$PACKAGE_UC" postinst
+grep -Fxq start "$WORK_DIR/upgrade-start.log" ||
+  fail "package postinst must start an enabled service when an old prerm did not leave replacement state"
 
 printf 'package lifecycle checks passed\n'

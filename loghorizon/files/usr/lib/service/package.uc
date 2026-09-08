@@ -135,7 +135,12 @@ function prerm_cleanup(action) {
 }
 
 function postinst_restore() {
-    if (env("IPKG_INSTROOT", "") != "" || !path_exists(PACKAGE_UPGRADE_STATE))
+    if (env("IPKG_INSTROOT", "") != "")
+        return true;
+
+    let was_running = path_exists(PACKAGE_UPGRADE_STATE);
+    let is_enabled = command_success_from_args([ INIT_PATH, "enabled" ]);
+    if (!was_running && !is_enabled)
         return true;
 
     if (!command_success_from_args([ INIT_PATH, "start" ]))
