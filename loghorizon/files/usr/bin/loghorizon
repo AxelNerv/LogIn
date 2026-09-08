@@ -109,6 +109,7 @@ function show_help() {
     print("    latency_test_async      Start a dashboard latency test in the background\n");
     print("    latency_test_status     Get background latency test status\n");
     print("    blockcheck              Safely compare DPI strategies on this router\n");
+    print("      --recover             Restore a strategy left by an interrupted BlockCheck\n");
     print("    blockcheck_test_async   Test one DPI strategy in a detached worker\n");
     print("    blockcheck_test_status  Get detached BlockCheck status\n");
     print("    check_rule_path SECTION DOMAIN\n");

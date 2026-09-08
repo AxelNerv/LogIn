@@ -8,7 +8,11 @@ const SERVICE_INIT = getenv("LOGHORIZON_BLOCKCHECK_SERVICE_INIT") || "/etc/init.
 const CURL_BIN = getenv("LOGHORIZON_BLOCKCHECK_CURL_BIN") || "curl";
 const PGREP_BIN = getenv("LOGHORIZON_BLOCKCHECK_PGREP_BIN") || "pgrep";
 const SLEEP_BIN = getenv("LOGHORIZON_BLOCKCHECK_SLEEP_BIN") || "sleep";
+const LOGHORIZON_BIN = getenv("LOGHORIZON_BLOCKCHECK_LOGHORIZON_BIN") || "/usr/bin/loghorizon";
 const LOCK_DIR = getenv("LOGHORIZON_BLOCKCHECK_LOCK_DIR") || "/var/run/loghorizon-blockcheck.lock";
+const RECOVERY_FILE = getenv("LOGHORIZON_BLOCKCHECK_RECOVERY_FILE") ||
+    "/var/run/loghorizon-blockcheck-recovery.json";
+const WATCHDOG_ENABLED = getenv("LOGHORIZON_BLOCKCHECK_WATCHDOG_ENABLED") != "0";
 const DEFAULT_CONTROL_URL = getenv("LOGHORIZON_BLOCKCHECK_CONTROL_URL") ||
     "https://connectivitycheck.gstatic.com/generate_204";
 
@@ -78,7 +82,7 @@ function parse_args(args) {
     let options = {
         section: "",
         file: "",
-        hosts: "discord.com,www.youtube.com",
+        hosts: "www.youtube.com",
         count: 8,
         settle: 22,
         control_url: DEFAULT_CONTROL_URL,
@@ -123,11 +127,11 @@ function parse_args(args) {
 function engine_plan(section) {
     let action = as_string(uci.get(CONFIG_NAME + "." + section + ".action"));
     if (action == "zapret")
-        return { action, option: "nfqws_opt", process: "nfqws" };
+        return { action, option: "nfqws_opt", process: "nfqws", status_command: "get_zapret_status", queue_proof: true };
     if (action == "zapret2")
-        return { action, option: "nfqws2_opt", process: "nfqws2" };
+        return { action, option: "nfqws2_opt", process: "nfqws2", status_command: "get_zapret2_status", queue_proof: true };
     if (action == "byedpi")
-        return { action, option: "byedpi_cmd_opts", process: "ciadpi" };
+        return { action, option: "byedpi_cmd_opts", process: "ciadpi", status_command: "get_byedpi_status", queue_proof: false };
     if (action == "")
         fail("section " + section + " does not exist");
     fail("section " + section + " does not use a DPI engine");
@@ -140,6 +144,57 @@ function acquire_lock() {
 
 function release_lock() {
     return command_status([ "rmdir", LOCK_DIR ], true) == 0;
+}
+
+function read_json_file(path) {
+    let data = fs.readfile(path);
+    if (data == null)
+        return null;
+    try { return json(as_string(data)); } catch (error) { return null; }
+}
+
+function write_recovery_journal(state) {
+    let temporary = RECOVERY_FILE + ".tmp";
+    let value = {
+        version: 1,
+        config: CONFIG_NAME,
+        section: state.section,
+        option: state.option,
+        original: state.original,
+        original_present: state.original_present
+    };
+    if (fs.writefile(temporary, sprintf("%J\n", value)) == null)
+        return false;
+    if (command_status([ "chmod", "0600", temporary ], true) != 0 ||
+        !fs.rename(temporary, RECOVERY_FILE)) {
+        fs.unlink(temporary);
+        return false;
+    }
+    return true;
+}
+
+function clear_recovery_journal() {
+    if (fs.stat(RECOVERY_FILE) != null)
+        fs.unlink(RECOVERY_FILE);
+    return fs.stat(RECOVERY_FILE) == null;
+}
+
+function start_recovery_watchdog() {
+    if (!WATCHDOG_ENABLED)
+        return true;
+    let body = "parent=$PPID; while kill -0 \"$parent\" >/dev/null 2>&1; do " +
+        shell_quote(SLEEP_BIN) + " 2; done; [ ! -f " + shell_quote(RECOVERY_FILE) +
+        " ] || " + shell_quote(LOGHORIZON_BIN) + " blockcheck --recover";
+    return command_status([ "sh", "-c", "(" + body + ") >/dev/null 2>&1 &" ], true) == 0;
+}
+
+function valid_recovery_state(value) {
+    if (type(value) != "object" || int(value.version || 0) != 1 ||
+        as_string(value.config) != CONFIG_NAME ||
+        match(as_string(value.section), /[^A-Za-z0-9_-]/) != null)
+        return false;
+    return value.option == "nfqws_opt" || value.option == "nfqws2_opt" ||
+        value.option == "byedpi_cmd_opts";
 }
 
 function set_strategy(section, option, value, present) {
@@ -162,7 +217,29 @@ function restore_original(state) {
     if (!restart_service())
         return false;
     state.restore_needed = false;
-    return true;
+    return clear_recovery_journal();
+}
+
+function recover_stale_test() {
+    let value = read_json_file(RECOVERY_FILE);
+    if (!valid_recovery_state(value)) {
+        warn("BlockCheck: recovery journal is missing or invalid\n");
+        return 1;
+    }
+    let state = {
+        section: as_string(value.section),
+        option: as_string(value.option),
+        original: as_string(value.original),
+        original_present: value.original_present === true,
+        restore_needed: true
+    };
+    if (!restore_original(state)) {
+        warn("BlockCheck: CRITICAL: failed to restore the strategy from the recovery journal\n");
+        return 1;
+    }
+    command_status([ "rmdir", LOCK_DIR ], true);
+    print("BlockCheck: stale test strategy restored successfully\n");
+    return 0;
 }
 
 function connectivity_ok(url) {
@@ -192,9 +269,39 @@ function probe_host(host, count) {
         total_ms += int(seconds * 1000);
         ok++;
     }
-    return ok > 0
-        ? ok + "/" + count + " avg=" + int(total_ms / ok) + "ms"
-        : "0/" + count + " avg=n/a";
+    return {
+        ok,
+        count,
+        average_ms: ok > 0 ? int(total_ms / ok) : null
+    };
+}
+
+function route_path_ok(section, host) {
+    let output = command_output([ LOGHORIZON_BIN, "check_rule_path", section, host ]);
+    if (output == null)
+        return false;
+    let value = null;
+    try { value = json(output); } catch (error) { return false; }
+    return type(value) == "object" && value.success === true;
+}
+
+function provider_status(plan) {
+    let output = command_output([ LOGHORIZON_BIN, plan.status_command ]);
+    if (output == null)
+        return null;
+    try { return json(output); } catch (error) { return null; }
+}
+
+function selected_queue_packets(plan, section) {
+    let status = provider_status(plan);
+    if (type(status) != "object" || status.ready !== true)
+        return null;
+    if (!plan.queue_proof)
+        return -1;
+    for (let counter in (status.queue_counters || []))
+        if (as_string(counter.section) == section && counter.rule_present === true)
+            return int(counter.total_packets || 0);
+    return null;
 }
 
 function strategy_rows(path) {
@@ -222,7 +329,14 @@ function run_tests(options, plan, state) {
             printf("%-30s rejected: empty strategy\n", row.name);
             continue;
         }
+        if (!write_recovery_journal(state))
+            fail("failed to persist the recovery journal before changing the strategy");
         state.restore_needed = true;
+        if (!state.watchdog_started) {
+            if (!start_recovery_watchdog())
+                fail("failed to start the strategy recovery watchdog");
+            state.watchdog_started = true;
+        }
         if (!set_strategy(state.section, state.option, row.strategy, true))
             fail("failed to save candidate " + row.name);
         if (!restart_service()) {
@@ -245,17 +359,49 @@ function run_tests(options, plan, state) {
             continue;
         }
 
+        let before_packets = selected_queue_packets(plan, options.section);
+        if (before_packets == null) {
+            printf("%-30s rejected: selected engine section is not ready\n", row.name);
+            if (!restore_original(state)) fail("failed to restore after provider status failure");
+            continue;
+        }
+
         let line = sprintf("%-30s", row.name);
+        let probes_ok = true;
         for (let host in split(options.hosts, ",")) {
             host = trim(host);
             if (!valid_host(host)) fail("invalid test host: " + host);
-            line += " " + host + "=" + probe_host(host, options.count);
+            if (!route_path_ok(options.section, host)) {
+                line += " " + host + "=route-mismatch";
+                probes_ok = false;
+                continue;
+            }
+            let probe = probe_host(host, options.count);
+            line += " " + host + "=http:" + probe.ok + "/" + probe.count +
+                " http_avg=" + (probe.average_ms == null ? "n/a" : probe.average_ms + "ms");
+            if (probe.ok == 0)
+                probes_ok = false;
+        }
+        let after_packets = selected_queue_packets(plan, options.section);
+        if (plan.queue_proof) {
+            let delta = after_packets == null ? 0 : after_packets - before_packets;
+            line += delta > 0 && probes_ok
+                ? " verified:nfqueue+" + delta
+                : " unverified:selected-nfqueue+" + delta;
+        }
+        else {
+            line += probes_ok
+                ? " route-only:no-per-section-packet-counter"
+                : " unverified:no-per-section-packet-counter";
         }
         print(line, "\n");
     }
 }
 
 function main(args) {
+    if (length(args) == 1 && as_string(args[0]) == "--recover")
+        return recover_stale_test();
+
     let options = parse_args(args);
     if (options.help) {
         usage();
@@ -269,7 +415,8 @@ function main(args) {
         option: plan.option,
         original: as_string(original_value),
         original_present: original_value != null,
-        restore_needed: false
+        restore_needed: false,
+        watchdog_started: false
     };
     let failure = "";
     let locked = false;

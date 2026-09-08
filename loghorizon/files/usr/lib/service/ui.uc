@@ -744,6 +744,22 @@ function refresh_pid_job_state(path, stale_message) {
         write_stale_action_state(path, stale_message);
 }
 
+function refresh_blockcheck_job_state(path) {
+    let before = read_json_file(path);
+    refresh_pid_job_state(path, "BlockCheck worker exited unexpectedly");
+    let after = read_json_file(path);
+    if (type(before) != "object" || before.running !== true ||
+        type(after) != "object" || after.running !== false)
+        return;
+
+    let recovery_status = command_status(command_from_args([ BIN_PATH, "blockcheck", "--recover" ]) +
+        " >/dev/null 2>&1");
+    after.message = recovery_status == 0
+        ? "BlockCheck worker exited unexpectedly; original strategy was restored"
+        : "BlockCheck worker exited unexpectedly; automatic strategy recovery failed";
+    write_state_file(path, after);
+}
+
 function state_file_ack_expired(path) {
     let value = read_json_file(path);
     if (type(value) != "object")
@@ -794,7 +810,7 @@ function refresh_action_dirs() {
     for (let path in fs.glob(LATENCY_ACTION_DIR + "/*.json"))
         refresh_pid_job_state(path, "Latency test worker exited unexpectedly");
     for (let path in fs.glob(BLOCKCHECK_ACTION_DIR + "/*.json"))
-        refresh_pid_job_state(path, "BlockCheck worker exited unexpectedly");
+        refresh_blockcheck_job_state(path);
     for (let path in fs.glob(COMPONENT_ACTION_DIR + "/*.json"))
         refresh_pid_job_state(path, "Component action worker exited unexpectedly");
     for (let path in fs.glob(SUBSCRIPTION_ACTION_DIR + "/*.json"))
@@ -1500,6 +1516,10 @@ function blockcheck_worker(path, input_path, section, hosts, count, settle) {
     let args = [ BIN_PATH, "blockcheck", "-s", section, "-f", input_path,
         "-t", hosts, "-n", count, "-w", settle ];
     let status = command_status(command_from_args(args) + " >" + shell_quote(output_path) + " 2>&1");
+    if (status != 0 && command_status(command_from_args([ BIN_PATH, "blockcheck", "--recover" ]) +
+        " >/dev/null 2>&1") == 0)
+        fs.writefile(output_path, as_string(fs.readfile(output_path)) +
+            "BlockCheck: original strategy recovered after worker failure\n");
     let value = finished_action_state_value(path, status == 0,
         status == 0 ? "BlockCheck completed" : "BlockCheck failed", status, now_seconds());
     value.output = as_string(fs.readfile(output_path));
@@ -1513,7 +1533,7 @@ function blockcheck_worker(path, input_path, section, hosts, count, settle) {
 function blockcheck_test_async(section, strategy, hosts, requested_count, requested_settle) {
     section = as_string(section);
     strategy = as_string(strategy);
-    hosts = as_string(hosts || "discord.com,www.youtube.com");
+    hosts = as_string(hosts || "www.youtube.com");
     let count = unsigned_number(requested_count);
     let settle = unsigned_number(requested_settle);
 
@@ -1563,7 +1583,7 @@ function blockcheck_test_status(job_id_value) {
         action_start_response(false, "", "BlockCheck job was not found");
         exit(1);
     }
-    refresh_pid_job_state(path, "BlockCheck worker exited unexpectedly");
+    refresh_blockcheck_job_state(path);
     print(as_string(fs.readfile(path)));
 }
 
