@@ -131,8 +131,32 @@ fi
 grep -Fq 'cannot verify route rule with unsupported conditions' <<<"$output" ||
   fail "conditional route did not become indeterminate"
 for condition in source_ip_cidr port network invert; do
-  grep -Fq "$condition" <<<"$output" || fail "missing unsupported condition: $condition"
+  if [ "$condition" = source_ip_cidr ]; then
+    grep -Fq "$condition" <<<"$output" || fail "missing unsupported condition: $condition"
+  else
+    grep -Fq "unsupported conditions: $condition" <<<"$output" &&
+      fail "known HTTPS flow condition remained unsupported: $condition"
+  fi
 done
+
+cat >"$WORK_DIR/config.json" <<JSON
+{
+  "route": {
+    "rules": [
+      { "action": "reject", "protocol": "quic", "method": "drop" },
+      { "action": "route", "outbound": "wanted-out", "domain": "https.example", "network": "tcp", "protocol": "tls", "port": 443 }
+    ]
+  },
+  "dns": { "rules": [{ "action": "route", "server": "fakeip-server", "domain": "https.example" }] },
+  "outbounds": [{ "type": "selector", "tag": "wanted-out" }]
+}
+JSON
+if ! output="$(run_check wanted https.example 2>&1)"; then
+  printf '%s\n' "$output" >&2
+  fail "HTTPS route was hidden by a QUIC-only reject"
+fi
+grep -Fq '"network": "tcp", "protocol": "tls", "port": 443' <<<"$output" ||
+  fail "diagnostic result does not disclose its HTTPS flow context"
 
 cat >"$WORK_DIR/config.json" <<JSON
 {

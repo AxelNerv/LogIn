@@ -106,9 +106,36 @@ function rule_allows_tproxy(rule) {
 
 function unsupported_rule_keys(rule, allowed) {
     let result = [];
-    for (let key in keys(rule))
+    for (let key in keys(rule)) {
+        if (key == "invert" && rule[key] !== true) continue;
         if (!allowed[key]) push(result, key);
+    }
     return result;
+}
+
+function value_matches(values, expected) {
+    expected = as_string(expected);
+    for (let value in as_array(values))
+        if (as_string(value) == expected) return true;
+    return false;
+}
+
+function port_range_matches(values, port) {
+    port = int(port);
+    for (let value in as_array(values)) {
+        let bounds = split(as_string(value), ":");
+        if (length(bounds) == 2 && port >= int(bounds[0]) && port <= int(bounds[1])) return true;
+    }
+    return false;
+}
+
+function rule_matches_flow_context(rule, context) {
+    if (rule.network != null && !value_matches(rule.network, context.network)) return false;
+    if (rule.protocol != null && !value_matches(rule.protocol, context.protocol)) return false;
+    if (rule.port != null && !value_matches(rule.port, context.port)) return false;
+    if (rule.port_range != null && !port_range_matches(rule.port_range, context.port)) return false;
+    if (rule.ip_version != null && !value_matches(rule.ip_version, context.ip_version)) return false;
+    return true;
 }
 
 function has_domain_matchers(rule) {
@@ -120,6 +147,7 @@ function has_domain_matchers(rule) {
 const ROUTE_RULE_KEYS = {
     action: true, outbound: true, inbound: true,
     domain: true, domain_suffix: true, domain_keyword: true, domain_regex: true, rule_set: true,
+    network: true, protocol: true, port: true, port_range: true, ip_version: true,
     method: true, no_drop: true
 };
 
@@ -129,7 +157,7 @@ const DNS_RULE_KEYS = {
     disable_cache: true, rewrite_ttl: true, client_subnet: true
 };
 
-function find_route(config, domain) {
+function find_route(config, domain, context) {
     let sets = ruleset_map(config);
     let checked_sets = [];
     let index_value = -1;
@@ -149,6 +177,7 @@ function find_route(config, domain) {
                 return { found: false, error: "cannot inspect rule set " + tag + ": " + result.error, checked_sets };
             if (result.matched && matcher == "") matcher = "rule_set:" + tag;
         }
+        if (!rule_matches_flow_context(rule, context)) continue;
         let unsupported = unsupported_rule_keys(rule, ROUTE_RULE_KEYS);
         if (matcher == "" && has_domain_matchers(rule)) continue;
         if (length(unsupported) > 0)
@@ -244,7 +273,8 @@ function main(section, domain) {
     }
     push(steps, step("config", true, "Generated sing-box config loaded", null));
 
-    let route = find_route(config, domain);
+    let flow_context = { network: "tcp", protocol: "tls", port: 443, ip_version: 4 };
+    let route = find_route(config, domain, flow_context);
     let expected = section + "-out";
     let route_ok = route.found === true && route.outbound == expected;
     let route_message = route.error || (route.found ?
@@ -255,6 +285,7 @@ function main(section, domain) {
         actual_outbound: route.outbound || "",
         matcher: route.matcher || "",
         rule_index: route.index != null ? route.index : null,
+        flow_context,
         checked_rule_sets: route.checked_sets || []
     }));
 
