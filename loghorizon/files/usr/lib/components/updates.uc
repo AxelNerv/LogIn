@@ -327,6 +327,11 @@ function temp_path() {
     return trim(command_output_from_args([ "mktemp" ]));
 }
 
+function sibling_candidate_path(target) {
+    let stamp = clock();
+    return as_string(target) + ".candidate." + as_string(stamp[0]) + "." + as_string(stamp[1]);
+}
+
 function remove_files(paths) {
     for (let path in paths)
         if (as_string(path) != "")
@@ -2031,8 +2036,8 @@ function remote_ruleset_path(section, kind) {
     return TMP_RULESET_FOLDER + "/" + routing_rulesets_module().ruleset_tag(section_name(section), "remote", kind) + ".json";
 }
 
-function reset_domain_ip_list_ruleset(section) {
-    let path = domain_ip_list_ruleset_path(section);
+function reset_domain_ip_list_ruleset(section, path) {
+    path = as_string(path || domain_ip_list_ruleset_path(section));
     ensure_dir(TMP_RULESET_FOLDER);
     remove_file(path);
     return ruleset_module_success([ "create-source", path ]);
@@ -2043,13 +2048,6 @@ function ensure_ruleset_source(path) {
     if (file_exists_value(path))
         return true;
     return ruleset_module_success([ "create-source", path ]);
-}
-
-function cleanup_empty_ruleset(path) {
-    if (routing_rulesets_module().has_rules(path))
-        return true;
-    remove_file(path);
-    return false;
 }
 
 function add_plain_subnet_file_to_nft_for_section(section, filepath) {
@@ -2095,9 +2093,11 @@ function add_json_ruleset_subnets_to_nft_for_section(section, json_file, label) 
     return ok;
 }
 
-function import_domain_ip_list_file_into_rulesets(filepath, section) {
-    if (!file_exists_value(filepath))
-        return true;
+function import_domain_ip_list_file_into_rulesets(filepath, section, ruleset_filepath, apply_nft) {
+    if (!file_exists_value(filepath)) {
+        log_message("Local domain/IP list " + as_string(filepath) + " not found", "error");
+        return false;
+    }
 
     let domains_tmpfile = temp_path();
     let subnets_tmpfile = temp_path();
@@ -2106,24 +2106,25 @@ function import_domain_ip_list_file_into_rulesets(filepath, section) {
         return false;
     }
 
-    let ruleset_filepath = domain_ip_list_ruleset_path(section);
+    ruleset_filepath = as_string(ruleset_filepath || domain_ip_list_ruleset_path(section));
+    apply_nft = apply_nft == null ? true : !!apply_nft;
     let ok = nft_module_success([ "split-domain-subnet-file", filepath, domains_tmpfile, subnets_tmpfile ]);
     let domains_only = option(section, "action", "") == "dns";
     if (ok)
         ok = ruleset_module_success([ "import-plain-list", domains_tmpfile, ruleset_filepath, "domain_suffix", "domains", "5000" ]);
     if (ok && !domains_only)
         ok = ruleset_module_success([ "import-plain-list", subnets_tmpfile, ruleset_filepath, "ip_cidr", "subnets", "5000" ]);
-    if (ok && !domains_only)
+    if (ok && !domains_only && apply_nft)
         ok = add_plain_subnet_file_to_nft_for_section(section, subnets_tmpfile);
 
     remove_files([ domains_tmpfile, subnets_tmpfile ]);
     return ok;
 }
 
-function import_domain_ip_list_reference_into_rulesets(reference, section, settings) {
+function import_domain_ip_list_reference_into_rulesets(reference, section, settings, ruleset_filepath, apply_nft) {
     reference = as_string(reference);
     if (match(reference, /^https?:\/\//) == null)
-        return import_domain_ip_list_file_into_rulesets(reference, section);
+        return import_domain_ip_list_file_into_rulesets(reference, section, ruleset_filepath, apply_nft);
 
     let tmpfile = temp_path();
     if (tmpfile == "")
@@ -2132,7 +2133,7 @@ function import_domain_ip_list_reference_into_rulesets(reference, section, setti
     let ok = true;
     if (download_to_file(reference, tmpfile, service_proxy_address(settings, "lists")) && file_nonempty(tmpfile)) {
         convert_crlf_to_lf(tmpfile);
-        ok = import_domain_ip_list_file_into_rulesets(tmpfile, section);
+        ok = import_domain_ip_list_file_into_rulesets(tmpfile, section, ruleset_filepath, apply_nft);
     }
     else {
         log_message("Failed to download remote domain/IP list " + reference + "; skipping it until the next successful update", "error");
@@ -2151,15 +2152,41 @@ function rebuild_domain_ip_lists_from_rule(section, settings) {
     if (length(references) == 0)
         return true;
 
-    if (!reset_domain_ip_list_ruleset(section))
+    let target = domain_ip_list_ruleset_path(section);
+    let candidate = sibling_candidate_path(target);
+    if (!reset_domain_ip_list_ruleset(section, candidate))
         return false;
 
     let ok = true;
     for (let reference in references)
-        if (!import_domain_ip_list_reference_into_rulesets(reference, section, settings))
+        if (!import_domain_ip_list_reference_into_rulesets(reference, section, settings, candidate, false))
             ok = false;
 
-    cleanup_empty_ruleset(domain_ip_list_ruleset_path(section));
+    if (ok && !routing_rulesets_module().has_rules(candidate)) {
+        log_message("Updated domain/IP list for '" + section_name(section) + "' is empty; keeping the previous copy", "error");
+        ok = false;
+    }
+    if (ok && option(section, "action", "") != "dns")
+        ok = add_json_ruleset_subnets_to_nft_for_section(section, candidate,
+            "Domain/IP lists for " + section_name(section));
+    if (ok && !fs.rename(candidate, target)) {
+        log_message("Failed to publish updated domain/IP list for '" + section_name(section) + "'; keeping the previous copy", "error");
+        ok = false;
+    }
+    remove_file(candidate);
+    return ok;
+}
+
+function validate_binary_ruleset(path) {
+    let decoded = temp_path();
+    if (decoded == "")
+        return false;
+    let ok = command_success_from_args([ "sing-box", "rule-set", "decompile", path, "-o", decoded ]);
+    if (ok) {
+        let value = read_json_file(decoded);
+        ok = type(value) == "object" && int(value.version || 0) > 0 && type(value.rules) == "array";
+    }
+    remove_file(decoded);
     return ok;
 }
 
@@ -2183,12 +2210,13 @@ function import_builtin_subnets_from_rule(section, settings) {
         // Fetching it here means the service starts from what is already on
         // disk and picks up the rest once there is a route to fetch through.
         let ruleset_target = ruleset_folder + "/" + as_string(service) + ".srs";
-        let ruleset_tmp = ensure_parent_dir(ruleset_target) ? temp_path() : "";
+        let ruleset_tmp = ensure_parent_dir(ruleset_target) ? sibling_candidate_path(ruleset_target) : "";
         if (ruleset_tmp != "") {
             // The previous copy stays on failure: an outdated list still
             // routes traffic, an absent one silently stops routing any.
             if (download_to_file(singbox_rulesets_module().community_url(service), ruleset_tmp,
-                    service_proxy_address(settings, "lists")) && file_nonempty(ruleset_tmp)) {
+                    service_proxy_address(settings, "lists")) && file_nonempty(ruleset_tmp) &&
+                    validate_binary_ruleset(ruleset_tmp)) {
                 if (!command_success_from_args([ "mv", ruleset_tmp, ruleset_target ])) {
                     ok = false;
                     remove_file(ruleset_tmp);
@@ -2196,10 +2224,15 @@ function import_builtin_subnets_from_rule(section, settings) {
             }
             else {
                 log_message("Failed to download the " + as_string(service) +
-                    " rule set; keeping the copy already on disk", "warn");
+                    " rule set or validate its format; keeping the copy already on disk", "warn");
                 ok = false;
                 remove_file(ruleset_tmp);
             }
+        }
+        else {
+            log_message("Failed to create a temporary file for the " + as_string(service) +
+                " rule set; keeping the copy already on disk", "error");
+            ok = false;
         }
 
         let urls = BUILTIN_SUBNET_URLS[as_string(service)];
@@ -2948,6 +2981,22 @@ function fixture_subscription_update_section_due_status(path, section_name_value
     subscription_update_section_due_status(fixture_section_by_name(data, section_name_value), timestamp_path, now);
 }
 
+function fixture_rebuild_domain_ip_lists(path, section_name_value) {
+    let data = object_or_empty(read_json_file(path));
+    connections.set_item_sections_from_data(data);
+    let section = fixture_section_by_name(data, section_name_value);
+    let ok = section_name(section) != "" &&
+        rebuild_domain_ip_lists_from_rule(section, object_or_empty(data.settings));
+    print(ok ? "ok\n" : "failed\n");
+    exit(ok ? 0 : 1);
+}
+
+function fixture_validate_binary_ruleset(path) {
+    let ok = validate_binary_ruleset(path);
+    print(ok ? "valid\n" : "invalid\n");
+    exit(ok ? 0 : 1);
+}
+
 function print_builtin_subnet_urls(service) {
     for (let url in array_or_empty(BUILTIN_SUBNET_URLS[as_string(service)]))
         print(url, "\n");
@@ -2993,6 +3042,10 @@ else if (mode == "list-update-due-status")
     uci_list_update_due_status(ARGV[1], ARGV[2]);
 else if (mode == "list-update-due-status-fixture")
     fixture_list_update_due_status(ARGV[1], ARGV[2], ARGV[3]);
+else if (mode == "rebuild-domain-ip-lists-fixture")
+    fixture_rebuild_domain_ip_lists(ARGV[1], ARGV[2]);
+else if (mode == "validate-binary-ruleset-fixture")
+    fixture_validate_binary_ruleset(ARGV[1]);
 else if (mode == "subscription-update-section-due-status")
     uci_subscription_update_section_due_status(ARGV[1], ARGV[2], ARGV[3]);
 else if (mode == "subscription-update-section-due-status-fixture")
