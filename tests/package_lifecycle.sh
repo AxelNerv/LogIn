@@ -158,6 +158,7 @@ cat >"$WORK_DIR/upgrade-init" <<'SH'
 case "$1" in
   status) exit "${LOGHORIZON_FAKE_STATUS:-0}" ;;
   start) printf '%s\n' start >>"${LOGHORIZON_START_LOG:?}" ;;
+  *) exit 1 ;;
 esac
 SH
 chmod 0755 "$WORK_DIR/upgrade-init"
@@ -178,6 +179,26 @@ grep -Fxq start "$WORK_DIR/upgrade-start.log" ||
   fail "package postinst must restart a service that was running before upgrade"
 [ ! -e "$LOGHORIZON_PACKAGE_UPGRADE_STATE" ] ||
   fail "package postinst must clear the consumed upgrade state"
+
+# OpenWrt opkg can implement a local IPK replacement as remove + install,
+# without an upgrade argument or PKG_UPGRADE=1. It must still restore a service
+# that was running before package replacement.
+: >"$WORK_DIR/upgrade-start.log"
+LOGHORIZON_PACKAGE_TEST_MODE=1 \
+LOGHORIZON_INIT="$WORK_DIR/upgrade-init" \
+LOGHORIZON_START_LOG="$WORK_DIR/upgrade-start.log" \
+LOGHORIZON_RT_TABLES="$WORK_DIR/rt_tables_upgrade" \
+  ucode -L "$LOGHORIZON_LIB" "$PACKAGE_UC" prerm remove
+[ -f "$LOGHORIZON_PACKAGE_UPGRADE_STATE" ] ||
+  fail "package remove hook must remember a running service for opkg local-IPK replacement"
+LOGHORIZON_PACKAGE_TEST_MODE=1 \
+LOGHORIZON_INIT="$WORK_DIR/upgrade-init" \
+LOGHORIZON_START_LOG="$WORK_DIR/upgrade-start.log" \
+  ucode -L "$LOGHORIZON_LIB" "$PACKAGE_UC" postinst
+grep -Fxq start "$WORK_DIR/upgrade-start.log" ||
+  fail "package postinst must restart a running service after opkg remove + install replacement"
+[ ! -e "$LOGHORIZON_PACKAGE_UPGRADE_STATE" ] ||
+  fail "package postinst must consume remove + install replacement state"
 
 LOGHORIZON_PACKAGE_TEST_MODE=1 \
 LOGHORIZON_FAKE_STATUS=1 \

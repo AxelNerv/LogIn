@@ -109,12 +109,8 @@ function remove_managed_sing_box() {
     unlink_if_exists(SING_BOX_CRONET);
 }
 
-function remember_upgrade_state(action) {
-    if (as_string(action) != "upgrade") {
-        unlink_if_exists(PACKAGE_UPGRADE_STATE);
-        return;
-    }
-
+function remember_runtime_state() {
+    unlink_if_exists(PACKAGE_UPGRADE_STATE);
     if (command_success_from_args([ INIT_PATH, "status" ]))
         fs.writefile(PACKAGE_UPGRADE_STATE, "1\n");
 }
@@ -123,7 +119,13 @@ function prerm_cleanup(action) {
     if (env("IPKG_INSTROOT", "") != "")
         return true;
 
-    remember_upgrade_state(action);
+    /*
+     * OpenWrt opkg may replace a locally installed IPK through its remove
+     * path, passing `remove` with PKG_UPGRADE=0 before installing the new
+     * package. Remember the runtime state for every live prerm invocation;
+     * postinst is the reliable indication that a replacement followed.
+     */
+    remember_runtime_state();
     if (!PACKAGE_TEST_MODE) {
         command_success_from_args([ INIT_PATH, "stop" ]);
         restore_dnsmasq_if_needed();
