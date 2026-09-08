@@ -16,52 +16,12 @@ fail() {
   exit 1
 }
 
-mkdir -p "$WORK_DIR/bin" "$WORK_DIR/core"
+mkdir -p "$WORK_DIR/bin"
 printf '%s\n' original >"$WORK_DIR/current"
 printf '%s\n' 10 >"$WORK_DIR/packets"
-
-cat >"$WORK_DIR/core/uci.uc" <<'UCODE'
-let fs = require("fs");
-let state = {
-    action: "zapret",
-    nfqws_opt: "original"
-};
-
-function write_current() {
-    fs.writefile(getenv("BLOCKCHECK_TEST_DIR") + "/current", "" + (state.nfqws_opt || "") + "\n");
-}
-
-function path_option(path) {
-    let parts = split("" + path, ".");
-    return length(parts) == 3 && parts[0] == "loghorizon" && parts[1] == "test"
-        ? parts[2] : "";
-}
-
-function get(path) {
-    let option = path_option(path);
-    return option == "" ? null : state[option];
-}
-
-function set(path, value) {
-    let option = path_option(path);
-    if (option == "") return false;
-    state[option] = value;
-    write_current();
-    return true;
-}
-
-function delete_path(path) {
-    let option = path_option(path);
-    if (option == "") return false;
-    delete state[option];
-    write_current();
-    return true;
-}
-
-function commit(_package_name) { return true; }
-
-return { get, set, delete: delete_path, commit };
-UCODE
+printf '%s\n' \
+  'loghorizon.test.action=zapret' \
+  'loghorizon.test.nfqws_opt=original' >"$WORK_DIR/uci-state"
 
 cat >"$WORK_DIR/bin/service" <<'SH'
 #!/bin/sh
@@ -69,6 +29,8 @@ count=0
 [ ! -f "$BLOCKCHECK_TEST_DIR/restarts" ] || count="$(cat "$BLOCKCHECK_TEST_DIR/restarts")"
 count=$((count + 1))
 printf '%s\n' "$count" >"$BLOCKCHECK_TEST_DIR/restarts"
+sed -n 's/^loghorizon\.test\.nfqws_opt=//p' "$LOGHORIZON_UCI_STATE_FILE" \
+  >"$BLOCKCHECK_TEST_DIR/current"
 if [ "${BLOCKCHECK_FAIL_RESTORE:-0}" = 1 ] &&
    [ "$count" -gt 1 ] &&
    [ "$(cat "$BLOCKCHECK_TEST_DIR/current")" = original ]; then
@@ -134,6 +96,7 @@ printf 'candidate\t--dpi-desync=fake\n' >"$WORK_DIR/strategies.tsv"
 
 run_blockcheck() {
   BLOCKCHECK_TEST_DIR="$WORK_DIR" \
+  LOGHORIZON_UCI_STATE_FILE="$WORK_DIR/uci-state" \
   LOGHORIZON_BLOCKCHECK_LOCK_DIR="$WORK_DIR/lock" \
   LOGHORIZON_BLOCKCHECK_SERVICE_INIT="$WORK_DIR/bin/service" \
   LOGHORIZON_BLOCKCHECK_CURL_BIN="$WORK_DIR/bin/curl" \
@@ -193,6 +156,7 @@ mkdir -p "$WORK_DIR/lock"
 rm -f "$WORK_DIR/restarts"
 output="$(
   BLOCKCHECK_TEST_DIR="$WORK_DIR" \
+  LOGHORIZON_UCI_STATE_FILE="$WORK_DIR/uci-state" \
   LOGHORIZON_BLOCKCHECK_LOCK_DIR="$WORK_DIR/lock" \
   LOGHORIZON_BLOCKCHECK_RECOVERY_FILE="$WORK_DIR/recovery.json" \
   LOGHORIZON_BLOCKCHECK_SERVICE_INIT="$WORK_DIR/bin/service" \
