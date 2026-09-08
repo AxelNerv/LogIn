@@ -146,14 +146,6 @@
       "strategy": "--dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=/opt/zapret/files/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
     },
     {
-      "id": "flowseal-general-fake-tls-auto",
-      "label": "Flowseal: general (FAKE TLS AUTO)",
-      "engine": "zapret",
-      "tested_discord": "не стартует",
-      "adapted_assets": false,
-      "strategy": "--dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,midsld --dpi-desync-repeats=11 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=^! --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-fake-http=/opt/zapret/files/fake/tls_clienthello_max_ru.bin"
-    },
-    {
       "id": "flowseal-general-simple-fake-alt",
       "label": "Flowseal: general (SIMPLE FAKE ALT)",
       "engine": "zapret",

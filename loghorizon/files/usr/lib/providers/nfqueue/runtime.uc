@@ -59,6 +59,17 @@ function command_output_from_args(args) {
     return command_output(command_from_args(args));
 }
 
+function command_capture_from_args(args) {
+    let pipe = fs.popen(command_from_args(args) + " 2>&1", "r");
+    if (!pipe)
+        return { status: 127, output: "failed to execute provider validation" };
+    let output = pipe.read("all");
+    let status = int(pipe.close());
+    if (status > 255)
+        status = int(status / 256);
+    return { status, output: output == null ? "" : as_string(output) };
+}
+
 function command_status(command) {
     let status = int(system(command));
     return status > 255 ? int(status / 256) : status;
@@ -414,21 +425,46 @@ function raw_strategy(cfg, section) {
     return normalize_strategy(cfg, option(section, cfg.strategy_option, ""));
 }
 
-function validate_strategy_or_exit(cfg, section_name_value, raw_opt) {
-    let result = cfg.validator().validate_strategy(cfg.validator_kind, raw_opt, cfg.legacy_default_strategy);
-    if (result.valid)
-        return;
-    log_message("Invalid " + cfg.binary_name + " strategy for rule '" + section_name_value + "': " + result.message, "fatal");
-    exit(1);
-}
-
-function supervisor_command(cfg, queue, raw_opt, child_pidfile) {
+function strategy_args(cfg, queue, raw_opt, dry_run) {
     let args = [ cfg.binary, "--qnum=" + as_string(queue) ];
     for (let arg in base_args(cfg))
         push(args, arg);
+    if (dry_run)
+        push(args, "--dry-run");
     for (let word in strategy_words(raw_opt))
         push(args, word);
+    return args;
+}
 
+function native_strategy_validation(cfg, queue, raw_opt) {
+    let captured = command_capture_from_args(strategy_args(cfg, queue, raw_opt, true));
+    let message = trim(replace(as_string(captured.output), /[\r\n\t]+/g, " "));
+    message = replace(message, / +/g, " ");
+    if (length(message) > 512)
+        message = substr(message, 0, 512) + "...";
+    return {
+        valid: captured.status == 0,
+        status: captured.status,
+        message: captured.status == 0 ? "" : (message != "" ? message : "provider dry-run failed without output")
+    };
+}
+
+function validate_strategy_or_exit(cfg, section_name_value, queue, raw_opt) {
+    let result = cfg.validator().validate_strategy(cfg.validator_kind, raw_opt, cfg.legacy_default_strategy);
+    if (!result.valid) {
+        log_message("Invalid " + cfg.binary_name + " strategy for rule '" + section_name_value + "': " + result.message, "fatal");
+        exit(1);
+    }
+    let native_result = native_strategy_validation(cfg, queue, raw_opt);
+    if (!native_result.valid) {
+        log_message("Invalid " + cfg.binary_name + " strategy for rule '" + section_name_value +
+            "' (provider dry-run exit " + native_result.status + "): " + native_result.message, "fatal");
+        exit(1);
+    }
+}
+
+function supervisor_command(cfg, queue, raw_opt, child_pidfile) {
+    let args = strategy_args(cfg, queue, raw_opt, false);
     return command_from_args(args) + " & child=$!; echo $child > " + shell_quote(child_pidfile) + "; wait $child; rc=$?; rm -f " + shell_quote(child_pidfile) + "; exit $rc";
 }
 
@@ -472,7 +508,7 @@ function start_rule(cfg, section, index_value) {
     let queue = queue_number(cfg, index_value);
     let mark = route_mark_hex(cfg, index_value);
     let raw_opt = expand_strategy(cfg, raw_strategy(cfg, section));
-    validate_strategy_or_exit(cfg, name, raw_opt);
+    validate_strategy_or_exit(cfg, name, queue, raw_opt);
 
     let pidfile = cfg.pid_dir + "/" + name + ".pid";
     let child_pidfile = cfg.child_pid_dir + "/" + name + ".pid";
@@ -741,6 +777,14 @@ function run(provider, argv) {
             push(sections, { ".name": "rule" + i });
         write_json(queue_counters(cfg, sections, read_stdin()));
     }
+    else if (mode == "validate-strategy-fixture") {
+        let raw_opt = normalize_strategy(cfg, argv[2]);
+        let result = cfg.validator().validate_strategy(cfg.validator_kind, raw_opt, cfg.legacy_default_strategy);
+        if (result.valid)
+            result = native_strategy_validation(cfg, argv[1], raw_opt);
+        write_json(result);
+        exit(result.valid ? 0 : 1);
+    }
     else if (mode == "status")
         status_json(cfg);
     else if (mode == "check")
@@ -754,7 +798,7 @@ function run(provider, argv) {
     else if (mode == "enabled-rule-count")
         print(length(enabled_sections(cfg)), "\n");
     else {
-        warn("Usage: providers/" + kind + "/runtime.uc <start-runtime|stop-runtime|create-nft-rules|queue-counters-fixture|status|check|installed|package-installed|package-version|enabled-rule-count>\n");
+        warn("Usage: providers/" + kind + "/runtime.uc <start-runtime|stop-runtime|create-nft-rules|queue-counters-fixture|validate-strategy-fixture|status|check|installed|package-installed|package-version|enabled-rule-count>\n");
         exit(1);
     }
 }

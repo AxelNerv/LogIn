@@ -4,7 +4,7 @@ let fs = require("fs");
 let nfq = require("providers.nfqueue.validator");
 let catalog = json(fs.readfile(ARGV[0]));
 
-if (catalog.schema_version != 1 || type(catalog.presets) != "array" || length(catalog.presets) < 22)
+if (catalog.schema_version != 1 || type(catalog.presets) != "array" || length(catalog.presets) < 21)
     die("catalog is incomplete\n");
 
 let ids = {};
@@ -21,5 +21,5 @@ for (let preset in catalog.presets) {
     let result = nfq.validate_strategy(preset.engine == "zapret" ? "nfqws" : "nfqws2", preset.strategy, "");
     if (!result.valid) die("invalid preset " + preset.id + ": " + result.message + "\n");
 }
-if (zapret < 21 || zapret2 < 1) die("engine catalog coverage is incomplete\n");
+if (zapret < 20 || zapret2 < 1) die("engine catalog coverage is incomplete\n");
 print("DPI preset catalog checks passed\n");
