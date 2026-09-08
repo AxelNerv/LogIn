@@ -104,26 +104,60 @@ function rule_allows_tproxy(rule) {
     return length(inbounds) == 0 || contains(inbounds, "tproxy-in") || contains(inbounds, "tproxy6-in");
 }
 
+function unsupported_rule_keys(rule, allowed) {
+    let result = [];
+    for (let key in keys(rule))
+        if (!allowed[key]) push(result, key);
+    return result;
+}
+
+function has_domain_matchers(rule) {
+    return length(as_array(rule.domain)) > 0 || length(as_array(rule.domain_suffix)) > 0 ||
+        length(as_array(rule.domain_keyword)) > 0 || length(as_array(rule.domain_regex)) > 0 ||
+        length(as_array(rule.rule_set)) > 0;
+}
+
+const ROUTE_RULE_KEYS = {
+    action: true, outbound: true, inbound: true,
+    domain: true, domain_suffix: true, domain_keyword: true, domain_regex: true, rule_set: true,
+    method: true, no_drop: true
+};
+
+const DNS_RULE_KEYS = {
+    action: true, server: true, query_type: true,
+    domain: true, domain_suffix: true, domain_keyword: true, domain_regex: true, rule_set: true,
+    disable_cache: true, rewrite_ttl: true, client_subnet: true
+};
+
 function find_route(config, domain) {
     let sets = ruleset_map(config);
     let checked_sets = [];
     let index_value = -1;
     for (let rule in as_array(config.route && config.route.rules)) {
         index_value++;
-        if (type(rule) != "object" || as_string(rule.action) != "route" || !rule_allows_tproxy(rule))
+        if (type(rule) != "object" || !rule_allows_tproxy(rule))
             continue;
+        let action = as_string(rule.action);
+        if (action != "route" && action != "reject") continue;
         let direct = direct_domain_match(rule, domain);
-        if (direct != "")
-            return { found: true, index: index_value, outbound: as_string(rule.outbound), matcher: direct, checked_sets };
+        let matcher = direct;
         for (let tag in as_array(rule.rule_set)) {
             tag = as_string(tag);
             let result = ruleset_match(sets[tag], domain);
             push(checked_sets, { tag, matched: result.matched, error: result.error || "", path: result.path || "" });
             if (result.error != null && result.error != "")
                 return { found: false, error: "cannot inspect rule set " + tag + ": " + result.error, checked_sets };
-            if (result.matched)
-                return { found: true, index: index_value, outbound: as_string(rule.outbound), matcher: "rule_set:" + tag, checked_sets };
+            if (result.matched && matcher == "") matcher = "rule_set:" + tag;
         }
+        let unsupported = unsupported_rule_keys(rule, ROUTE_RULE_KEYS);
+        if (matcher == "" && has_domain_matchers(rule)) continue;
+        if (length(unsupported) > 0)
+            return { found: false, indeterminate: true, index: index_value,
+                error: "cannot verify route rule with unsupported conditions: " + join(", ", unsupported), checked_sets };
+        if (action == "reject")
+            return { found: false, rejected: true, index: index_value,
+                error: "traffic is rejected by an earlier generated route rule", matcher, checked_sets };
+        return { found: true, index: index_value, outbound: as_string(rule.outbound), matcher, checked_sets };
     }
     return { found: false, checked_sets };
 }
@@ -133,20 +167,29 @@ function find_dns_route(config, domain) {
     let index_value = -1;
     for (let rule in as_array(config.dns && config.dns.rules)) {
         index_value++;
-        if (type(rule) != "object" || as_string(rule.action) != "route") continue;
+        if (type(rule) != "object") continue;
+        let action = as_string(rule.action);
+        if (action != "route" && action != "reject") continue;
         let query_types = as_array(rule.query_type);
         if (length(query_types) > 0 && !contains(query_types, "A") && !contains(query_types, 1)) continue;
         let direct = direct_domain_match(rule, domain);
-        if (direct != "")
-            return { found: true, index: index_value, server: as_string(rule.server), matcher: direct };
+        let matcher = direct;
         for (let tag in as_array(rule.rule_set)) {
             tag = as_string(tag);
             let result = ruleset_match(sets[tag], domain);
             if (result.error != null && result.error != "")
                 return { found: false, error: "cannot inspect DNS rule set " + tag + ": " + result.error };
-            if (result.matched)
-                return { found: true, index: index_value, server: as_string(rule.server), matcher: "rule_set:" + tag };
+            if (result.matched && matcher == "") matcher = "rule_set:" + tag;
         }
+        let unsupported = unsupported_rule_keys(rule, DNS_RULE_KEYS);
+        if (matcher == "" && has_domain_matchers(rule)) continue;
+        if (length(unsupported) > 0)
+            return { found: false, indeterminate: true, index: index_value,
+                error: "cannot verify DNS rule with unsupported conditions: " + join(", ", unsupported) };
+        if (action == "reject")
+            return { found: false, rejected: true, index: index_value,
+                error: "DNS query is rejected by an earlier generated rule", matcher };
+        return { found: true, index: index_value, server: as_string(rule.server), matcher };
     }
     return { found: false };
 }
@@ -221,7 +264,8 @@ function main(section, domain) {
     let dns = dns_result(domain);
     let dns_route = find_dns_route(config, domain);
     let expected_fakeip = dns_route.found === true ? dns_route.server == "fakeip-server" : null;
-    let dns_ok = dns.success && (expected_fakeip == null || dns.fakeip == expected_fakeip);
+    let dns_ok = dns.success && !dns_route.error &&
+        (expected_fakeip == null || dns.fakeip == expected_fakeip);
     dns.expected_fakeip = expected_fakeip;
     dns.server = dns_route.server || "";
     dns.matcher = dns_route.matcher || "";

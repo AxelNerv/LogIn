@@ -95,4 +95,63 @@ if output="$(run_check dpi dpi.example 2>&1)"; then
 fi
 grep -Fq 'stale or unexpected FakeIP' <<<"$output" || fail "FakeIP mismatch missing"
 
+cat >"$WORK_DIR/config.json" <<JSON
+{
+  "route": {
+    "rules": [
+      { "action": "reject", "domain": "blocked.example", "method": "drop" },
+      { "action": "route", "outbound": "wanted-out", "domain": "blocked.example" }
+    ]
+  },
+  "dns": { "rules": [{ "action": "route", "server": "fakeip-server", "domain": "blocked.example" }] },
+  "outbounds": [{ "type": "selector", "tag": "wanted-out" }]
+}
+JSON
+if output="$(run_check wanted blocked.example 2>&1)"; then
+  fail "route hidden behind an earlier reject passed"
+fi
+grep -Fq 'rejected by an earlier generated route rule' <<<"$output" ||
+  fail "preceding route reject was not reported"
+
+cat >"$WORK_DIR/config.json" <<JSON
+{
+  "route": {
+    "rules": [{
+      "action": "route", "outbound": "wanted-out", "domain": "conditional.example",
+      "source_ip_cidr": "192.0.2.10/32", "port": 443, "network": "tcp", "invert": false
+    }]
+  },
+  "dns": { "rules": [{ "action": "route", "server": "fakeip-server", "domain": "conditional.example" }] },
+  "outbounds": [{ "type": "selector", "tag": "wanted-out" }]
+}
+JSON
+if output="$(run_check wanted conditional.example 2>&1)"; then
+  fail "conditional route passed without the required flow context"
+fi
+grep -Fq 'cannot verify route rule with unsupported conditions' <<<"$output" ||
+  fail "conditional route did not become indeterminate"
+for condition in source_ip_cidr port network invert; do
+  grep -Fq "$condition" <<<"$output" || fail "missing unsupported condition: $condition"
+done
+
+cat >"$WORK_DIR/config.json" <<JSON
+{
+  "route": {
+    "rules": [{ "action": "route", "outbound": "wanted-out", "domain": "dns-error.example" }],
+    "rule_set": []
+  },
+  "dns": {
+    "rules": [{ "action": "route", "server": "fakeip-server", "rule_set": "missing" }]
+  },
+  "outbounds": [{ "type": "selector", "tag": "wanted-out" }]
+}
+JSON
+if output="$(run_check wanted dns-error.example 2>&1)"; then
+  fail "DNS ruleset inspection error passed because the domain resolved"
+fi
+grep -Fq 'cannot inspect DNS rule set missing' <<<"$output" ||
+  fail "DNS ruleset inspection error was not reported"
+grep -Fq '"name": "dns", "success": false' <<<"$output" ||
+  fail "DNS inspection failure did not fail the DNS step"
+
 printf 'Rule path tests passed\n'
