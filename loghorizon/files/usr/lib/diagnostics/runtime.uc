@@ -1248,27 +1248,6 @@ function url_host(value) {
     return helper_output("url-get-host", [ value ]);
 }
 
-function dns_check_resolve_host(host, resolver, timeout_seconds) {
-    host = as_string(host);
-    resolver = as_string(resolver);
-    if (host == "")
-        return "";
-    if (valid_ipv4(host))
-        return host;
-    if (resolver == "")
-        return "";
-
-    timeout_seconds = int(timeout_seconds || 2);
-    for (let line in split(command_output_from_args([
-        "dig", "@" + resolver, host, "A", "+short", "+timeout=" + as_string(timeout_seconds), "+tries=1"
-    ]), "\n")) {
-        line = trim(as_string(line));
-        if (valid_ipv4(line))
-            return line;
-    }
-    return "";
-}
-
 function device_ipv4_address(interface) {
     let value = replace(module_output(SINGBOX_RUNTIME_UC, [ "device-ipv4-address", interface ]), /[\r\n]+$/g, "");
     if (value != "")
@@ -1320,8 +1299,8 @@ function dns_check_timeout_seconds(value) {
 
 function check_dns_available() {
     let cfg = settings();
-    let dns_type = option(cfg, "dns_type", "");
     let active = runtime_dns.active_values(cfg);
+    let dns_type = runtime_dns.dns_type_from_scheme(active.main, option(cfg, "dns_type", ""));
     let dns_server = active.main;
     let bootstrap_dns_server = active.bootstrap;
     let dont_touch_dhcp = bool_option(cfg, "dont_touch_dhcp", false) ? 1 : 0;
@@ -1352,28 +1331,16 @@ function check_dns_available() {
     if (dns_check_router_resolver_available(domain))
         dns_on_router = 1;
 
-    let dns_server_host = url_host(dns_server);
-    if (dns_server_host == "")
-        dns_server_host = dns_server;
     if (bootstrap_dns_server != "") {
-        if (length(active.state.bootstrap_servers) > 1) {
-            for (let line in split(command_output_from_args([
-                "dig", "-p", as_string(runtime_dns.health_port("bootstrap", active.state.bootstrap_index)),
-                "@" + runtime_dns.DNS_HEALTH_ADDRESS, domain, "A", "+short",
-                "+timeout=" + as_string(timeout_seconds), "+tries=1"
-            ]), "\n"))
-                if (valid_ipv4(trim(as_string(line)))) {
-                    bootstrap_dns_status = 1;
-                    break;
-                }
-        }
-        else {
-            let bootstrap_check_domain = domain;
-            if (dns_server_host != "" && !valid_ipv4(dns_server_host))
-                bootstrap_check_domain = dns_server_host;
-            if (dns_check_resolve_host(bootstrap_check_domain, bootstrap_dns_server, timeout_seconds) != "")
+        for (let line in split(command_output_from_args([
+            "dig", "-p", as_string(runtime_dns.health_port("bootstrap", active.state.bootstrap_index)),
+            "@" + runtime_dns.DNS_HEALTH_ADDRESS, domain, "A", "+short",
+            "+timeout=" + as_string(timeout_seconds), "+tries=1"
+        ]), "\n"))
+            if (valid_ipv4(trim(as_string(line)))) {
                 bootstrap_dns_status = 1;
-        }
+                break;
+            }
     }
 
     if (!module_success(DNS_APPLY_UC, [ "default-config-complete" ]))

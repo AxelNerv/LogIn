@@ -55,6 +55,11 @@ export const DNS_SERVER_OPTIONS = {
   '8.8.8.8': '8.8.8.8 (Google)',
 };
 export const BOOTSTRAP_DNS_SERVER_OPTIONS = {
+  'https://cloudflare-dns.com/dns-query?address=1.1.1.1':
+    'Protected DoH (Cloudflare, pinned IP)',
+  'https://dns.google/dns-query?address=8.8.8.8':
+    'Protected DoH (Google, pinned IP)',
+  'tls://dns.quad9.net?address=9.9.9.9': 'Protected DoT (Quad9, pinned IP)',
   '77.88.8.8': '77.88.8.8 (Yandex DNS)',
   '77.88.8.1': '77.88.8.1 (Yandex DNS)',
   '1.1.1.1': '1.1.1.1 (Cloudflare DNS)',

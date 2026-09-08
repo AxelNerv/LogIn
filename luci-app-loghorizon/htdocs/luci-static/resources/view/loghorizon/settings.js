@@ -200,7 +200,7 @@ function createSettingsContent(section, capabilities) {
     "dns_server",
     _("DNS Servers"),
     _(
-      "Main DNS server. If multiple servers are selected, a timeout switches to a backup.",
+      "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback.",
     ),
   );
   configureDnsList(dnsOption, main.DNS_SERVER_OPTIONS, "77.88.8.8");
@@ -210,7 +210,7 @@ function createSettingsContent(section, capabilities) {
     "bootstrap_dns_server",
     _("Bootstrap DNS Servers"),
     _(
-      "DNS server used to obtain IP addresses for upstream DNS and proxies. If multiple servers are selected, a timeout switches to a backup.",
+      "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS.",
     ),
   );
   configureDnsList(

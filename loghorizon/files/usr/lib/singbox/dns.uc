@@ -61,6 +61,7 @@ function state_matches(template, state) {
     state = object_or_empty(state);
     return int(state.version || 0) == 1 &&
         as_string(state.dns_type) == template.dns_type &&
+        state.dns_ech === template.dns_ech &&
         as_string(state.dns_detour) == template.dns_detour &&
         arrays_equal(state.main_servers, template.main_servers) &&
         arrays_equal(state.bootstrap_servers, template.bootstrap_servers);
@@ -102,8 +103,36 @@ function encrypted_dns_type(dns_type) {
         dns_type == "doq" || dns_type == "doh3";
 }
 
-function server_from_options(tag_name, dns_type, dns_server, detour, ech) {
-    let server = runtime_url.host(dns_server);
+function dns_type_from_scheme(value, fallback) {
+    let scheme = runtime_url.scheme(value);
+    if (scheme == "udp" || scheme == "dns") return "udp";
+    if (scheme == "tcp") return "tcp";
+    if (scheme == "tls" || scheme == "dot") return "dot";
+    if (scheme == "https" || scheme == "doh") return "doh";
+    if (scheme == "quic" || scheme == "doq") return "doq";
+    if (scheme == "h3" || scheme == "doh3") return "doh3";
+    return scheme == "" ? fallback : "";
+}
+
+function endpoint_options(dns_type, value) {
+    let query = runtime_url.query_params(value);
+    let logical_host = runtime_url.host(value);
+    let address = trim(as_string(query.address || ""));
+    let server_name = trim(as_string(query.server_name || query.sni || ""));
+    return {
+        dns_type: dns_type_from_scheme(value, dns_type),
+        logical_host,
+        server: address != "" ? address : logical_host,
+        server_name: server_name != "" ? server_name :
+            (address != "" && !core_ip.valid_ip(logical_host) ? logical_host : ""),
+        pinned_address: address != ""
+    };
+}
+
+function server_from_options(tag_name, dns_type, dns_server, detour, ech, resolver_tag) {
+    let endpoint = endpoint_options(dns_type, dns_server);
+    dns_type = endpoint.dns_type;
+    let server = endpoint.server;
     let port = runtime_url.port(dns_server);
     let result = {
         type: "udp",
@@ -115,6 +144,10 @@ function server_from_options(tag_name, dns_type, dns_server, detour, ech) {
     if (dns_type == "udp") {
         if (port != "")
             result.server_port = int(port, 10);
+    }
+    else if (dns_type == "tcp") {
+        result.type = "tcp";
+        result.server_port = port != "" ? int(port, 10) : 53;
     }
     else if (dns_type == "dot") {
         result.type = "tls";
@@ -145,29 +178,34 @@ function server_from_options(tag_name, dns_type, dns_server, detour, ech) {
         return { unsupported: "unsupported dns_type " + dns_type };
     }
 
-    if (!core_ip.valid_ip(server))
-        result.domain_resolver = runtime_constants.BOOTSTRAP_DNS_SERVER_TAG;
+    if (!core_ip.valid_ip(server)) {
+        let resolver = resolver_tag == null
+            ? runtime_constants.BOOTSTRAP_DNS_SERVER_TAG
+            : as_string(resolver_tag);
+        if (resolver == "")
+            return { unsupported: "bootstrap DNS endpoint " + endpoint.logical_host +
+                " needs ?address=<IP> to avoid a resolver cycle" };
+        result.domain_resolver = resolver;
+    }
     if (as_string(detour) != "")
         result.detour = as_string(detour);
 
     // Encrypted Client Hello hides the resolver name that DPI matches on.
     // It only means anything for the encrypted transports; plain UDP has no
     // handshake to hide.
-    if (ech && encrypted_dns_type(dns_type))
-        result.tls = { enabled: true, ech: { enabled: true } };
+    if (endpoint.server_name != "" && encrypted_dns_type(dns_type))
+        result.tls = { enabled: true, server_name: endpoint.server_name };
+    if (ech && encrypted_dns_type(dns_type)) {
+        if (type(result.tls) != "object")
+            result.tls = { enabled: true };
+        result.tls.ech = { enabled: true };
+    }
 
     return result;
 }
 
 function bootstrap_server(tag_name, value) {
-    let server = runtime_url.host(value);
-    let port = runtime_url.port(value);
-    return {
-        type: "udp",
-        tag: tag_name,
-        server: server != "" ? server : value,
-        server_port: port != "" ? int(port, 10) : 53
-    };
+    return server_from_options(tag_name, "udp", value, "", false, "");
 }
 
 function server_config(settings, override_state) {
@@ -272,9 +310,13 @@ function config(settings, override_state) {
     if (main.unsupported)
         return { unsupported: main.unsupported };
 
+    let bootstrap = bootstrap_config(settings, state);
+    if (bootstrap.unsupported)
+        return { unsupported: bootstrap.unsupported };
+
     let result = {
         state,
-        servers: [ bootstrap_config(settings, state), main ],
+        servers: [ bootstrap, main ],
         inbounds: [],
         rules: [],
         sniff_inbounds: []
@@ -287,9 +329,11 @@ function config(settings, override_state) {
         for (let i = 0; i < length(state.main_servers); i++)
             add_health_candidate(result, "main", i, state.main_servers[i]);
 
-    if (length(state.bootstrap_servers) > 1)
-        for (let i = 0; i < length(state.bootstrap_servers); i++)
-            add_health_candidate(result, "bootstrap", i, state.bootstrap_servers[i]);
+    // Keep a local probe for every bootstrap, including a singleton. Direct
+    // `dig @value` cannot test DoH/DoT/DoQ and used to silently fall back to
+    // an unrelated system resolver for URL-shaped values.
+    for (let i = 0; i < length(state.bootstrap_servers); i++)
+        add_health_candidate(result, "bootstrap", i, state.bootstrap_servers[i]);
 
     return result;
 }
@@ -306,6 +350,7 @@ return {
     active_values,
     arrays_equal,
     bootstrap_config,
+    bootstrap_server,
     config,
     default_domain_resolver,
     detour_tag,
@@ -316,6 +361,8 @@ return {
     runtime_state,
     server_config,
     server_from_options,
+    dns_type_from_scheme,
+    endpoint_options,
     server_list,
     state_matches,
     state_template

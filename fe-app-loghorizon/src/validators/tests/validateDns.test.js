@@ -15,6 +15,13 @@ export const additionalValidDns = [
   ['IPv6 DNS', '2606:4700:4700::1111'],
   ['IPv6 DNS with port', '[2606:4700:4700::1111]:853'],
   ['IPv6 DoH with port', '[2606:4700:4700::1111]:443/dns-query'],
+  [
+    'Protected DoH with pinned IP',
+    'https://cloudflare-dns.com/dns-query?address=1.1.1.1',
+  ],
+  ['Protected DoT with pinned IP', 'tls://dns.quad9.net?address=9.9.9.9'],
+  ['DoQ endpoint', 'quic://dns.adguard-dns.com'],
+  ['HTTP/3 endpoint', 'h3://dns.google/dns-query'],
 ];
 
 const validDns = [...validIPs, ...validDomains, ...additionalValidDns];
@@ -25,6 +32,9 @@ const invalidDns = [
   ['Non-numeric port', '8.8.8.8:abc'],
   ['Port too high', 'dns.example.com:99999'],
   ['Zero IPv6 port', '[2606:4700:4700::1111]:0'],
+  ['Unknown endpoint scheme', 'ftp://dns.example.com'],
+  ['Invalid pinned address', 'https://dns.example.com/dns-query?address=nope'],
+  ['IP as TLS server name', 'tls://1.1.1.1?server_name=8.8.8.8'],
 ];
 
 describe('validateDns', () => {

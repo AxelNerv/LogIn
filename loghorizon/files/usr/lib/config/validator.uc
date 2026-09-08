@@ -869,8 +869,25 @@ function dns_server_value_valid(value) {
     if (host == "")
         return false;
 
+    let scheme = core_url.scheme(value);
+    if (scheme != "" && !contains([
+        "dns", "udp", "tcp", "tls", "dot", "https", "doh",
+        "quic", "doq", "h3", "doh3"
+    ], scheme))
+        return false;
+
     let port = core_url.port(value);
     if (port != "" && (match(port, /^[0-9]+$/) == null || int(port) < 1 || int(port) > 65535))
+        return false;
+
+    let query = core_url.query_params(value);
+    let address = trim(as_string(query.address || ""));
+    if (address != "" && !core_ip.valid_ip(address))
+        return false;
+    let server_name = trim(as_string(query.server_name || query.sni || ""));
+    if (server_name != "" && (core_ip.valid_ip(server_name) ||
+        length(server_name) > 253 || index(server_name, ".") < 0 ||
+        match(server_name, /[\/:\[\] \t\r\n@]/) != null))
         return false;
 
     if (core_ip.valid_ip(host))
@@ -895,8 +912,8 @@ function dns_setting_values(settings, key) {
 
 function validate_dns_settings(settings, sections, context) {
     let dns_type = option(settings, "dns_type", "udp");
-    if (!contains([ "udp", "dot", "doh", "doq", "doh3" ], dns_type))
-        fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, dot, doh, doq, or doh3. Aborted.");
+    if (!contains([ "udp", "tcp", "dot", "doh", "doq", "doh3" ], dns_type))
+        fail_validation("Unsupported DNS protocol type '" + dns_type + "'. Use udp, tcp, dot, doh, doq, or doh3. Aborted.");
 
     if (bool_option(settings, "dns_ech_enabled", false)) {
         if (dns_type == "udp")
@@ -929,9 +946,15 @@ function validate_dns_settings(settings, sections, context) {
     for (let value in main_servers)
         if (!dns_server_value_valid(value))
             fail_validation("Invalid main DNS server '" + value + "'. Aborted.");
-    for (let value in bootstrap_servers)
+    for (let value in bootstrap_servers) {
         if (!dns_server_value_valid(value))
             fail_validation("Invalid Bootstrap DNS server '" + value + "'. Aborted.");
+        let bootstrap_host = core_url.host(value);
+        let bootstrap_address = trim(as_string(core_url.query_params(value).address || ""));
+        if (!core_ip.valid_ip(bootstrap_host) && bootstrap_address == "")
+            fail_validation("Bootstrap DNS server '" + value +
+                "' needs a literal IP or ?address=<IP> to avoid a resolver cycle. Aborted.");
+    }
 
     if (length(main_servers) > 1 || length(bootstrap_servers) > 1) {
         validate_required_duration_option(option(settings, "dns_check_interval", "10s"), "settings.dns_check_interval");

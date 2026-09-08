@@ -67,6 +67,52 @@ expect_field "$doh3" type h3 "doh3"
 expect_field "$doh3" server_port 443 "doh3"
 expect_field "$doh3" path /dns-query "doh3"
 
+tcp="$(run_server udp tcp://1.1.1.1)"
+expect_field "$tcp" type tcp "per-entry TCP override"
+
+# Each fallback can override the global transport with its URL scheme. A
+# pinned address avoids recursive bootstrap while the logical host remains
+# the TLS SNI and certificate name.
+pinned="$(run_server udp 'https://cloudflare-dns.com/dns-query?address=1.1.1.1')"
+expect_field "$pinned" type https "pinned DoH bootstrap"
+expect_field "$pinned" server 1.1.1.1 "pinned DoH address"
+expect_field "$pinned" path /dns-query "pinned DoH path"
+printf '%s' "$pinned" | node -e '
+  let raw = "";
+  process.stdin.on("data", chunk => raw += chunk);
+  process.stdin.on("end", () => {
+    const value = JSON.parse(raw);
+    if (value.domain_resolver !== undefined || value.tls?.server_name !== "cloudflare-dns.com") process.exit(1);
+  });
+' || fail "pinned DoH must verify the logical TLS name without a resolver dependency"
+
+if ucode -L "$UCODE_LIB" -e '
+  let dns = require("singbox.dns");
+  let value = dns.bootstrap_server("bootstrap", "https://dns.google/dns-query");
+  exit(value.unsupported ? 0 : 1);
+'; then :; else
+  fail "named bootstrap without pinned IP must be rejected as recursive"
+fi
+
+ucode -L "$UCODE_LIB" -e '
+  let dns = require("singbox.dns");
+  let settings = {
+    dns_type: "doq",
+    dns_server: [ "quic://dns.adguard-dns.com", "https://dns.google/dns-query" ],
+    bootstrap_dns_server: [ "https://cloudflare-dns.com/dns-query?address=1.1.1.1" ]
+  };
+  let first = dns.config(settings, { version: 1, dns_type: "doq", dns_ech: false,
+    dns_detour: "", main_servers: settings.dns_server,
+    bootstrap_servers: settings.bootstrap_dns_server, main_index: 0, bootstrap_index: 0 });
+  let second = dns.config(settings, { version: 1, dns_type: "doq", dns_ech: false,
+    dns_detour: "", main_servers: settings.dns_server,
+    bootstrap_servers: settings.bootstrap_dns_server, main_index: 1, bootstrap_index: 0 });
+  if (first.servers[1].type != "quic" || second.servers[1].type != "https")
+    die("mixed fallback transports were not preserved\n");
+  if (length(first.inbounds || []) < 1)
+    die("protected singleton bootstrap has no health probe\n");
+' || fail "mixed DNS fallback configuration"
+
 # --- Explicit ports win over the transport default ---------------------------
 
 doq_port="$(run_server doq dns.adguard-dns.com:8853)"
@@ -92,7 +138,7 @@ bogus="$(run_server dnscrypt example.com)"
 
 # --- The validator accepts exactly the implemented transports ----------------
 
-for transport in udp dot doh doq doh3; do
+for transport in udp tcp dot doh doq doh3; do
   grep -Fq "\"$transport\"" "$VALIDATOR" ||
     fail "config validator does not accept dns_type $transport"
 done

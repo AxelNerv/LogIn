@@ -273,6 +273,49 @@ cat >"$WORK_DIR/empty-bootstrap-dns.json" <<'JSON'
 JSON
 assert_rejects "empty Bootstrap DNS list" "$WORK_DIR/empty-bootstrap-dns.json" "At least one Bootstrap DNS server is required"
 
+cat >"$WORK_DIR/recursive-bootstrap-dns.json" <<'JSON'
+{
+  "settings": {
+    ".name": "settings",
+    ".type": "settings",
+    "dns_server": [ "https://dns.google/dns-query" ],
+    "bootstrap_dns_server": [ "https://cloudflare-dns.com/dns-query" ]
+  },
+  "section": []
+}
+JSON
+assert_rejects "recursive named Bootstrap DNS" "$WORK_DIR/recursive-bootstrap-dns.json" "needs a literal IP or ?address=<IP>"
+
+cat >"$WORK_DIR/bad-pinned-bootstrap-dns.json" <<'JSON'
+{
+  "settings": {
+    ".name": "settings",
+    ".type": "settings",
+    "dns_server": [ "https://dns.google/dns-query" ],
+    "bootstrap_dns_server": [ "https://cloudflare-dns.com/dns-query?address=not-an-ip" ]
+  },
+  "section": []
+}
+JSON
+assert_rejects "invalid pinned Bootstrap DNS" "$WORK_DIR/bad-pinned-bootstrap-dns.json" "Invalid Bootstrap DNS server"
+
+cat >"$WORK_DIR/protected-bootstrap-dns.json" <<'JSON'
+{
+  "settings": {
+    ".name": "settings",
+    ".type": "settings",
+    "dns_type": "doq",
+    "dns_server": [ "quic://dns.adguard-dns.com", "https://dns.google/dns-query" ],
+    "bootstrap_dns_server": [
+      "https://cloudflare-dns.com/dns-query?address=1.1.1.1",
+      "tls://dns.quad9.net?address=9.9.9.9"
+    ]
+  },
+  "section": []
+}
+JSON
+validate_fixture "$WORK_DIR/protected-bootstrap-dns.json"
+
 cat >"$WORK_DIR/bad-dns-detour-bypass.json" <<'JSON'
 {
   "settings": {
