@@ -33,7 +33,7 @@ run_validation() {
   ZAPRET_PROVIDER_NFQWS_BIN="$WORK_DIR/nfqws" \
   NFQWS_ARGUMENTS="$WORK_DIR/arguments" \
   NFQWS_CALLED="$WORK_DIR/called" \
-    ucode -L "$LIB" "$RUNTIME" validate-strategy-fixture 65000 "$1"
+    ucode -L "$LIB" -- "$RUNTIME" validate-strategy-fixture 65000 "$1"
 }
 
 valid="$(run_validation '--dpi-desync=fake --dpi-desync-repeats=2')"
