@@ -45,6 +45,10 @@ export const DOMAIN_LIST_OPTIONS = {
 export const DNS_SERVER_OPTIONS = {
   '77.88.8.8': '77.88.8.8 (Yandex)',
   '77.88.8.1': '77.88.8.1 (Yandex)',
+  'dns.google': 'dns.google (Google, DoH/DoT)',
+  'cloudflare-dns.com': 'cloudflare-dns.com (Cloudflare, DoH)',
+  'one.one.one.one': 'one.one.one.one (Cloudflare, DoT)',
+  'dns.quad9.net': 'dns.quad9.net (Quad9, DoH/DoT)',
   'dns.adguard-dns.com': 'dns.adguard-dns.com (AdGuard Default)',
   'unfiltered.adguard-dns.com':
     'unfiltered.adguard-dns.com (AdGuard Unfiltered)',
@@ -60,6 +64,13 @@ export const BOOTSTRAP_DNS_SERVER_OPTIONS = {
   'https://dns.google/dns-query?address=8.8.8.8':
     'Protected DoH (Google, pinned IP)',
   'tls://dns.quad9.net?address=9.9.9.9': 'Protected DoT (Quad9, pinned IP)',
+  'https://dns.adguard-dns.com/dns-query?address=94.140.14.14':
+    'Protected DoH (AdGuard, pinned IP)',
+  'quic://dns.adguard-dns.com?address=94.140.14.14':
+    'Protected DoQ (AdGuard, pinned IP)',
+  'tls://one.one.one.one?address=1.1.1.1':
+    'Protected DoT (Cloudflare, pinned IP)',
+  'tls://dns.google?address=8.8.8.8': 'Protected DoT (Google, pinned IP)',
   '77.88.8.8': '77.88.8.8 (Yandex DNS)',
   '77.88.8.1': '77.88.8.1 (Yandex DNS)',
   '1.1.1.1': '1.1.1.1 (Cloudflare DNS)',
