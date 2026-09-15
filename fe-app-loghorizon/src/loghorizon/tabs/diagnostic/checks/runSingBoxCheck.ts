@@ -31,6 +31,14 @@ export async function runSingBoxCheck() {
   }
 
   const data = singBoxChecks.data;
+  const insecureOutbounds = Array.isArray(data.tls_insecure_outbounds)
+    ? data.tls_insecure_outbounds
+    : [];
+  const unpinnedInsecureOutbounds = Array.isArray(
+    data.tls_unpinned_insecure_outbounds,
+  )
+    ? data.tls_unpinned_insecure_outbounds
+    : [];
 
   const allGood =
     Boolean(data.sing_box_installed) &&
@@ -38,7 +46,9 @@ export async function runSingBoxCheck() {
     Boolean(data.sing_box_service_exist) &&
     Boolean(data.sing_box_autostart_disabled) &&
     Boolean(data.sing_box_process_running) &&
-    Boolean(data.sing_box_ports_listening);
+    Boolean(data.sing_box_ports_listening) &&
+    Boolean(data.config_file_private) &&
+    unpinnedInsecureOutbounds.length === 0;
 
   const atLeastOneGood =
     Boolean(data.sing_box_installed) ||
@@ -86,6 +96,23 @@ export async function runSingBoxCheck() {
         state: data.sing_box_ports_listening ? 'success' : 'error',
         key: _('Sing-box listening ports'),
         value: '',
+      },
+      {
+        state: data.config_file_private ? 'success' : 'warning',
+        key: _('logIn configuration is private (root, 0600)'),
+        value: data.config_file_private ? '' : _('Unsafe file permissions'),
+      },
+      {
+        state: unpinnedInsecureOutbounds.length === 0 ? 'success' : 'warning',
+        key: _('TLS certificate verification'),
+        value:
+          unpinnedInsecureOutbounds.length > 0
+            ? _(
+                'Disabled without a public-key pin for: %s. Configure a trusted certificate/SNI or a pin obtained through a trusted channel.',
+              ).replace('%s', unpinnedInsecureOutbounds.join(', '))
+            : insecureOutbounds.length > 0
+              ? _('Disabled, but protected by a public-key pin')
+              : _('Enabled'),
       },
     ],
   });

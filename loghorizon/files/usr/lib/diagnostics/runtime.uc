@@ -38,6 +38,7 @@ const SB_TPROXY_INBOUND_PORT = getenv("SB_TPROXY_INBOUND_PORT") || constants.SB_
 const SB_CLASH_API_CONTROLLER_PORT = getenv("SB_CLASH_API_CONTROLLER_PORT") || constants.SB_CLASH_API_CONTROLLER_PORT || "9090";
 const SB_VARIANT_STATE_FILE = getenv("SB_VARIANT_STATE_FILE") || constants.SB_VARIANT_STATE_FILE || "/etc/loghorizon/sing-box-variant";
 const SING_BOX_BIN_PATH = getenv("LOGHORIZON_DIAGNOSTICS_SING_BOX_BIN_PATH") || "/usr/bin/sing-box";
+const SING_BOX_CONFIG_PATH = getenv("LOGHORIZON_SING_BOX_CONFIG_PATH") || "/etc/sing-box/config.json";
 const CLOUDFLARE_OCTETS = getenv("CLOUDFLARE_OCTETS") || constants.CLOUDFLARE_OCTETS || "8.47 162.159 188.114";
 const ZAPRET_LEGACY_DEFAULT_NFQWS_OPT = getenv("ZAPRET_LEGACY_DEFAULT_NFQWS_OPT") || constants.ZAPRET_LEGACY_DEFAULT_NFQWS_OPT || "";
 const DEFAULT_LATENCY_TEST_URL = getenv("DEFAULT_LATENCY_TEST_URL") || "https://www.gstatic.com/generate_204";
@@ -1473,6 +1474,51 @@ function sing_box_standard_ports_listening_fixture() {
     exit(sing_box_standard_ports_listening(read_stdin()) ? 0 : 1);
 }
 
+function tls_public_key_pin_configured(tls) {
+    let pins = object_or_empty(tls).certificate_public_key_sha256;
+    if (type(pins) == "array")
+        return length(pins) > 0;
+    return trim(as_string(pins)) != "";
+}
+
+function tls_security_summary(config) {
+    let insecure = [];
+    let unpinned = [];
+
+    for (let outbound in (type(object_or_empty(config).outbounds) == "array" ? config.outbounds : [])) {
+        if (type(outbound) != "object" || type(outbound.tls) != "object" || outbound.tls.insecure !== true)
+            continue;
+
+        let tag = trim(as_string(outbound.tag));
+        if (tag == "")
+            tag = trim(as_string(outbound.type));
+        if (tag == "")
+            tag = "unnamed-outbound";
+
+        push(insecure, tag);
+        if (!tls_public_key_pin_configured(outbound.tls))
+            push(unpinned, tag);
+    }
+
+    return {
+        tls_insecure_outbounds: insecure,
+        tls_unpinned_insecure_outbounds: unpinned
+    };
+}
+
+function config_file_private(path) {
+    let info = fs.stat(as_string(path));
+    return type(info) == "object" && info.uid == 0 && info.gid == 0 && info.mode == 384;
+}
+
+function tls_security_summary_fixture() {
+    let config = parse_json_or_null(read_stdin());
+    if (type(config) != "object")
+        return 1;
+    write_json(tls_security_summary(config));
+    return 0;
+}
+
 function check_sing_box() {
     let sing_box_installed = 0;
     let sing_box_version_ok = 0;
@@ -1507,6 +1553,8 @@ function check_sing_box() {
     if (sing_box_standard_ports_listening(command_output_from_args([ "netstat", "-ln" ])))
         sing_box_ports_listening = 1;
 
+    let tls_security = tls_security_summary(read_json_file(SING_BOX_CONFIG_PATH));
+
     write_json({
         sing_box_installed,
         sing_box_version_ok,
@@ -1514,7 +1562,10 @@ function check_sing_box() {
         sing_box_service_exist,
         sing_box_autostart_disabled,
         sing_box_process_running,
-        sing_box_ports_listening
+        sing_box_ports_listening,
+        config_file_private: config_file_private(LOGHORIZON_CONFIG) ? 1 : 0,
+        tls_insecure_outbounds: tls_security.tls_insecure_outbounds,
+        tls_unpinned_insecure_outbounds: tls_security.tls_unpinned_insecure_outbounds
     });
     return 0;
 }
@@ -1904,6 +1955,10 @@ else if (mode == "check-sing-box")
     exit(check_sing_box());
 else if (mode == "sing-box-standard-ports-listening-fixture")
     sing_box_standard_ports_listening_fixture();
+else if (mode == "tls-security-summary-fixture")
+    exit(tls_security_summary_fixture());
+else if (mode == "config-file-private")
+    exit(config_file_private(ARGV[1]) ? 0 : 1);
 else if (mode == "check-inbounds-config")
     exit(check_inbounds_config());
 else if (mode == "check-inbounds")

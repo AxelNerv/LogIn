@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-07 01:12+0300\n"
-"PO-Revision-Date: 2026-09-07 01:12+0300\n"
+"POT-Creation-Date: 2026-09-15 20:53+0300\n"
+"PO-Revision-Date: 2026-09-15 20:53+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -473,6 +473,12 @@ msgstr "Отключить QUIC"
 msgid "Disable the QUIC protocol to improve compatibility or fix issues with video streaming"
 msgstr "Отключить QUIC протокол для улучшения совместимости или исправления видео стриминга"
 
+msgid "Disabled without a public-key pin for: %s. Configure a trusted certificate/SNI or a pin obtained through a trusted channel."
+msgstr "Проверка отключена без pin публичного ключа для: %s. Настройте доверенный сертификат/SNI или pin, полученный по доверенному каналу."
+
+msgid "Disabled, but protected by a public-key pin"
+msgstr "Отключена, но защищена pin публичного ключа"
+
 msgid "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE."
 msgstr "Отключение перехвата несовместимо с action=zapret2, потому что logIn отправляет совпавший трафик через NFQUEUE."
 
@@ -484,6 +490,9 @@ msgstr "Отображаемое имя"
 
 msgid "DNS Check Interval"
 msgstr "Период проверки DNS"
+
+msgid "DNS endpoint address must be an IPv4 or IPv6 literal"
+msgstr ""
 
 msgid "DNS goes through the tunnel"
 msgstr "DNS идёт через тоннель"
@@ -533,8 +542,8 @@ msgstr "Адрес DNS-сервера не может быть пустым"
 msgid "DNS server used by the resolver"
 msgstr "DNS-сервер, который будет использовать резолвер"
 
-msgid "DNS server used to obtain IP addresses for upstream DNS and proxies. If multiple servers are selected, a timeout switches to a backup."
-msgstr "DNS-сервер для получения IP вышестоящих DNS и прокси. Если выбрать несколько, то при таймауте произойдёт переключение на резервный."
+msgid "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS."
+msgstr ""
 
 msgid "DNS Servers"
 msgstr "DNS-серверы"
@@ -547,6 +556,9 @@ msgstr "DNS через прокси"
 
 msgid "DNS through section"
 msgstr "DNS через секцию"
+
+msgid "DNS TLS server name must be a domain name"
+msgstr ""
 
 msgid "DNS Unavailability Timeout"
 msgstr "Таймаут недоступности DNS"
@@ -685,6 +697,9 @@ msgstr "Включить YACD"
 
 msgid "Enable YACD WAN Access"
 msgstr "Включить доступ YACD WAN"
+
+msgid "Enabled"
+msgstr ""
 
 msgid "Encrypted Client Hello (ECH)"
 msgstr "Шифрование имени сервера (ECH)"
@@ -998,6 +1013,9 @@ msgstr "Некорректная стратегия ByeDPI"
 msgid "Invalid CIDR prefix"
 msgstr "Неверный префикс CIDR"
 
+msgid "Invalid DNS endpoint URL"
+msgstr ""
+
 msgid "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH"
 msgstr "Неверный формат DNS-сервера. Примеры: 8.8.8.8, dns.example.com или dns.example.com/nicedns для DoH"
 
@@ -1235,6 +1253,9 @@ msgstr "Загрузка..."
 msgid "Log Level"
 msgstr "Уровень логов"
 
+msgid "logIn configuration is private (root, 0600)"
+msgstr "Конфигурация logIn закрыта для посторонних (root, 0600)"
+
 msgid "logIn Error"
 msgstr "Ошибка logIn"
 
@@ -1292,8 +1313,8 @@ msgstr "NFQWS2 logIn готов"
 msgid "Main DNS"
 msgstr "Основной DNS"
 
-msgid "Main DNS server. If multiple servers are selected, a timeout switches to a backup."
-msgstr "Основной DNS-сервер. Если выбрать несколько, то при таймауте произойдёт переключение на резервный."
+msgid "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback."
+msgstr ""
 
 msgid "Match destination IPs or subnets"
 msgstr "Совпадение по IP-адресам или подсетям назначения"
@@ -2150,6 +2171,9 @@ msgstr "Допуск расхождения времени"
 msgid "tiny"
 msgstr "tiny"
 
+msgid "TLS certificate verification"
+msgstr "Проверка TLS-сертификата"
+
 msgid "Tolerance"
 msgstr "Допуск"
 
@@ -2254,6 +2278,9 @@ msgstr "Неизвестный флаг NFQWS."
 
 msgid "Unknown NFQWS2 flag."
 msgstr "Неизвестный флаг NFQWS2."
+
+msgid "Unsafe file permissions"
+msgstr "Небезопасные права файла"
 
 msgid "Unspecified IP address is not allowed"
 msgstr "Неуказанный IP-адрес не разрешён"

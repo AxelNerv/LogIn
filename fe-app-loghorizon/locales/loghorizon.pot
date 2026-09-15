@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-07 22:12+0300\n"
-"PO-Revision-Date: 2026-09-07 22:12+0300\n"
+"POT-Creation-Date: 2026-09-15 17:53+0300\n"
+"PO-Revision-Date: 2026-09-15 17:53+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -451,14 +451,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 msgid "Checks failed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -499,10 +499,10 @@ msgstr ""
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3866
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714
 #: src/partials/modal/renderModal.ts:263
-#: src/loghorizon/tabs/monitoring/initController.ts:832
-#: src/loghorizon/tabs/monitoring/initController.ts:882
 #: src/loghorizon/tabs/dashboard/initController.ts:1017
 #: src/loghorizon/tabs/dashboard/initController.ts:1267
+#: src/loghorizon/tabs/monitoring/initController.ts:832
+#: src/loghorizon/tabs/monitoring/initController.ts:882
 msgid "Close"
 msgstr ""
 
@@ -688,6 +688,14 @@ msgstr ""
 msgid "Disable the QUIC protocol to improve compatibility or fix issues with video streaming"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:110
+msgid "Disabled without a public-key pin for: %s. Configure a trusted certificate/SNI or a pin obtained through a trusted channel."
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:114
+msgid "Disabled, but protected by a public-key pin"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6222
 msgid "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE."
 msgstr ""
@@ -703,6 +711,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:225
 msgid "DNS Check Interval"
+msgstr ""
+
+#: src/validators/validateDns.ts:47
+msgid "DNS endpoint address must be an IPv4 or IPv6 literal"
 msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:89
@@ -780,7 +792,7 @@ msgid "DNS server used by the resolver"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:212
-msgid "DNS server used to obtain IP addresses for upstream DNS and proxies. If multiple servers are selected, a timeout switches to a backup."
+msgid "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:201
@@ -797,6 +809,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7417
 msgid "DNS through section"
+msgstr ""
+
+#: src/validators/validateDns.ts:57
+msgid "DNS TLS server name must be a domain name"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:241
@@ -987,6 +1003,10 @@ msgstr ""
 msgid "Enable YACD WAN Access"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:115
+msgid "Enabled"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:280
 msgid "Encrypted Client Hello (ECH)"
 msgstr ""
@@ -1122,12 +1142,12 @@ msgstr ""
 msgid "Failed to copy!"
 msgstr ""
 
+#: src/loghorizon/methods/shell/index.ts:170
+#: src/loghorizon/methods/shell/index.ts:177
 #: src/loghorizon/tabs/updates/initController.ts:511
 #: src/loghorizon/tabs/updates/initController.ts:512
 #: src/loghorizon/tabs/updates/initController.ts:572
 #: src/loghorizon/tabs/updates/initController.ts:722
-#: src/loghorizon/methods/shell/index.ts:170
-#: src/loghorizon/methods/shell/index.ts:177
 msgid "Failed to execute"
 msgstr ""
 
@@ -1447,11 +1467,15 @@ msgstr ""
 msgid "Invalid CIDR prefix"
 msgstr ""
 
-#: src/validators/validateDns.ts:34
+#: src/validators/validateDns.ts:63
+msgid "Invalid DNS endpoint URL"
+msgstr ""
+
+#: src/validators/validateDns.ts:90
 msgid "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH"
 msgstr ""
 
-#: src/validators/validateDns.ts:21
+#: src/validators/validateDns.ts:77
 msgid "Invalid DNS server port"
 msgstr ""
 
@@ -1666,8 +1690,8 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 msgid "Issues detected"
 msgstr ""
 
@@ -1781,6 +1805,10 @@ msgstr ""
 msgid "Log Level"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:102
+msgid "logIn configuration is private (root, 0600)"
+msgstr ""
+
 #: src/loghorizon/services/core.service.ts:52
 msgid "logIn Error"
 msgstr ""
@@ -1858,7 +1886,7 @@ msgid "Main DNS"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:202
-msgid "Main DNS server. If multiple servers are selected, a timeout switches to a backup."
+msgid "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8255
@@ -2739,7 +2767,7 @@ msgstr ""
 msgid "Show subscription metadata for this source on the dashboard"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:77
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:87
 msgid "Sing-box autostart disabled"
 msgstr ""
 
@@ -2751,15 +2779,15 @@ msgstr ""
 msgid "Sing-box FakeIP DNS works"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:62
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:72
 msgid "Sing-box installed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:87
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:97
 msgid "Sing-box listening ports"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:82
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:92
 msgid "Sing-box process running"
 msgstr ""
 
@@ -2767,11 +2795,11 @@ msgstr ""
 msgid "sing-box remembers which fake address it handed out for each domain, and keeps that across restarts. Once the mapping goes stale, clients are sent to an address that no longer leads anywhere and pages stop loading with nothing to explain why."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:72
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:82
 msgid "Sing-box service exist"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:67
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:77
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr ""
 
@@ -3073,6 +3101,10 @@ msgstr ""
 msgid "tiny"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:107
+msgid "TLS certificate verification"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2863
 #: src/loghorizon/tabs/dashboard/initController.ts:905
 msgid "Tolerance"
@@ -3238,6 +3270,10 @@ msgstr ""
 msgid "Unknown NFQWS2 flag."
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:103
+msgid "Unsafe file permissions"
+msgstr ""
+
 #: src/validators/validateSubnet.ts:17
 msgid "Unspecified IP address is not allowed"
 msgstr ""
@@ -3401,8 +3437,9 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5464
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5477
-#: src/validators/validateDns.ts:25
-#: src/validators/validateDns.ts:29
+#: src/validators/validateDns.ts:61
+#: src/validators/validateDns.ts:81
+#: src/validators/validateDns.ts:85
 #: src/validators/validateDomain.ts:57
 #: src/validators/validateDomain.ts:76
 #: src/validators/validateHysteriaUrl.ts:151

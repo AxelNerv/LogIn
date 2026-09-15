@@ -61,6 +61,34 @@ grep -Fq '"loghorizon-stably-running", RT_TABLE_NAME, NFT_TABLE_NAME, NFT_FAKEIP
 grep -Fq '"sing-box-service-stable",' "$DIAGNOSTICS_RUNTIME" ||
   fail "diagnostics sing-box status must use stable runtime state to avoid crash-loop flicker"
 
+tls_summary="$(cat <<'JSON' | LOGHORIZON_LIB="$LOGHORIZON_LIB" ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_RUNTIME" tls-security-summary-fixture
+{
+  "outbounds": [
+    { "type": "hysteria2", "tag": "unsafe-hy2", "tls": { "enabled": true, "insecure": true } },
+    { "type": "hysteria2", "tag": "pinned-hy2", "tls": { "enabled": true, "insecure": true, "certificate_public_key_sha256": [ "pin" ] } },
+    { "type": "vless", "tag": "verified-vless", "tls": { "enabled": true, "server_name": "example.com" } }
+  ]
+}
+JSON
+)"
+JSON_VALUE="$tls_summary" node - <<'NODE'
+const value = JSON.parse(process.env.JSON_VALUE);
+if (JSON.stringify(value.tls_insecure_outbounds) !== JSON.stringify(['unsafe-hy2', 'pinned-hy2'])) {
+  console.error('TLS insecure outbound inventory mismatch');
+  process.exit(1);
+}
+if (JSON.stringify(value.tls_unpinned_insecure_outbounds) !== JSON.stringify(['unsafe-hy2'])) {
+  console.error('unpinned TLS insecure outbound inventory mismatch');
+  process.exit(1);
+}
+NODE
+
+sing_box_global="$(printf '%s\n' '{"sing_box_installed":1,"sing_box_version_ok":1,"sing_box_extended":1,"sing_box_service_exist":1,"sing_box_autostart_disabled":1,"sing_box_process_running":1,"sing_box_ports_listening":1,"config_file_private":0,"tls_unpinned_insecure_outbounds":["unsafe-hy2"]}' | status_ucode global-sing-box-check)"
+case "$sing_box_global" in
+  *"configuration permissions are unsafe"*"unsafe-hy2"*) ;;
+  *) fail "global sing-box diagnostics must expose unsafe config permissions and unpinned insecure TLS" ;;
+esac
+
 capabilities="$(
   LOGHORIZON_DIAGNOSTICS_SING_BOX_BIN_PATH="$WORK_DIR/missing-sing-box" \
   LOGHORIZON_LIB="$LOGHORIZON_LIB" \

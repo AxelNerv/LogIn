@@ -10,6 +10,10 @@ LUCI_UCI_DEFAULTS="$ROOT_DIR/luci-app-loghorizon/root/etc/uci-defaults/50_luci-l
 BUILD_SCRIPT="$ROOT_DIR/build.sh"
 WORK_DIR="$(mktemp -d)"
 export LOGHORIZON_PACKAGE_UPGRADE_STATE="$WORK_DIR/package-was-running"
+export LOGHORIZON_CONFIG="$WORK_DIR/loghorizon-config"
+export LOGHORIZON_CONFIG_OWNER="$(id -u):$(id -g)"
+printf '%s\n' 'config settings main' >"$LOGHORIZON_CONFIG"
+chmod 0644 "$LOGHORIZON_CONFIG"
 
 cleanup() {
   rm -rf "$WORK_DIR"
@@ -55,6 +59,10 @@ grep -Fq '/usr/bin/loghorizon package_prerm upgrade' "$BUILD_SCRIPT" ||
   fail "manual APK pre-upgrade must record and stop the running service"
 grep -Fq '/usr/bin/loghorizon package_postinst' "$BUILD_SCRIPT" ||
   fail "manual packages must restore a service that was running before upgrade"
+grep -Fq 'chmod 0600 "$output_root/etc/config/loghorizon"' "$BUILD_SCRIPT" ||
+  fail "manual packages must ship the secret-bearing UCI configuration as 0600"
+grep -Fq 'chmod 0600 $(1)/etc/config/loghorizon' "$LOGHORIZON_MAKEFILE" ||
+  fail "OpenWrt builds must ship the secret-bearing UCI configuration as 0600"
 if grep -Fq '/usr/bin/loghorizon luci_postinst' "$BUILD_SCRIPT"; then
   fail "manual package hooks must let default_postinst run luci_postinst exactly once through uci-defaults"
 fi
@@ -176,6 +184,8 @@ LOGHORIZON_PACKAGE_TEST_MODE=1 \
 LOGHORIZON_INIT="$WORK_DIR/upgrade-init" \
 LOGHORIZON_START_LOG="$WORK_DIR/upgrade-start.log" \
   ucode -L "$LOGHORIZON_LIB" "$PACKAGE_UC" postinst
+[ "$(stat -c '%a:%u:%g' "$LOGHORIZON_CONFIG")" = "600:$(id -u):$(id -g)" ] ||
+  fail "package postinst must restrict the UCI configuration to mode 0600"
 grep -Fxq start "$WORK_DIR/upgrade-start.log" ||
   fail "package postinst must restart a service that was running before upgrade"
 [ ! -e "$LOGHORIZON_PACKAGE_UPGRADE_STATE" ] ||

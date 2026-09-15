@@ -97,6 +97,7 @@ command_exists() {
 }
 
 init_tmp_dir() {
+    umask 077
     TMP_DIR="$(mktemp -d /tmp/loghorizon.XXXXXX 2>/dev/null || true)"
 
     if [ -z "$TMP_DIR" ]; then
@@ -1887,6 +1888,8 @@ detect_legacy_installation() {
             LEGACY_CONFIG_BACKUP="$TMP_DIR/legacy-config.backup"
             cp "$legacy_config_path" "$LEGACY_CONFIG_BACKUP" ||
                 fail "Failed to back up the legacy configuration"
+            chmod 0600 "$LEGACY_CONFIG_BACKUP" ||
+                fail "Failed to protect the legacy configuration backup"
             break
         fi
     done
@@ -1954,14 +1957,15 @@ migrate_legacy_configuration() {
     if [ -n "$LEGACY_CONFIG_BACKUP" ]; then
         cp "$LEGACY_CONFIG_BACKUP" /etc/config/loghorizon ||
             fail "Failed to restore the legacy configuration for migration"
-        chmod 0644 /etc/config/loghorizon ||
+        chmod 0600 /etc/config/loghorizon ||
             fail "Failed to set permissions on the logIn configuration"
 
         msg "Migrating the legacy configuration to logIn"
         if ! LOGHORIZON_CONFIG_NAME="loghorizon" \
             LOGHORIZON_LIB="/usr/lib/loghorizon" \
             ucode -L /usr/lib/loghorizon /usr/lib/loghorizon/config/migration.uc migrate-podkop; then
-            if cp "$LEGACY_CONFIG_BACKUP" /etc/config/loghorizon 2>/dev/null; then
+            if cp "$LEGACY_CONFIG_BACKUP" /etc/config/loghorizon 2>/dev/null &&
+                chmod 0600 /etc/config/loghorizon 2>/dev/null; then
                 fail "Legacy configuration migration failed; the original configuration was restored"
             fi
             fail "Legacy configuration migration failed AND the original configuration could not be restored. A copy is kept at $LEGACY_CONFIG_BACKUP"

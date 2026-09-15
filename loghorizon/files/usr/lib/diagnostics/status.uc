@@ -1235,7 +1235,7 @@ function write_nft_check_json(table_exist, rules_mangle_exist, rules_mangle_coun
     });
 }
 
-function write_sing_box_check_json(sing_box_installed, sing_box_version_ok, sing_box_extended, sing_box_service_exist, sing_box_autostart_disabled, sing_box_process_running, sing_box_ports_listening) {
+function write_sing_box_check_json(sing_box_installed, sing_box_version_ok, sing_box_extended, sing_box_service_exist, sing_box_autostart_disabled, sing_box_process_running, sing_box_ports_listening, config_file_private) {
     write_json({
         sing_box_installed: arg_number(sing_box_installed),
         sing_box_version_ok: arg_number(sing_box_version_ok),
@@ -1243,7 +1243,10 @@ function write_sing_box_check_json(sing_box_installed, sing_box_version_ok, sing
         sing_box_service_exist: arg_number(sing_box_service_exist),
         sing_box_autostart_disabled: arg_number(sing_box_autostart_disabled),
         sing_box_process_running: arg_number(sing_box_process_running),
-        sing_box_ports_listening: arg_number(sing_box_ports_listening)
+        sing_box_ports_listening: arg_number(sing_box_ports_listening),
+        config_file_private: arg_number(config_file_private),
+        tls_insecure_outbounds: [],
+        tls_unpinned_insecure_outbounds: []
     });
 }
 
@@ -1367,6 +1370,11 @@ function render_global_sing_box_check() {
     render_flag_line(value, "sing_box_autostart_disabled", "\u2705 Sing-box autostart disabled", "\u274c Sing-box autostart disabled");
     render_flag_line(value, "sing_box_process_running", "\u2705 Sing-box process running", "\u274c Sing-box process running");
     render_flag_line(value, "sing_box_ports_listening", "\u2705 Sing-box listening ports", "\u274c Sing-box listening ports");
+    render_flag_line(value, "config_file_private", "\u2705 logIn configuration is private (root, 0600)", "\u26a0\ufe0f logIn configuration permissions are unsafe (expected root, 0600)");
+
+    let unpinned = type(value.tls_unpinned_insecure_outbounds) == "array" ? value.tls_unpinned_insecure_outbounds : [];
+    if (length(unpinned) > 0)
+        print_line("\u26a0\ufe0f TLS certificate verification is disabled without a public-key pin: " + join(", ", unpinned));
 }
 
 function render_global_system_info() {
@@ -1962,7 +1970,7 @@ else if (mode == "dns-check-json")
 else if (mode == "nft-check-json")
     write_nft_check_json(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6], ARGV[7], ARGV[8]);
 else if (mode == "sing-box-check-json")
-    write_sing_box_check_json(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6], ARGV[7]);
+    write_sing_box_check_json(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5], ARGV[6], ARGV[7], ARGV[8]);
 else if (mode == "fakeip-check-json")
     write_fakeip_check_json(ARGV[1], ARGV[2]);
 else if (mode == "fakeip-address-status")

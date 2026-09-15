@@ -402,6 +402,9 @@ export namespace logIn {
     sing_box_autostart_disabled: 0 | 1;
     sing_box_process_running: 0 | 1;
     sing_box_ports_listening: 0 | 1;
+    config_file_private: 0 | 1;
+    tls_insecure_outbounds: string[];
+    tls_unpinned_insecure_outbounds: string[];
   }
 
   export interface InboundCheckItem {

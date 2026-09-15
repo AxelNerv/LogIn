@@ -13,6 +13,8 @@ function env(name, fallback) {
 }
 
 const CONFIG_NAME = env("LOGHORIZON_CONFIG_NAME", "loghorizon");
+const CONFIG_PATH = env("LOGHORIZON_CONFIG", "/etc/config/" + CONFIG_NAME);
+const CONFIG_OWNER = env("LOGHORIZON_CONFIG_OWNER", "root:root");
 const RT_TABLES_PATH = env("LOGHORIZON_RT_TABLES", "/etc/iproute2/rt_tables");
 const BIN_PATH = env("LOGHORIZON_BIN", "/usr/bin/loghorizon");
 const INIT_PATH = env("LOGHORIZON_INIT", "/etc/init.d/loghorizon");
@@ -115,6 +117,14 @@ function remember_runtime_state() {
         fs.writefile(PACKAGE_UPGRADE_STATE, "1\n");
 }
 
+function secure_config_file() {
+    if (!path_exists(CONFIG_PATH))
+        return false;
+
+    return command_success_from_args([ "chown", CONFIG_OWNER, CONFIG_PATH ]) &&
+        command_success_from_args([ "chmod", "0600", CONFIG_PATH ]);
+}
+
 function prerm_cleanup(action) {
     if (env("IPKG_INSTROOT", "") != "")
         return true;
@@ -137,6 +147,9 @@ function prerm_cleanup(action) {
 function postinst_restore() {
     if (env("IPKG_INSTROOT", "") != "")
         return true;
+
+    if (!secure_config_file())
+        return false;
 
     let was_running = path_exists(PACKAGE_UPGRADE_STATE);
     let is_enabled = command_success_from_args([ INIT_PATH, "enabled" ]);
@@ -189,7 +202,9 @@ else if (mode == "remove-rt-tables-entry")
     exit(remove_rt_tables_entry() ? 0 : 1);
 else if (mode == "luci-postinst")
     exit(luci_postinst() ? 0 : 1);
+else if (mode == "secure-config")
+    exit(secure_config_file() ? 0 : 1);
 else {
-    warn("Usage: service/package.uc <prerm|postinst|remove-rt-tables-entry|luci-postinst>\n");
+    warn("Usage: service/package.uc <prerm|postinst|remove-rt-tables-entry|luci-postinst|secure-config>\n");
     exit(1);
 }

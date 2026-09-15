@@ -66,6 +66,7 @@ define Package/loghorizon/install
 
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/etc/config/loghorizon $(1)/etc/config/loghorizon
+	chmod 0600 $(1)/etc/config/loghorizon
 
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/usr/bin/loghorizon $(1)/usr/bin/loghorizon

@@ -732,17 +732,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
     ]
   },
   {
@@ -810,10 +810,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3866",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882",
       "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267"
+      "src/loghorizon/tabs/dashboard/initController.ts:1267",
+      "src/loghorizon/tabs/monitoring/initController.ts:832",
+      "src/loghorizon/tabs/monitoring/initController.ts:882"
     ]
   },
   {
@@ -1128,6 +1128,20 @@
     ]
   },
   {
+    "call": "Disabled without a public-key pin for: %s. Configure a trusted certificate/SNI or a pin obtained through a trusted channel.",
+    "key": "Disabled without a public-key pin for: %s. Configure a trusted certificate/SNI or a pin obtained through a trusted channel.",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:110"
+    ]
+  },
+  {
+    "call": "Disabled, but protected by a public-key pin",
+    "key": "Disabled, but protected by a public-key pin",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:114"
+    ]
+  },
+  {
     "call": "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE.",
     "key": "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE.",
     "places": [
@@ -1154,6 +1168,13 @@
     "key": "DNS Check Interval",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:225"
+    ]
+  },
+  {
+    "call": "DNS endpoint address must be an IPv4 or IPv6 literal",
+    "key": "DNS endpoint address must be an IPv4 or IPv6 literal",
+    "places": [
+      "src/validators/validateDns.ts:47"
     ]
   },
   {
@@ -1279,8 +1300,8 @@
     ]
   },
   {
-    "call": "DNS server used to obtain IP addresses for upstream DNS and proxies. If multiple servers are selected, a timeout switches to a backup.",
-    "key": "DNS server used to obtain IP addresses for upstream DNS and proxies. If multiple servers are selected, a timeout switches to a backup.",
+    "call": "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS.",
+    "key": "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:212"
     ]
@@ -1311,6 +1332,13 @@
     "key": "DNS through section",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7417"
+    ]
+  },
+  {
+    "call": "DNS TLS server name must be a domain name",
+    "key": "DNS TLS server name must be a domain name",
+    "places": [
+      "src/validators/validateDns.ts:57"
     ]
   },
   {
@@ -1640,6 +1668,13 @@
     ]
   },
   {
+    "call": "Enabled",
+    "key": "Enabled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:115"
+    ]
+  },
+  {
     "call": "Encrypted Client Hello (ECH)",
     "key": "Encrypted Client Hello (ECH)",
     "places": [
@@ -1868,12 +1903,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722",
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177"
+      "src/loghorizon/tabs/updates/initController.ts:722"
     ]
   },
   {
@@ -2412,17 +2447,24 @@
     ]
   },
   {
+    "call": "Invalid DNS endpoint URL",
+    "key": "Invalid DNS endpoint URL",
+    "places": [
+      "src/validators/validateDns.ts:63"
+    ]
+  },
+  {
     "call": "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH",
     "key": "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH",
     "places": [
-      "src/validators/validateDns.ts:34"
+      "src/validators/validateDns.ts:90"
     ]
   },
   {
     "call": "Invalid DNS server port",
     "key": "Invalid DNS server port",
     "places": [
-      "src/validators/validateDns.ts:21"
+      "src/validators/validateDns.ts:77"
     ]
   },
   {
@@ -2793,8 +2835,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
     ]
   },
   {
@@ -2983,6 +3025,13 @@
     ]
   },
   {
+    "call": "logIn configuration is private (root, 0600)",
+    "key": "logIn configuration is private (root, 0600)",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:102"
+    ]
+  },
+  {
     "call": "logIn Error",
     "key": "logIn Error",
     "places": [
@@ -3116,8 +3165,8 @@
     ]
   },
   {
-    "call": "Main DNS server. If multiple servers are selected, a timeout switches to a backup.",
-    "key": "Main DNS server. If multiple servers are selected, a timeout switches to a backup.",
+    "call": "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback.",
+    "key": "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:202"
     ]
@@ -4619,7 +4668,7 @@
     "call": "Sing-box autostart disabled",
     "key": "Sing-box autostart disabled",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:77"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:87"
     ]
   },
   {
@@ -4640,21 +4689,21 @@
     "call": "Sing-box installed",
     "key": "Sing-box installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:62"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:72"
     ]
   },
   {
     "call": "Sing-box listening ports",
     "key": "Sing-box listening ports",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:87"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:97"
     ]
   },
   {
     "call": "Sing-box process running",
     "key": "Sing-box process running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:82"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:92"
     ]
   },
   {
@@ -4668,14 +4717,14 @@
     "call": "Sing-box service exist",
     "key": "Sing-box service exist",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:72"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:82"
     ]
   },
   {
     "call": "Sing-box version is compatible (newer than 1.12.4)",
     "key": "Sing-box version is compatible (newer than 1.12.4)",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:67"
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:77"
     ]
   },
   {
@@ -5190,6 +5239,13 @@
     ]
   },
   {
+    "call": "TLS certificate verification",
+    "key": "TLS certificate verification",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:107"
+    ]
+  },
+  {
     "call": "Tolerance",
     "key": "Tolerance",
     "places": [
@@ -5457,6 +5513,13 @@
     "key": "Unknown NFQWS2 flag.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6414"
+    ]
+  },
+  {
+    "call": "Unsafe file permissions",
+    "key": "Unsafe file permissions",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts:103"
     ]
   },
   {
@@ -5731,8 +5794,9 @@
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5464",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5477",
-      "src/validators/validateDns.ts:25",
-      "src/validators/validateDns.ts:29",
+      "src/validators/validateDns.ts:61",
+      "src/validators/validateDns.ts:81",
+      "src/validators/validateDns.ts:85",
       "src/validators/validateDomain.ts:57",
       "src/validators/validateDomain.ts:76",
       "src/validators/validateHysteriaUrl.ts:151",

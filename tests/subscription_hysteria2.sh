@@ -91,6 +91,29 @@ if grep -Fq '"utls"' "$singbox_output"; then
   fail "sing-box Hysteria2 normalization must drop TLS uTLS"
 fi
 
+singbox_pinned_input="$WORK_DIR/sing-box-hy2-pinned.json"
+singbox_pinned_output="$WORK_DIR/sing-box-hy2-pinned-normalized.json"
+cat >"$singbox_pinned_input" <<'JSON'
+{
+  "outbounds": [
+    {
+      "type": "hysteria2",
+      "tag": "pinned-hy2",
+      "server": "example.com",
+      "server_port": 443,
+      "password": "pw",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "certificate_public_key_sha256": [ "trusted-pin-from-provider" ]
+      }
+    }
+  ]
+}
+JSON
+ucode "$PARSER" normalize-content "$singbox_pinned_input" "$singbox_pinned_output"
+assert_contains "$singbox_pinned_output" '"certificate_public_key_sha256": [ "trusted-pin-from-provider" ]' "sing-box HY2 public-key pin preservation"
+
 singbox_missing_tls_input="$WORK_DIR/sing-box-hy2-missing-tls.json"
 singbox_missing_tls_output="$WORK_DIR/sing-box-hy2-missing-tls-normalized.json"
 cat >"$singbox_missing_tls_input" <<'JSON'
@@ -118,7 +141,7 @@ for fingerprint in randomizedalpn randomizednoalpn; do
 done
 
 mkdir -p "$WORK_DIR/subscriptions"
-cp "$singbox_output" "$WORK_DIR/subscriptions/proxy-subscription-1.json"
+cp "$singbox_pinned_output" "$WORK_DIR/subscriptions/proxy-subscription-1.json"
 printf '%s' 'https://example.com/sub.json' >"$WORK_DIR/subscriptions/proxy-subscription-1.url"
 printf '%s' 'Happ' >"$WORK_DIR/subscriptions/proxy-subscription-1.user_agent"
 
@@ -149,6 +172,7 @@ TMP_SUBSCRIPTION_FOLDER="$WORK_DIR/subscriptions" \
   ucode -L "$LOGHORIZON_LIB" "$GENERATOR" generate-config-fixture \
     "$generator_fixture" "$generator_output" "127.0.0.1" "0"
 assert_contains "$generator_output" '"type": "hysteria2"' "generated stale HY2 type"
+assert_contains "$generator_output" '"certificate_public_key_sha256": [ "trusted-pin-from-provider" ]' "generated HY2 public-key pin preservation"
 if grep -Fq '"utls"' "$generator_output"; then
   cat "$generator_output" >&2
   fail "sing-box generator must drop stale Hysteria2 TLS uTLS from subscription cache"

@@ -170,7 +170,7 @@ build_backend_root() {
   make_dir "$output_root/usr/lib/loghorizon"
 
   install -m 0755 "$ROOT_DIR/loghorizon/files/etc/init.d/loghorizon" "$output_root/etc/init.d/loghorizon"
-  install -m 0644 "$ROOT_DIR/loghorizon/files/etc/config/loghorizon" "$output_root/etc/config/loghorizon"
+  install -m 0600 "$ROOT_DIR/loghorizon/files/etc/config/loghorizon" "$output_root/etc/config/loghorizon"
   install -m 0755 "$ROOT_DIR/loghorizon/files/usr/bin/loghorizon" "$output_root/usr/bin/loghorizon"
   cp -a "$ROOT_DIR/loghorizon/files/usr/lib/." "$output_root/usr/lib/loghorizon/"
 
@@ -179,6 +179,7 @@ build_backend_root() {
 
   normalize_package_root_modes "$output_root"
   chmod 0755 "$output_root/etc/init.d/loghorizon" "$output_root/usr/bin/loghorizon"
+  chmod 0600 "$output_root/etc/config/loghorizon"
 }
 
 build_app_root() {
