@@ -676,8 +676,12 @@ cat >"$WORK_DIR/select-faster-within-tolerance.json" <<'JSON'
 JSON
 within_tolerance="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" select-faster-fixture \
   "$WORK_DIR/select-fastest-group.json" "$WORK_DIR/select-faster-within-tolerance.json" 0 a)"
-[ "$within_tolerance" = '{}' ] ||
-  fail "same-level switching should ignore latency improvements within tolerance"
+printf '%s\n' "$within_tolerance" | ucode -e '
+let fs = require("fs");
+let selected = json(fs.readfile("/dev/stdin"));
+if (length(selected || {}) != 0)
+    die("route inside latency tolerance was selected\n");
+' || fail "same-level switching should ignore latency improvements within tolerance"
 
 cat >"$WORK_DIR/hysteresis-sequence.json" <<'JSON'
 {
