@@ -1162,6 +1162,17 @@ function validate_priority_group(section, group_id) {
     validate_required_duration_option(connections.priority_group_recovery_check_interval(section, group_id), "rule." + name + ".priority." + group_id + ".recovery_check_interval");
     if (connections.priority_group_switch_to_faster_same_priority(section, group_id))
         validate_required_duration_option(connections.priority_group_fastest_check_interval(section, group_id), "rule." + name + ".priority." + group_id + ".fastest_check_interval");
+    validate_required_duration_option(connections.priority_group_minimum_hold_time(section, group_id), "rule." + name + ".priority." + group_id + ".minimum_hold_time");
+
+    let failure_threshold = as_string(connections.priority_group_failure_threshold(section, group_id));
+    if (match(failure_threshold, /^[0-9]+$/) == null || int(failure_threshold, 10) < 1 || int(failure_threshold, 10) > 20)
+        fail_validation("Invalid priority failure threshold in rule '" + name + "'. Expected 1..20. Aborted.");
+    let recovery_threshold = as_string(connections.priority_group_recovery_threshold(section, group_id));
+    if (match(recovery_threshold, /^[0-9]+$/) == null || int(recovery_threshold, 10) < 1 || int(recovery_threshold, 10) > 20)
+        fail_validation("Invalid priority recovery threshold in rule '" + name + "'. Expected 1..20. Aborted.");
+    let latency_tolerance = as_string(connections.priority_group_latency_tolerance(section, group_id));
+    if (match(latency_tolerance, /^[0-9]+$/) == null || int(latency_tolerance, 10) < 1 || int(latency_tolerance, 10) > 5000)
+        fail_validation("Invalid priority latency tolerance in rule '" + name + "'. Expected 1..5000 ms. Aborted.");
 
     for (let level_id in connections.priority_levels(group_id)) {
         validate_priority_identifier_value(level_id, name);

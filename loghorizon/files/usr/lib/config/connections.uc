@@ -919,6 +919,26 @@ function priority_group_fastest_check_interval(section, value) {
     return child != null ? child_option(child, "fastest_check_interval", "3m") : "3m";
 }
 
+function priority_group_failure_threshold(section, value) {
+    let child = priority_group_child(section, value);
+    return child != null ? child_option(child, "failure_threshold", "3") : "3";
+}
+
+function priority_group_recovery_threshold(section, value) {
+    let child = priority_group_child(section, value);
+    return child != null ? child_option(child, "recovery_threshold", "3") : "3";
+}
+
+function priority_group_minimum_hold_time(section, value) {
+    let child = priority_group_child(section, value);
+    return child != null ? child_option(child, "minimum_hold_time", "60s") : "60s";
+}
+
+function priority_group_latency_tolerance(section, value) {
+    let child = priority_group_child(section, value);
+    return child != null ? child_option(child, "latency_tolerance", "50") : "50";
+}
+
 function priority_group_interrupt_exist_connections(section, value) {
     let child = priority_group_child(section, value);
     return child != null ? child_bool(child, "interrupt_exist_connections", true) : true;
@@ -1173,6 +1193,10 @@ return {
     priority_group_pick_fastest,
     priority_group_switch_to_faster_same_priority,
     priority_group_fastest_check_interval,
+    priority_group_failure_threshold,
+    priority_group_recovery_threshold,
+    priority_group_minimum_hold_time,
+    priority_group_latency_tolerance,
     priority_group_interrupt_exist_connections,
     priority_group_pin_dashboard,
     priority_level_display_name,

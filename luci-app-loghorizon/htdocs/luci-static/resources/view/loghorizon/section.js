@@ -2528,6 +2528,10 @@ function priorityGroupSettingsKeys() {
     "pick_fastest",
     "switch_to_faster_same_priority",
     "fastest_check_interval",
+    "failure_threshold",
+    "recovery_threshold",
+    "minimum_hold_time",
+    "latency_tolerance",
     "interrupt_exist_connections",
     "pin_dashboard",
   ];
@@ -2543,6 +2547,10 @@ function defaultPriorityGroupSettings() {
     pick_fastest: "0",
     switch_to_faster_same_priority: "0",
     fastest_check_interval: "3m",
+    failure_threshold: "3",
+    recovery_threshold: "3",
+    minimum_hold_time: "60s",
+    latency_tolerance: "50",
     interrupt_exist_connections: "1",
     pin_dashboard: "1",
   };
@@ -2557,6 +2565,10 @@ function priorityGroupChildDefaults() {
     pick_fastest: "0",
     switch_to_faster_same_priority: "0",
     fastest_check_interval: "3m",
+    failure_threshold: "3",
+    recovery_threshold: "3",
+    minimum_hold_time: "60s",
+    latency_tolerance: "50",
     interrupt_exist_connections: "1",
     pin_dashboard: "1",
   };
@@ -3383,6 +3395,57 @@ function addPriorityGroupItemOptions(itemSection, options = {}) {
       ? validateRequiredSingBoxDuration(value)
       : true;
   };
+
+  o = itemSection.option(
+    form.Value,
+    "failure_threshold",
+    _("Failures before switching"),
+    _(
+      "Keep the active route after an isolated failed check; switch after this many consecutive failures.",
+    ),
+  );
+  o.default = "3";
+  o.rmempty = false;
+  o.datatype = "range(1,20)";
+
+  o = itemSection.option(
+    form.Value,
+    "recovery_threshold",
+    _("Successful checks before recovery"),
+    _(
+      "Return to a preferred route only after this many consecutive successful checks.",
+    ),
+  );
+  o.default = "3";
+  o.rmempty = false;
+  o.datatype = "range(1,20)";
+
+  o = itemSection.option(
+    form.Value,
+    "minimum_hold_time",
+    _("Minimum route hold time"),
+    _(
+      "Minimum time before a planned recovery or latency-based switch. Emergency failover is not delayed.",
+    ),
+  );
+  o.default = "60s";
+  o.rmempty = false;
+  o.validate = function (_itemId, value) {
+    return validateRequiredSingBoxDuration(value);
+  };
+
+  o = itemSection.option(
+    form.Value,
+    "latency_tolerance",
+    _("Latency improvement threshold"),
+    _(
+      "Do not switch within the same priority level unless the new route is faster by more than this many milliseconds.",
+    ),
+  );
+  o.depends("switch_to_faster_same_priority", "1");
+  o.default = "50";
+  o.rmempty = false;
+  o.datatype = "range(1,5000)";
 
   o = itemSection.option(
     form.Flag,

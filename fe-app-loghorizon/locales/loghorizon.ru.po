@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 21:37+0300\n"
-"PO-Revision-Date: 2026-09-15 21:37+0300\n"
+"POT-Creation-Date: 2026-09-15 22:19+0300\n"
+"PO-Revision-Date: 2026-09-15 22:19+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -569,6 +569,9 @@ msgstr "Таймаут недоступности DNS"
 msgid "Do not panic, everything can be fixed, just..."
 msgstr "Не паникуйте, всё можно исправить, просто..."
 
+msgid "Do not switch within the same priority level unless the new route is faster by more than this many milliseconds."
+msgstr "Не переключаться внутри одного уровня приоритета, пока новый маршрут не станет быстрее как минимум на указанное число миллисекунд."
+
 msgid "Do not test servers from these countries."
 msgstr "Не тестировать серверы из этих стран."
 
@@ -802,6 +805,9 @@ msgstr "Не удалось выполнить"
 
 msgid "Failed to update subscriptions"
 msgstr "Не удалось обновить подписки"
+
+msgid "Failures before switching"
+msgstr "Ошибок до переключения"
 
 msgid "FakeIP and control checks use different public IPs"
 msgstr "FakeIP и контрольная проверка используют разные публичные IP"
@@ -1205,6 +1211,9 @@ msgstr "Настройки JSON outbound"
 msgid "Keep Priority before latency-sorted servers"
 msgstr "Показывать Priority перед серверами, отсортированными по задержке"
 
+msgid "Keep the active route after an isolated failed check; switch after this many consecutive failures."
+msgstr "Сохранять активный маршрут после одиночной неудачной проверки; переключаться после указанного числа ошибок подряд."
+
 msgid "Keep URLTest before latency-sorted servers"
 msgstr "Держать URLTest перед серверами, отсортированными по задержке"
 
@@ -1213,6 +1222,9 @@ msgstr "Путь к ключу"
 
 msgid "Keyword must not contain spaces or commas"
 msgstr "Ключевое слово не должно содержать пробелы или запятые"
+
+msgid "Latency improvement threshold"
+msgstr "Порог улучшения задержки"
 
 msgid "Latency test failed"
 msgstr "Проверка задержки не удалась"
@@ -1339,6 +1351,12 @@ msgstr "Метод"
 
 msgid "Minimum latency difference in milliseconds that triggers switching to a faster server."
 msgstr "Минимальная разница задержки в миллисекундах, при которой произойдет переключение на более быстрый сервер."
+
+msgid "Minimum route hold time"
+msgstr "Минимальное время удержания маршрута"
+
+msgid "Minimum time before a planned recovery or latency-based switch. Emergency failover is not delayed."
+msgstr "Минимальное время до планового возврата или переключения по задержке. Аварийный переход на резерв не задерживается."
 
 msgid "Mixed Proxy Password"
 msgstr "Пароль смешанного прокси"
@@ -1699,6 +1717,9 @@ msgstr "Перезапустить logIn"
 
 msgid "Resume updates"
 msgstr "Продолжить обновление"
+
+msgid "Return to a preferred route only after this many consecutive successful checks."
+msgstr "Возвращаться на предпочтительный маршрут только после указанного числа успешных проверок подряд."
 
 msgid "Route"
 msgstr "Маршрут"
@@ -2062,6 +2083,9 @@ msgstr "Настройки URL подписки"
 
 msgid "Subscriptions updated"
 msgstr "Подписки обновлены"
+
+msgid "Successful checks before recovery"
+msgstr "Успешных проверок до возврата"
 
 msgid "System info"
 msgstr "Системная информация"

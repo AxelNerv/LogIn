@@ -1060,6 +1060,10 @@ function priority_groups_signature(section) {
             pick_fastest: connections.priority_group_pick_fastest(section, group_id) ? "1" : "0",
             switch_to_faster_same_priority: connections.priority_group_switch_to_faster_same_priority(section, group_id) ? "1" : "0",
             fastest_check_interval: connections.priority_group_fastest_check_interval(section, group_id),
+            failure_threshold: connections.priority_group_failure_threshold(section, group_id),
+            recovery_threshold: connections.priority_group_recovery_threshold(section, group_id),
+            minimum_hold_time: connections.priority_group_minimum_hold_time(section, group_id),
+            latency_tolerance: connections.priority_group_latency_tolerance(section, group_id),
             interrupt_exist_connections: connections.priority_group_interrupt_exist_connections(section, group_id) ? "1" : "0",
             pin_dashboard: connections.priority_group_pin_dashboard(section, group_id) ? "1" : "0",
             levels

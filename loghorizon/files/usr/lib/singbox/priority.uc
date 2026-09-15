@@ -123,6 +123,15 @@ function bool_value(value, fallback) {
     return value == "1" || value == "true" || value == "yes" || value == "on";
 }
 
+function bounded_positive_int(value, fallback, maximum) {
+    let parsed = int(value || fallback, 10);
+    if (parsed < 1)
+        return fallback;
+    if (parsed > maximum)
+        return maximum;
+    return parsed;
+}
+
 function normalize_group(group, tag_name) {
     group = object_or_empty(group);
     let levels = [];
@@ -155,6 +164,10 @@ function normalize_group(group, tag_name) {
         pick_fastest: bool_value(group.pick_fastest, false),
         switch_to_faster_same_priority: bool_value(group.switch_to_faster_same_priority, false),
         fastest_check_interval: as_string(group.fastest_check_interval || "3m"),
+        failure_threshold: bounded_positive_int(group.failure_threshold, 3, 20),
+        recovery_threshold: bounded_positive_int(group.recovery_threshold, 3, 20),
+        minimum_hold_time: as_string(group.minimum_hold_time || "60s"),
+        latency_tolerance: bounded_positive_int(group.latency_tolerance, 50, 5000),
         levels
     };
 }
@@ -321,7 +334,7 @@ function choose_fastest_same_level(group, level_index, active_tag, probe) {
 
     if (best == null || best.tag == active_tag)
         return null;
-    if (active == null || !active.alive || best.delay < active.delay)
+    if (active == null || !active.alive || best.delay + group.latency_tolerance < active.delay)
         return best;
     return null;
 }
@@ -331,7 +344,7 @@ function set_group_proxy(group, tag_name) {
     return result.status == 0;
 }
 
-function switch_group(state, group, selected) {
+function switch_group(state, group, selected, setter, now) {
     if (selected == null || selected.tag == "")
         return false;
 
@@ -341,7 +354,8 @@ function switch_group(state, group, selected) {
         return true;
     }
 
-    if (!set_group_proxy(group, selected.tag)) {
+    setter = setter || set_group_proxy;
+    if (!setter(group, selected.tag)) {
         log_message("failed to switch " + group.tag + " to " + selected.tag, "warn");
         return false;
     }
@@ -349,66 +363,112 @@ function switch_group(state, group, selected) {
     state.active = selected.tag;
     state.levelIndex = selected.levelIndex;
     state.activeDelay = selected.delay;
+    state.lastSwitchAt = now == null ? now_seconds() : int(now);
+    state.consecutiveFailures = 0;
+    state.pendingRecoveryTag = "";
+    state.recoverySuccesses = 0;
+    state.pendingFastestTag = "";
+    state.fastestSuccesses = 0;
     return true;
 }
 
-function init_group_state(group) {
+function init_group_state(group, now) {
+    now = now == null ? now_seconds() : int(now);
     return {
         active: "",
         levelIndex: -1,
         activeDelay: 0,
-        nextActiveCheck: now_seconds(),
-        nextRecoveryCheck: now_seconds() + duration_to_seconds(group.recovery_check_interval, 15),
-        nextFastestCheck: now_seconds() + duration_to_seconds(group.fastest_check_interval, 180)
+        consecutiveFailures: 0,
+        pendingRecoveryTag: "",
+        recoverySuccesses: 0,
+        pendingFastestTag: "",
+        fastestSuccesses: 0,
+        lastSwitchAt: 0,
+        nextActiveCheck: now,
+        nextRecoveryCheck: now + duration_to_seconds(group.recovery_check_interval, 15),
+        nextFastestCheck: now + duration_to_seconds(group.fastest_check_interval, 180)
     };
 }
 
-function tick_group(state, group) {
-    let now = now_seconds();
+function tick_group(state, group, runtime) {
+    runtime = object_or_empty(runtime);
+    let now = runtime.now == null ? now_seconds() : int(runtime.now);
+    let probe = runtime.probe || clash_probe;
+    let setter = runtime.setter || set_group_proxy;
+    let hold_elapsed = state.lastSwitchAt == 0 ||
+        now - state.lastSwitchAt >= duration_to_seconds(group.minimum_hold_time, 60);
 
     if (state.active == "" && now >= state.nextActiveCheck) {
-        let selected = choose_from_level_range(group, 0, length(group.levels) - 1, clash_probe);
-        switch_group(state, group, selected);
+        let selected = choose_from_level_range(group, 0, length(group.levels) - 1, probe);
+        switch_group(state, group, selected, setter, now);
         state.nextActiveCheck = now + duration_to_seconds(group.active_check_interval, 5);
         return;
     }
 
     if (state.active != "" && now >= state.nextActiveCheck) {
-        let active = clash_probe(state.active, group);
+        let active = probe(state.active, group);
         if (active.alive) {
             state.activeDelay = active.delay;
+            state.consecutiveFailures = 0;
         }
         else {
+            state.consecutiveFailures++;
+            state.nextActiveCheck = now + duration_to_seconds(group.active_check_interval, 5);
+            if (state.consecutiveFailures < group.failure_threshold)
+                return;
+
             let selected = choose_from_level_range(
                 group,
                 state.levelIndex,
                 length(group.levels) - 1,
-                clash_probe,
+                probe,
                 state.active
             );
-            if (switch_group(state, group, selected)) {
+            if (switch_group(state, group, selected, setter, now)) {
                 state.nextRecoveryCheck = now + duration_to_seconds(group.recovery_check_interval, 15);
                 state.nextFastestCheck = now + duration_to_seconds(group.fastest_check_interval, 180);
             }
-            else {
-                state.active = "";
-                state.levelIndex = -1;
-            }
+            return;
         }
         state.nextActiveCheck = now + duration_to_seconds(group.active_check_interval, 5);
     }
 
-    if (state.active != "" && state.levelIndex > 0 && now >= state.nextRecoveryCheck) {
-        let selected = choose_from_level_range(group, 0, state.levelIndex - 1, clash_probe);
-        if (switch_group(state, group, selected))
-            state.nextFastestCheck = now + duration_to_seconds(group.fastest_check_interval, 180);
+    if (state.active != "" && state.levelIndex > 0 && hold_elapsed && now >= state.nextRecoveryCheck) {
+        let selected = choose_from_level_range(group, 0, state.levelIndex - 1, probe);
+        if (selected == null) {
+            state.pendingRecoveryTag = "";
+            state.recoverySuccesses = 0;
+        }
+        else {
+            if (state.pendingRecoveryTag == selected.tag)
+                state.recoverySuccesses++;
+            else {
+                state.pendingRecoveryTag = selected.tag;
+                state.recoverySuccesses = 1;
+            }
+            if (state.recoverySuccesses >= group.recovery_threshold &&
+                switch_group(state, group, selected, setter, now))
+                state.nextFastestCheck = now + duration_to_seconds(group.fastest_check_interval, 180);
+        }
         state.nextRecoveryCheck = now + duration_to_seconds(group.recovery_check_interval, 15);
     }
 
-    if (state.active != "" && group.switch_to_faster_same_priority && now >= state.nextFastestCheck) {
-        let selected = choose_fastest_same_level(group, state.levelIndex, state.active, clash_probe);
-        if (selected != null)
-            switch_group(state, group, selected);
+    if (state.active != "" && group.switch_to_faster_same_priority && hold_elapsed && now >= state.nextFastestCheck) {
+        let selected = choose_fastest_same_level(group, state.levelIndex, state.active, probe);
+        if (selected == null) {
+            state.pendingFastestTag = "";
+            state.fastestSuccesses = 0;
+        }
+        else {
+            if (state.pendingFastestTag == selected.tag)
+                state.fastestSuccesses++;
+            else {
+                state.pendingFastestTag = selected.tag;
+                state.fastestSuccesses = 1;
+            }
+            if (state.fastestSuccesses >= group.recovery_threshold)
+                switch_group(state, group, selected, setter, now);
+        }
         state.nextFastestCheck = now + duration_to_seconds(group.fastest_check_interval, 180);
     }
 }
@@ -474,6 +534,32 @@ function select_faster_fixture(group_path, latency_path, level_index, active_tag
     write_json(selected == null ? {} : selected);
 }
 
+function sequence_fixture(scenario_path) {
+    let scenario = object_or_empty(read_json_file(scenario_path));
+    let group = normalize_group(scenario.group, "fixture");
+    let ticks = array_or_empty(scenario.ticks);
+    let initial_now = length(ticks) > 0 ? int(object_or_empty(ticks[0]).now || 0) : 0;
+    let state = init_group_state(group, initial_now);
+    let switches = [];
+
+    for (let tick in ticks) {
+        tick = object_or_empty(tick);
+        let latencies = object_or_empty(tick.latencies);
+        tick_group(state, group, {
+            now: int(tick.now || 0),
+            probe: function(tag_name, _group) {
+                return fixture_probe(latencies, tag_name);
+            },
+            setter: function(_group, tag_name) {
+                push(switches, { now: int(tick.now || 0), tag: tag_name });
+                return true;
+            }
+        });
+    }
+
+    write_json({ state, switches });
+}
+
 let mode = ARGV[0] || "";
 
 if (mode == "start-runtime")
@@ -486,7 +572,9 @@ else if (mode == "select-fixture")
     select_fixture(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
 else if (mode == "select-faster-fixture")
     select_faster_fixture(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
+else if (mode == "sequence-fixture")
+    sequence_fixture(ARGV[1]);
 else {
-    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|worker|select-fixture|select-faster-fixture>\n");
+    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|worker|select-fixture|select-faster-fixture|sequence-fixture>\n");
     exit(1);
 }

@@ -89,6 +89,10 @@ cat >"$WORK_DIR/fixture.json" <<'JSON'
       "pick_fastest": "1",
       "switch_to_faster_same_priority": "1",
       "fastest_check_interval": "3m",
+      "failure_threshold": "3",
+      "recovery_threshold": "3",
+      "minimum_hold_time": "60s",
+      "latency_tolerance": "50",
       "pin_dashboard": "1"
     },
     {
@@ -202,6 +206,9 @@ if (cached.displayName != "Main priority" || cached.health_url != "https://healt
     fail("priority group display metadata was not cached");
 if (cached.check_timeout != "2s" || cached.fastest_check_interval != "3m")
     fail("priority group timing metadata was not cached");
+if (cached.failure_threshold != "3" || cached.recovery_threshold != "3" ||
+    cached.minimum_hold_time != "60s" || cached.latency_tolerance != "50")
+    fail("priority hysteresis metadata was not cached");
 if (cached.pick_fastest !== true || cached.switch_to_faster_same_priority !== true)
     fail("priority boolean metadata was not cached");
 if (cached.interrupt_exist_connections !== true || cached.pin_dashboard !== true)
@@ -657,11 +664,61 @@ printf '%s\n' "$skip_dead" | grep -Fq '"tag": "b"' ||
   fail "replacement selection should skip the just-failed active outbound"
 
 cat >"$WORK_DIR/select-faster-current-latency.json" <<'JSON'
-{ "a": 100, "b": 50, "c": 80 }
+{ "a": 100, "b": 40, "c": 80 }
 JSON
 same_level="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" select-faster-fixture \
   "$WORK_DIR/select-fastest-group.json" "$WORK_DIR/select-faster-current-latency.json" 0 a)"
 printf '%s\n' "$same_level" | grep -Fq '"tag": "b"' ||
   fail "same-level switching should compare candidates with the active delay from the same pass"
+
+cat >"$WORK_DIR/select-faster-within-tolerance.json" <<'JSON'
+{ "a": 100, "b": 60, "c": 80 }
+JSON
+within_tolerance="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" select-faster-fixture \
+  "$WORK_DIR/select-fastest-group.json" "$WORK_DIR/select-faster-within-tolerance.json" 0 a)"
+[ "$within_tolerance" = '{}' ] ||
+  fail "same-level switching should ignore latency improvements within tolerance"
+
+cat >"$WORK_DIR/hysteresis-sequence.json" <<'JSON'
+{
+  "group": {
+    "tag": "fixture",
+    "active_check_interval": "5s",
+    "recovery_check_interval": "10s",
+    "minimum_hold_time": "60s",
+    "failure_threshold": 3,
+    "recovery_threshold": 3,
+    "levels": [
+      { "id": "top", "outbounds": [ "a" ] },
+      { "id": "fallback", "outbounds": [ "b" ] }
+    ]
+  },
+  "ticks": [
+    { "now": 100, "latencies": { "a": 30, "b": 70 } },
+    { "now": 105, "latencies": { "a": -1, "b": 70 } },
+    { "now": 110, "latencies": { "a": 30, "b": 70 } },
+    { "now": 115, "latencies": { "a": -1, "b": 70 } },
+    { "now": 120, "latencies": { "a": -1, "b": 70 } },
+    { "now": 125, "latencies": { "a": -1, "b": -1 } },
+    { "now": 130, "latencies": { "a": -1, "b": 70 } },
+    { "now": 190, "latencies": { "a": 30, "b": 70 } },
+    { "now": 200, "latencies": { "a": 30, "b": 70 } },
+    { "now": 210, "latencies": { "a": 30, "b": 70 } }
+  ]
+}
+JSON
+hysteresis="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" sequence-fixture \
+  "$WORK_DIR/hysteresis-sequence.json")"
+printf '%s\n' "$hysteresis" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+let switches = result.switches || [];
+if (length(switches) != 3 || switches[0].tag != "a" || switches[0].now != 100 ||
+    switches[1].tag != "b" || switches[1].now != 130 ||
+    switches[2].tag != "a" || switches[2].now != 210)
+    die("unexpected hysteresis switch sequence: " + sprintf("%J", switches) + "\n");
+if ((result.state || {}).active != "a")
+    die("priority route did not recover to the preferred level\n");
+' || fail "priority failure/recovery hysteresis sequence"
 
 printf 'Priority failover checks passed\n'
