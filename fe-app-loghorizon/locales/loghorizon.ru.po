@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 20:53+0300\n"
-"PO-Revision-Date: 2026-09-15 20:53+0300\n"
+"POT-Creation-Date: 2026-09-15 21:37+0300\n"
+"PO-Revision-Date: 2026-09-15 21:37+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -464,6 +464,9 @@ msgstr "Напрямую"
 msgid "Direct connection"
 msgstr "Прямое подключение"
 
+msgid "Direct route: no additional encryption"
+msgstr "Прямой маршрут: без дополнительного шифрования"
+
 msgid "Disable autostart"
 msgstr "Отключить автостарт"
 
@@ -637,6 +640,9 @@ msgstr "Скачивать через"
 
 msgid "Downloaded"
 msgstr "Загружено"
+
+msgid "DPI bypass: not a VPN or encryption layer"
+msgstr "Обход DPI: не VPN и не слой шифрования"
 
 msgid "DPI preset catalog is invalid"
 msgstr "Каталог DPI-пресетов повреждён"
@@ -1610,8 +1616,14 @@ msgstr "Настройки приоритета"
 msgid "Protocol"
 msgstr "Протокол"
 
+msgid "Provider visibility"
+msgstr "Что видит провайдер"
+
 msgid "Proxy link is unavailable"
 msgstr "Ссылка прокси недоступна"
+
+msgid "Proxy or VPN route"
+msgstr "Маршрут через прокси или VPN"
 
 msgid "Public host"
 msgstr "Публичный хост"
@@ -2110,6 +2122,15 @@ msgstr "Desync fwmark управляется logIn для защиты от ци
 
 msgid "The NFQUEUE number is assigned by logIn for each rule and must not be overridden here."
 msgstr "Номер NFQUEUE назначается logIn для каждого правила и не должен переопределяться здесь."
+
+msgid "The provider can observe the destination IP and traffic sizes and timing. DNS is visible unless an encrypted resolver is used; the server name is visible unless the application successfully uses ECH. Application TLS may still encrypt the content."
+msgstr "Провайдер видит IP назначения, размеры пакетов и их тайминги. DNS виден, если не используется зашифрованный резолвер; имя сервера видно, если приложение не применило ECH. Содержимое при этом может быть защищено TLS самого приложения."
+
+msgid "The provider can still observe the destination IP and traffic sizes and timing. A DPI strategy changes selected packets to bypass filtering; DNS and the server name have the same visibility limits as a direct route."
+msgstr "Провайдер по-прежнему видит IP назначения, размеры пакетов и их тайминги. DPI-стратегия изменяет отдельные пакеты для обхода фильтрации; DNS и имя сервера видны так же, как при прямом маршруте."
+
+msgid "The provider observes the proxy or VPN server IP and tunnel traffic sizes and timing. Destination DNS, server names and addresses are hidden from the provider only when both traffic and DNS use this route and no direct fallback occurs."
+msgstr "Провайдер видит IP сервера прокси или VPN, размеры и тайминги туннельного трафика. DNS, имена и адреса назначения скрыты от провайдера, только если и трафик, и DNS идут этим маршрутом без прямого резервного выхода."
 
 msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
 msgstr "Правило применяется к домену и всем его поддоменам. Для полного совпадения, совпадению по слову или регулярному выражению используйте префиксы full:, keyword: или regex:."

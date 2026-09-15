@@ -4480,6 +4480,21 @@ function populateActionOptionValues(option) {
   }
 }
 
+function addProviderVisibilityNote(section, key, actions, summary, details) {
+  const option = section.taboption(
+    "settings",
+    form.DummyValue,
+    `_provider_visibility_${key}`,
+    _("Provider visibility"),
+    details,
+  );
+  actions.forEach((action) => option.depends("action", action));
+  option.modalonly = true;
+  option.cfgvalue = function () {
+    return summary;
+  };
+}
+
 function getConfigListValues(section_id, key) {
   return normalizeOptionValues(uci.get(UCI_PACKAGE, section_id, key));
 }
@@ -7377,6 +7392,36 @@ function createSectionContent(section) {
       return this.cfgvalue(section_id);
     });
   };
+
+  addProviderVisibilityNote(
+    section,
+    "direct",
+    ["bypass"],
+    _("Direct route: no additional encryption"),
+    _(
+      "The provider can observe the destination IP and traffic sizes and timing. DNS is visible unless an encrypted resolver is used; the server name is visible unless the application successfully uses ECH. Application TLS may still encrypt the content.",
+    ),
+  );
+
+  addProviderVisibilityNote(
+    section,
+    "dpi",
+    ["zapret", "zapret2", "byedpi"],
+    _("DPI bypass: not a VPN or encryption layer"),
+    _(
+      "The provider can still observe the destination IP and traffic sizes and timing. A DPI strategy changes selected packets to bypass filtering; DNS and the server name have the same visibility limits as a direct route.",
+    ),
+  );
+
+  addProviderVisibilityNote(
+    section,
+    "tunnel",
+    ["connection"],
+    _("Proxy or VPN route"),
+    _(
+      "The provider observes the proxy or VPN server IP and tunnel traffic sizes and timing. Destination DNS, server names and addresses are hidden from the provider only when both traffic and DNS use this route and no direct fallback occurs.",
+    ),
+  );
 
   o = section.taboption(
     "settings",
