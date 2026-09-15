@@ -960,6 +960,13 @@ function validate_dns_settings(settings, sections, context) {
         validate_required_duration_option(option(settings, "dns_check_interval", "10s"), "settings.dns_check_interval");
         validate_required_duration_option(option(settings, "dns_recovery_check_interval", "60s"), "settings.dns_recovery_check_interval");
         validate_required_duration_option(option(settings, "dns_check_timeout", "2s"), "settings.dns_check_timeout");
+        validate_required_duration_option(option(settings, "dns_minimum_hold_time", "60s"), "settings.dns_minimum_hold_time");
+        let failure_threshold = as_string(option(settings, "dns_failure_threshold", "3"));
+        if (match(failure_threshold, /^[0-9]+$/) == null || int(failure_threshold, 10) < 1 || int(failure_threshold, 10) > 20)
+            fail_validation("Invalid DNS failure threshold. Expected 1..20. Aborted.");
+        let recovery_threshold = as_string(option(settings, "dns_recovery_threshold", "3"));
+        if (match(recovery_threshold, /^[0-9]+$/) == null || int(recovery_threshold, 10) < 1 || int(recovery_threshold, 10) > 20)
+            fail_validation("Invalid DNS recovery threshold. Expected 1..20. Aborted.");
     }
 
     if (!bool_option(settings, "dns_detour_enabled", false))

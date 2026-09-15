@@ -58,6 +58,9 @@ cat >"$WORK_DIR/multi.json" <<'JSON'
     "dns_check_interval": "10s",
     "dns_recovery_check_interval": "60s",
     "dns_check_timeout": "2s",
+    "dns_failure_threshold": "3",
+    "dns_recovery_threshold": "3",
+    "dns_minimum_hold_time": "60s",
     "dns_detour_enabled": "1",
     "dns_detour_section": "proxy"
   },
@@ -163,5 +166,59 @@ JSON
 verification="$(ucode -L "$LOGHORIZON_LIB" "$FAILOVER" verification-plan-fixture "$WORK_DIR/verify-previous.json" "$WORK_DIR/verify-bootstrap.json")"
 printf '%s' "$verification" | grep -Eq '"main"[[:space:]]*:[[:space:]]*false' || fail "bootstrap-only switch must not require a dead main DNS to recover"
 printf '%s' "$verification" | grep -Eq '"bootstrap"[[:space:]]*:[[:space:]]*true' || fail "bootstrap-only switch must verify the selected bootstrap DNS"
+
+cat >"$WORK_DIR/active-confirmation.json" <<'JSON'
+{
+  "current_index": 0,
+  "threshold": 3,
+  "selections": [
+    { "index": 1, "reason": "active_dead", "alive": true },
+    { "index": 0, "reason": "alive", "alive": true },
+    { "index": 1, "reason": "active_dead", "alive": true },
+    { "index": 1, "reason": "active_dead", "alive": true },
+    { "index": 1, "reason": "active_dead", "alive": true }
+  ]
+}
+JSON
+confirmation="$(ucode -L "$LOGHORIZON_LIB" "$FAILOVER" confirmation-fixture "$WORK_DIR/active-confirmation.json")"
+printf '%s\n' "$confirmation" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+if (result.current_index != 1)
+    die("DNS did not switch after three consecutive failures\n");
+let values = result.results || [];
+if (values[0].pending !== true || values[1].index != 0 || values[3].pending !== true || values[4].index != 1)
+    die("DNS failure confirmation sequence is incorrect\n");
+' || fail "DNS active failure confirmation"
+
+cat >"$WORK_DIR/recovery-confirmation.json" <<'JSON'
+{
+  "current_index": 1,
+  "recovery": true,
+  "threshold": 3,
+  "selections": [
+    { "index": 0, "reason": "recovery", "alive": true },
+    { "index": 1, "reason": "unchanged", "alive": true },
+    { "index": 0, "reason": "recovery", "alive": true },
+    { "index": 0, "reason": "recovery", "alive": true },
+    { "index": 0, "reason": "recovery", "alive": true }
+  ]
+}
+JSON
+recovery="$(ucode -L "$LOGHORIZON_LIB" "$FAILOVER" confirmation-fixture "$WORK_DIR/recovery-confirmation.json")"
+printf '%s\n' "$recovery" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+if (result.current_index != 0)
+    die("DNS did not recover after three consecutive successes\n");
+let values = result.results || [];
+if (values[0].pending !== true || values[1].index != 1 || values[3].pending !== true || values[4].index != 0)
+    die("DNS recovery confirmation sequence is incorrect\n");
+' || fail "DNS recovery confirmation"
+
+before_hold="$(ucode -L "$LOGHORIZON_LIB" "$FAILOVER" hold-fixture 100 159 60s)"
+after_hold="$(ucode -L "$LOGHORIZON_LIB" "$FAILOVER" hold-fixture 100 160 60s)"
+printf '%s' "$before_hold" | grep -Eq '"allowed"[[:space:]]*:[[:space:]]*false' || fail "DNS recovery must wait for hold time"
+printf '%s' "$after_hold" | grep -Eq '"allowed"[[:space:]]*:[[:space:]]*true' || fail "DNS recovery must resume after hold time"
 
 printf 'DNS failover checks passed\n'

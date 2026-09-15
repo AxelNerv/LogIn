@@ -170,25 +170,89 @@ function now_seconds() {
     return int(clock()[0]);
 }
 
-function choose_index(kind, state, current_index, timeout_seconds, recovery) {
+function bounded_positive_int(value, fallback, maximum) {
+    let parsed = int(value || fallback, 10);
+    if (parsed < 1)
+        return fallback;
+    if (parsed > maximum)
+        return maximum;
+    return parsed;
+}
+
+function reset_confirmation(tracker, recovery) {
+    let prefix = recovery ? "recovery" : "failure";
+    tracker[prefix + "Candidate"] = -1;
+    tracker[prefix + "Count"] = 0;
+}
+
+function confirmation_tracker(now) {
+    return {
+        failureCandidate: -1,
+        failureCount: 0,
+        recoveryCandidate: -1,
+        recoveryCount: 0,
+        lastSwitchAt: int(now || 0)
+    };
+}
+
+function confirmed_selection(current_index, selected, tracker, recovery, threshold) {
+    selected = common.object_or_empty(selected);
+    let prefix = recovery ? "recovery" : "failure";
+
+    if (!selected.alive || int(selected.index) == int(current_index)) {
+        reset_confirmation(tracker, recovery);
+        return selected;
+    }
+
+    let candidate_key = prefix + "Candidate";
+    let count_key = prefix + "Count";
+    if (int(tracker[candidate_key]) == int(selected.index))
+        tracker[count_key]++;
+    else {
+        tracker[candidate_key] = int(selected.index);
+        tracker[count_key] = 1;
+    }
+
+    if (tracker[count_key] >= threshold)
+        return selected;
+
+    return {
+        index: int(current_index),
+        reason: "pending_" + as_string(selected.reason),
+        alive: true,
+        pending: true,
+        candidate_index: int(selected.index),
+        confirmation_count: tracker[count_key]
+    };
+}
+
+function recovery_allowed(tracker, now, minimum_hold_seconds) {
+    return int(now) - int(tracker.lastSwitchAt || 0) >= int(minimum_hold_seconds);
+}
+
+function choose_index(kind, state, current_index, timeout_seconds, recovery, probe) {
     let values = kind == "main" ? state.main_servers : state.bootstrap_servers;
     if (length(values) <= 1)
         return { index: 0, reason: "single", alive: true };
 
+    probe = probe || function(index_value) {
+        return probe_port(kind, index_value, timeout_seconds);
+    };
+
     if (recovery && current_index > 0) {
         for (let i = 0; i < current_index; i++)
-            if (probe_port(kind, i, timeout_seconds))
+            if (probe(i))
                 return { index: i, reason: "recovery", alive: true };
         return { index: current_index, reason: "unchanged", alive: true };
     }
 
-    if (probe_port(kind, current_index, timeout_seconds))
+    if (probe(current_index))
         return { index: current_index, reason: "alive", alive: true };
 
     for (let i = 0; i < length(values); i++) {
         if (i == current_index)
             continue;
-        if (probe_port(kind, i, timeout_seconds))
+        if (probe(i))
             return { index: i, reason: i < current_index ? "recovery" : "active_dead", alive: true };
     }
     return { index: current_index, reason: "all_down", alive: false };
@@ -216,13 +280,17 @@ function apply_selections(state, selections) {
 
     let stamp = clock();
     let candidate_path = STATE_FILE + ".candidate." + as_string(stamp[0]) + "." + as_string(stamp[1]);
-    if (!write_state(candidate_path, candidate))
+    if (!write_state(candidate_path, candidate)) {
+        log_message("failed to write candidate DNS state", "warn");
         return false;
+    }
 
     let status = command_status(command_from_args([ SERVICE_BIN, "dns_failover_apply", candidate_path ]) + " >/dev/null 2>&1");
     remove_file(candidate_path);
-    if (status != 0)
+    if (status != 0) {
+        log_message("failed to apply candidate DNS state (status " + as_string(status) + ")", "warn");
         return false;
+    }
 
     state.main_index = candidate.main_index;
     state.bootstrap_index = candidate.bootstrap_index;
@@ -245,9 +313,17 @@ function worker() {
     let active_interval = duration_seconds(common.option(cfg, "dns_check_interval", "10s"), 10);
     let recovery_interval = duration_seconds(common.option(cfg, "dns_recovery_check_interval", "60s"), 60);
     let timeout_seconds = probe_timeout(common.option(cfg, "dns_check_timeout", "2s"));
-    let next_active = now_seconds();
-    let next_recovery = now_seconds() + recovery_interval;
+    let failure_threshold = bounded_positive_int(common.option(cfg, "dns_failure_threshold", "3"), 3, 20);
+    let recovery_threshold = bounded_positive_int(common.option(cfg, "dns_recovery_threshold", "3"), 3, 20);
+    let minimum_hold_seconds = duration_seconds(common.option(cfg, "dns_minimum_hold_time", "60s"), 60);
+    let started_at = now_seconds();
+    let next_active = started_at;
+    let next_recovery = started_at + recovery_interval;
     let all_down = { main: false, bootstrap: false };
+    let trackers = {
+        main: confirmation_tracker(started_at),
+        bootstrap: confirmation_tracker(started_at)
+    };
 
     while (true) {
         let now = now_seconds();
@@ -256,37 +332,63 @@ function worker() {
             return 0;
 
         if (now >= next_active) {
-            let bootstrap = choose_index("bootstrap", state, int(state.bootstrap_index), timeout_seconds, false);
-            if (!bootstrap.alive && !all_down.bootstrap)
-                log_message("all configured bootstrap DNS servers are unavailable", "warn");
-            all_down.bootstrap = !bootstrap.alive;
+            let raw = {};
+            let selections = {};
+            for (let kind in [ "bootstrap", "main" ]) {
+                let key = kind == "main" ? "main_index" : "bootstrap_index";
+                raw[kind] = choose_index(kind, state, int(state[key]), timeout_seconds, false);
+                if (!raw[kind].alive && !all_down[kind])
+                    log_message("all configured " + kind + " DNS servers are unavailable", "warn");
+                all_down[kind] = !raw[kind].alive;
+                selections[kind] = confirmed_selection(
+                    int(state[key]), raw[kind], trackers[kind], false, failure_threshold
+                );
+            }
 
-            if (bootstrap.index != int(state.bootstrap_index)) {
-                let main = choose_index("main", state, int(state.main_index), timeout_seconds, false);
-                let selections = { bootstrap };
-                if (main.alive)
-                    selections.main = main;
-                let applied = apply_selections(state, selections);
-                next_active = now_seconds() + (applied && !main.alive ? 1 : active_interval);
+            let changes = {};
+            for (let kind in [ "bootstrap", "main" ]) {
+                let key = kind == "main" ? "main_index" : "bootstrap_index";
+                changes[kind] = int(selections[kind].index) != int(state[key]);
             }
-            else {
-                let main = choose_index("main", state, int(state.main_index), timeout_seconds, false);
-                if (!main.alive && !all_down.main)
-                    log_message("all configured main DNS servers are unavailable", "warn");
-                all_down.main = !main.alive;
-                apply_selections(state, { main });
-                next_active = now_seconds() + active_interval;
-            }
+            let applied = apply_selections(state, selections);
+            if (applied)
+                for (let kind in [ "bootstrap", "main" ])
+                    if (changes[kind]) {
+                        trackers[kind] = confirmation_tracker(now_seconds());
+                        all_down[kind] = false;
+                    }
+            next_active = now_seconds() + active_interval;
         }
 
         if (now >= next_recovery) {
-            let bootstrap = choose_index("bootstrap", state, int(state.bootstrap_index), timeout_seconds, true);
-            let main = choose_index("main", state, int(state.main_index), timeout_seconds, true);
-            let has_changes = bootstrap.index != int(state.bootstrap_index) || main.index != int(state.main_index);
+            let selections = {};
+            for (let kind in [ "bootstrap", "main" ]) {
+                let key = kind == "main" ? "main_index" : "bootstrap_index";
+                if (!recovery_allowed(trackers[kind], now, minimum_hold_seconds)) {
+                    selections[kind] = { index: int(state[key]), reason: "hold", alive: true };
+                    continue;
+                }
+                let selected = choose_index(kind, state, int(state[key]), timeout_seconds, true);
+                selections[kind] = confirmed_selection(
+                    int(state[key]), selected, trackers[kind], true, recovery_threshold
+                );
+            }
+            let bootstrap = selections.bootstrap;
+            let main = selections.main;
+            let changes = {
+                bootstrap: bootstrap.index != int(state.bootstrap_index),
+                main: main.index != int(state.main_index)
+            };
+            let has_changes = changes.bootstrap || changes.main;
             let applied = apply_selections(state, { bootstrap, main });
             let completed = now_seconds();
-            if (has_changes && applied)
+            if (has_changes && applied) {
+                if (changes.bootstrap)
+                    trackers.bootstrap = confirmation_tracker(completed);
+                if (changes.main)
+                    trackers.main = confirmation_tracker(completed);
                 next_active = completed + active_interval;
+            }
             next_recovery = completed + recovery_interval;
         }
 
@@ -357,6 +459,31 @@ function select_fixture(state_path, alive_path, kind, recovery) {
     common.write_json(selected);
 }
 
+function confirmation_fixture(path) {
+    let fixture = common.object_or_empty(common.read_json_file(path));
+    let current = int(fixture.current_index || 0);
+    let recovery = fixture.recovery === true || fixture.recovery == 1;
+    let threshold = bounded_positive_int(fixture.threshold, 3, 20);
+    let tracker = confirmation_tracker(int(fixture.started_at || 0));
+    let results = [];
+    for (let selected in common.array_or_empty(fixture.selections)) {
+        let result = confirmed_selection(current, selected, tracker, recovery, threshold);
+        push(results, result);
+        if (int(result.index) != current && !result.pending)
+            current = int(result.index);
+    }
+    common.write_json({ current_index: current, tracker, results });
+}
+
+function hold_fixture(last_switch_at, now, minimum_hold_time) {
+    let tracker = confirmation_tracker(int(last_switch_at || 0));
+    common.write_json({ allowed: recovery_allowed(
+        tracker,
+        int(now || 0),
+        duration_seconds(minimum_hold_time || "60s", 60)
+    ) });
+}
+
 let mode = ARGV[0] || "";
 
 if (mode == "start-runtime")
@@ -373,7 +500,11 @@ else if (mode == "select-fixture")
     select_fixture(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
 else if (mode == "verification-plan-fixture")
     common.write_json(verification_plan(common.read_json_file(ARGV[1]), common.read_json_file(ARGV[2])));
+else if (mode == "confirmation-fixture")
+    confirmation_fixture(ARGV[1]);
+else if (mode == "hold-fixture")
+    hold_fixture(ARGV[1], ARGV[2], ARGV[3]);
 else {
-    warn("Usage: singbox/dns_failover.uc <start-runtime|stop-runtime|worker|verify-state|commit-state|select-fixture|verification-plan-fixture> ...\n");
+    warn("Usage: singbox/dns_failover.uc <start-runtime|stop-runtime|worker|verify-state|commit-state|select-fixture|verification-plan-fixture|confirmation-fixture|hold-fixture> ...\n");
     exit(1);
 }

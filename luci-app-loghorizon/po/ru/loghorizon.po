@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 22:19+0300\n"
-"PO-Revision-Date: 2026-09-15 22:19+0300\n"
+"POT-Creation-Date: 2026-09-15 22:37+0300\n"
+"PO-Revision-Date: 2026-09-15 22:37+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -497,6 +497,9 @@ msgstr "Период проверки DNS"
 msgid "DNS endpoint address must be an IPv4 or IPv6 literal"
 msgstr ""
 
+msgid "DNS failures before switching"
+msgstr "Ошибок DNS до переключения"
+
 msgid "DNS goes through the tunnel"
 msgstr "DNS идёт через тоннель"
 
@@ -553,6 +556,9 @@ msgstr "DNS-серверы"
 
 msgid "DNS Strategy"
 msgstr "Стратегия DNS"
+
+msgid "DNS successes before recovery"
+msgstr "Успешных проверок DNS до возврата"
 
 msgid "DNS through proxy"
 msgstr "DNS через прокси"
@@ -1211,6 +1217,9 @@ msgstr "Настройки JSON outbound"
 msgid "Keep Priority before latency-sorted servers"
 msgstr "Показывать Priority перед серверами, отсортированными по задержке"
 
+msgid "Keep the active DNS server after an isolated failed check; switch after this many consecutive failures."
+msgstr "Сохранять активный DNS-сервер после одиночной неудачной проверки; переключаться после указанного числа ошибок подряд."
+
 msgid "Keep the active route after an isolated failed check; switch after this many consecutive failures."
 msgstr "Сохранять активный маршрут после одиночной неудачной проверки; переключаться после указанного числа ошибок подряд."
 
@@ -1349,6 +1358,9 @@ msgstr "Использование памяти"
 msgid "Method"
 msgstr "Метод"
 
+msgid "Minimum DNS hold time"
+msgstr "Минимальное время удержания DNS"
+
 msgid "Minimum latency difference in milliseconds that triggers switching to a faster server."
 msgstr "Минимальная разница задержки в миллисекундах, при которой произойдет переключение на более быстрый сервер."
 
@@ -1357,6 +1369,9 @@ msgstr "Минимальное время удержания маршрута"
 
 msgid "Minimum time before a planned recovery or latency-based switch. Emergency failover is not delayed."
 msgstr "Минимальное время до планового возврата или переключения по задержке. Аварийный переход на резерв не задерживается."
+
+msgid "Minimum time before returning to a higher-priority DNS server. Emergency failover is not delayed."
+msgstr "Минимальное время до возврата на DNS-сервер с более высоким приоритетом. Аварийный переход на резерв не задерживается."
 
 msgid "Mixed Proxy Password"
 msgstr "Пароль смешанного прокси"
@@ -1717,6 +1732,9 @@ msgstr "Перезапустить logIn"
 
 msgid "Resume updates"
 msgstr "Продолжить обновление"
+
+msgid "Return to a higher-priority DNS server only after this many consecutive successful checks."
+msgstr "Возвращаться на DNS-сервер с более высоким приоритетом только после указанного числа успешных проверок подряд."
 
 msgid "Return to a preferred route only after this many consecutive successful checks."
 msgstr "Возвращаться на предпочтительный маршрут только после указанного числа успешных проверок подряд."

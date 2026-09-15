@@ -247,6 +247,42 @@ function createSettingsContent(section, capabilities) {
 
   o = section.option(
     form.Value,
+    "dns_failure_threshold",
+    _("DNS failures before switching"),
+    _(
+      "Keep the active DNS server after an isolated failed check; switch after this many consecutive failures.",
+    ),
+  );
+  o.default = "3";
+  o.rmempty = false;
+  o.datatype = "range(1,20)";
+  configureDnsFailoverVisibility(o, dnsOption, bootstrapOption);
+
+  o = section.option(
+    form.Value,
+    "dns_recovery_threshold",
+    _("DNS successes before recovery"),
+    _(
+      "Return to a higher-priority DNS server only after this many consecutive successful checks.",
+    ),
+  );
+  o.default = "3";
+  o.rmempty = false;
+  o.datatype = "range(1,20)";
+  configureDnsFailoverVisibility(o, dnsOption, bootstrapOption);
+
+  o = section.option(
+    form.Value,
+    "dns_minimum_hold_time",
+    _("Minimum DNS hold time"),
+    _(
+      "Minimum time before returning to a higher-priority DNS server. Emergency failover is not delayed.",
+    ),
+  );
+  configureDnsDuration(o, "60s", dnsOption, bootstrapOption);
+
+  o = section.option(
+    form.Value,
     "dns_rewrite_ttl",
     _("DNS Rewrite TTL"),
     _("Time in seconds for DNS record caching (default: 60)"),

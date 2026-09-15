@@ -305,7 +305,7 @@
     "call": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
     "key": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:494"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:530"
     ]
   },
   {
@@ -375,7 +375,7 @@
     "call": "Automatic component update checks",
     "key": "Automatic component update checks",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:596"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:632"
     ]
   },
   {
@@ -396,7 +396,7 @@
     "call": "Automatically check installed components for new versions",
     "key": "Automatically check installed components for new versions",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:597"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:633"
     ]
   },
   {
@@ -585,14 +585,14 @@
     "call": "Cache File Path",
     "key": "Cache File Path",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:718"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:754"
     ]
   },
   {
     "call": "Cache file path cannot be empty",
     "key": "Cache file path cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:732"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:768"
     ]
   },
   {
@@ -770,7 +770,7 @@
     "call": "Clear the FakeIP cache daily",
     "key": "Clear the FakeIP cache daily",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:572"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:608"
     ]
   },
   {
@@ -810,10 +810,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3929",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882",
       "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267"
+      "src/loghorizon/tabs/dashboard/initController.ts:1267",
+      "src/loghorizon/tabs/monitoring/initController.ts:832",
+      "src/loghorizon/tabs/monitoring/initController.ts:882"
     ]
   },
   {
@@ -851,7 +851,7 @@
     "call": "Component update check interval",
     "key": "Component update check interval",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:605"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:641"
     ]
   },
   {
@@ -886,7 +886,7 @@
     "call": "Config File Path",
     "key": "Config File Path",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:705"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:741"
     ]
   },
   {
@@ -1017,21 +1017,21 @@
     "call": "Default address for checking server availability and latency. URLTest uses its own address.",
     "key": "Default address for checking server availability and latency. URLTest uses its own address.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:641"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:677"
     ]
   },
   {
     "call": "Delay in milliseconds before reloading logIn after interface UP",
     "key": "Delay in milliseconds before reloading logIn after interface UP",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:469"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:505"
     ]
   },
   {
     "call": "Delay value cannot be empty",
     "key": "Delay value cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:476"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:512"
     ]
   },
   {
@@ -1124,14 +1124,14 @@
     "call": "Disable QUIC",
     "key": "Disable QUIC",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:516"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:552"
     ]
   },
   {
     "call": "Disable the QUIC protocol to improve compatibility or fix issues with video streaming",
     "key": "Disable the QUIC protocol to improve compatibility or fix issues with video streaming",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:517"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:553"
     ]
   },
   {
@@ -1182,6 +1182,13 @@
     "key": "DNS endpoint address must be an IPv4 or IPv6 literal",
     "places": [
       "src/validators/validateDns.ts:47"
+    ]
+  },
+  {
+    "call": "DNS failures before switching",
+    "key": "DNS failures before switching",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:251"
     ]
   },
   {
@@ -1272,14 +1279,14 @@
     "key": "DNS requests through section",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7537",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:330"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:366"
     ]
   },
   {
     "call": "DNS Rewrite TTL",
     "key": "DNS Rewrite TTL",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:251"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:287"
     ]
   },
   {
@@ -1324,14 +1331,21 @@
     "call": "DNS Strategy",
     "key": "DNS Strategy",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:269"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:305"
+    ]
+  },
+  {
+    "call": "DNS successes before recovery",
+    "key": "DNS successes before recovery",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:264"
     ]
   },
   {
     "call": "DNS through proxy",
     "key": "DNS through proxy",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:320"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:356"
     ]
   },
   {
@@ -1450,7 +1464,7 @@
     "call": "Dont Touch My DHCP!",
     "key": "Dont Touch My DHCP!",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:696"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:732"
     ]
   },
   {
@@ -1472,42 +1486,42 @@
     "call": "Download component packages via the selected section",
     "key": "Download component packages via the selected section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:677"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:713"
     ]
   },
   {
     "call": "Download components through",
     "key": "Download components through",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:684"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:720"
     ]
   },
   {
     "call": "Download components through a section",
     "key": "Download components through a section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:676"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:712"
     ]
   },
   {
     "call": "Download lists through",
     "key": "Download lists through",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:664"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:700"
     ]
   },
   {
     "call": "Download lists through a section",
     "key": "Download lists through a section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:656"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:692"
     ]
   },
   {
     "call": "Download remote lists and rule sets via the selected section",
     "key": "Download remote lists and rule sets via the selected section",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:657"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:693"
     ]
   },
   {
@@ -1599,7 +1613,7 @@
     "call": "ECH needs a DNS server given by name, but %s is an address. Use the resolver's hostname, such as dns.google.",
     "key": "ECH needs a DNS server given by name, but %s is an address. Use the resolver's hostname, such as dns.google.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:311"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:347"
     ]
   },
   {
@@ -1629,7 +1643,7 @@
     "call": "Enable automatic updates for remote lists and rule sets",
     "key": "Enable automatic updates for remote lists and rule sets",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:528"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:564"
     ]
   },
   {
@@ -1650,7 +1664,7 @@
     "call": "Enable list updates",
     "key": "Enable list updates",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:527"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:563"
     ]
   },
   {
@@ -1671,21 +1685,21 @@
     "call": "Enable Output Network Interface",
     "key": "Enable Output Network Interface",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:375"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:411"
     ]
   },
   {
     "call": "Enable YACD",
     "key": "Enable YACD",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:484"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:520"
     ]
   },
   {
     "call": "Enable YACD WAN Access",
     "key": "Enable YACD WAN Access",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:493"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:529"
     ]
   },
   {
@@ -1699,7 +1713,7 @@
     "call": "Encrypted Client Hello (ECH)",
     "key": "Encrypted Client Hello (ECH)",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:280"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:316"
     ]
   },
   {
@@ -1814,14 +1828,14 @@
     "call": "Exclude NTP",
     "key": "Exclude NTP",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:770"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:806"
     ]
   },
   {
     "call": "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN",
     "key": "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:771"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:807"
     ]
   },
   {
@@ -2203,7 +2217,7 @@
     "call": "Hides the resolver name inside the TLS handshake, which is what providers match on when they block DoH and DoT. Requires an encrypted DNS protocol and a resolver that publishes ECH keys.",
     "key": "Hides the resolver name inside the TLS handshake, which is what providers match on when they block DoH and DoT. Requires an encrypted DNS protocol and a resolver that publishes ECH keys.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:281"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:317"
     ]
   },
   {
@@ -2233,7 +2247,7 @@
     "call": "Hour to clear it",
     "key": "Hour to clear it",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:583"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:619"
     ]
   },
   {
@@ -2412,21 +2426,21 @@
     "call": "Interface Monitoring",
     "key": "Interface Monitoring",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:436"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:472"
     ]
   },
   {
     "call": "Interface Monitoring Delay",
     "key": "Interface Monitoring Delay",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:468"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:504"
     ]
   },
   {
     "call": "Interface monitoring for Bad WAN",
     "key": "Interface monitoring for Bad WAN",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:437"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:473"
     ]
   },
   {
@@ -2849,14 +2863,14 @@
     "call": "IPv4 only",
     "key": "IPv4 only",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:271"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:307"
     ]
   },
   {
     "call": "IPv6 only",
     "key": "IPv6 only",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:273"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:309"
     ]
   },
   {
@@ -2920,6 +2934,13 @@
     ]
   },
   {
+    "call": "Keep the active DNS server after an isolated failed check; switch after this many consecutive failures.",
+    "key": "Keep the active DNS server after an isolated failed check; switch after this many consecutive failures.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:252"
+    ]
+  },
+  {
     "call": "Keep the active route after an isolated failed check; switch after this many consecutive failures.",
     "key": "Keep the active route after an isolated failed check; switch after this many consecutive failures.",
     "places": [
@@ -2966,7 +2987,7 @@
     "call": "Latency test URL",
     "key": "Latency test URL",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:640"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:676"
     ]
   },
   {
@@ -3009,7 +3030,7 @@
     "call": "List Update Frequency",
     "key": "List Update Frequency",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:536"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:572"
     ]
   },
   {
@@ -3063,7 +3084,7 @@
     "call": "Log Level",
     "key": "Log Level",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:754"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:790"
     ]
   },
   {
@@ -3126,7 +3147,7 @@
     "call": "logIn will not modify your DHCP configuration",
     "key": "logIn will not modify your DHCP configuration",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:697"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:733"
     ]
   },
   {
@@ -3249,6 +3270,13 @@
     ]
   },
   {
+    "call": "Minimum DNS hold time",
+    "key": "Minimum DNS hold time",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:277"
+    ]
+  },
+  {
     "call": "Minimum latency difference in milliseconds that triggers switching to a faster server.",
     "key": "Minimum latency difference in milliseconds that triggers switching to a faster server.",
     "places": [
@@ -3267,6 +3295,13 @@
     "key": "Minimum time before a planned recovery or latency-based switch. Emergency failover is not delayed.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3427"
+    ]
+  },
+  {
+    "call": "Minimum time before returning to a higher-priority DNS server. Emergency failover is not delayed.",
+    "key": "Minimum time before returning to a higher-priority DNS server. Emergency failover is not delayed.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:278"
     ]
   },
   {
@@ -3294,7 +3329,7 @@
     "call": "Monitored Interfaces",
     "key": "Monitored Interfaces",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:445"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:481"
     ]
   },
   {
@@ -3738,7 +3773,7 @@
     "call": "Output Network Interface",
     "key": "Output Network Interface",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:384"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:420"
     ]
   },
   {
@@ -3780,21 +3815,21 @@
     "call": "Path must be absolute (start with /)",
     "key": "Path must be absolute (start with /)",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:736"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:772"
     ]
   },
   {
     "call": "Path must contain at least one directory (like /tmp/cache.db)",
     "key": "Path must contain at least one directory (like /tmp/cache.db)",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:745"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:781"
     ]
   },
   {
     "call": "Path must end with cache.db",
     "key": "Path must end with cache.db",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:740"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:776"
     ]
   },
   {
@@ -3875,14 +3910,14 @@
     "call": "Prefer IPv4",
     "key": "Prefer IPv4",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:270"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:306"
     ]
   },
   {
     "call": "Prefer IPv6",
     "key": "Prefer IPv6",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:272"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:308"
     ]
   },
   {
@@ -4153,6 +4188,13 @@
     ]
   },
   {
+    "call": "Return to a higher-priority DNS server only after this many consecutive successful checks.",
+    "key": "Return to a higher-priority DNS server only after this many consecutive successful checks.",
+    "places": [
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:265"
+    ]
+  },
+  {
     "call": "Return to a preferred route only after this many consecutive successful checks.",
     "key": "Return to a preferred route only after this many consecutive successful checks.",
     "places": [
@@ -4335,7 +4377,7 @@
     "call": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
     "key": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:506"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:542"
     ]
   },
   {
@@ -4456,14 +4498,14 @@
     "call": "Select or enter path for sing-box cache file. Change this ONLY if you know what you are doing",
     "key": "Select or enter path for sing-box cache file. Change this ONLY if you know what you are doing",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:719"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:755"
     ]
   },
   {
     "call": "Select path for sing-box config file. Change this ONLY if you know what you are doing",
     "key": "Select path for sing-box config file. Change this ONLY if you know what you are doing",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:706"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:742"
     ]
   },
   {
@@ -4478,28 +4520,28 @@
     "call": "Select the log level for sing-box",
     "key": "Select the log level for sing-box",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:755"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:791"
     ]
   },
   {
     "call": "Select the network interface from which the traffic will originate",
     "key": "Select the network interface from which the traffic will originate",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:339"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:375"
     ]
   },
   {
     "call": "Select the network interface to which the traffic will originate",
     "key": "Select the network interface to which the traffic will originate",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:385"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:421"
     ]
   },
   {
     "call": "Select the WAN interfaces to be monitored",
     "key": "Select the WAN interfaces to be monitored",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:446"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:482"
     ]
   },
   {
@@ -4535,7 +4577,7 @@
     "call": "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block.",
     "key": "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:321"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:357"
     ]
   },
   {
@@ -4787,7 +4829,7 @@
     "call": "sing-box remembers which fake address it handed out for each domain, and keeps that across restarts. Once the mapping goes stale, clients are sent to an address that no longer leads anywhere and pages stop loading with nothing to explain why.",
     "key": "sing-box remembers which fake address it handed out for each domain, and keeps that across restarts. Once the mapping goes stale, clients are sent to an address that no longer leads anywhere and pages stop loading with nothing to explain why.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:573"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:609"
     ]
   },
   {
@@ -4844,7 +4886,7 @@
     "call": "Source Network Interface",
     "key": "Source Network Interface",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:338"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:374"
     ]
   },
   {
@@ -5214,7 +5256,7 @@
     "call": "The service restarts, so pick an hour when nobody is using the router.",
     "key": "The service restarts, so pick an hour when nobody is using the router.",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:584"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:620"
     ]
   },
   {
@@ -5326,7 +5368,7 @@
     "call": "Time in seconds for DNS record caching (default: 60)",
     "key": "Time in seconds for DNS record caching (default: 60)",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:252"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:288"
     ]
   },
   {
@@ -5441,14 +5483,14 @@
     "call": "TTL must be a positive number",
     "key": "TTL must be a positive number",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:263"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:299"
     ]
   },
   {
     "call": "TTL value cannot be empty",
     "key": "TTL value cannot be empty",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:258"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:294"
     ]
   },
   {
@@ -5569,7 +5611,6 @@
     "call": "unknown",
     "key": "unknown",
     "places": [
-      "src/loghorizon/helpers/singBoxVariant.ts:28",
       "src/loghorizon/services/systemInfo.service.ts:10",
       "src/loghorizon/services/systemInfo.service.ts:11",
       "src/loghorizon/services/systemInfo.service.ts:12",
@@ -5579,6 +5620,7 @@
       "src/loghorizon/services/systemInfo.service.ts:22",
       "src/loghorizon/services/systemInfo.service.ts:25",
       "src/loghorizon/services/systemInfo.service.ts:26",
+      "src/loghorizon/helpers/singBoxVariant.ts:28",
       "src/loghorizon/tabs/updates/initController.ts:332",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:25"
     ]
@@ -5858,11 +5900,11 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4925",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4932",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4939",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:537",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:559",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:566",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:606",
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:634"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:573",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:595",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:602",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:642",
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:670"
     ]
   },
   {
@@ -6027,7 +6069,7 @@
     "call": "YACD Secret Key",
     "key": "YACD Secret Key",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:505"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:541"
     ]
   },
   {
@@ -6041,7 +6083,7 @@
     "call": "You can select Output Network Interface, by default autodetect",
     "key": "You can select Output Network Interface, by default autodetect",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:376"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:412"
     ]
   },
   {
