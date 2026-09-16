@@ -241,6 +241,30 @@ function parse_delay_output(output) {
     return delay >= 0 ? delay : null;
 }
 
+function group_proxy_from_output(output, group_tag) {
+    let value = null;
+    try {
+        value = json(output);
+    }
+    catch (e) {
+        return "";
+    }
+
+    if (type(value) != "object")
+        return "";
+
+    let proxy = object_or_empty(object_or_empty(value.proxies)[as_string(group_tag)]);
+    let selected = as_string(proxy.now);
+    return selected;
+}
+
+function clash_group_proxy(group) {
+    let result = module_capture([ "get_proxies" ]);
+    if (result.status != 0)
+        return "";
+    return group_proxy_from_output(result.output, group.tag);
+}
+
 function clash_probe(tag_name, group) {
     let timeout = as_string(duration_to_milliseconds(group.check_timeout, 2000));
     let result = module_capture([ "get_proxy_latency", tag_name, timeout, group.health_url ]);
@@ -341,7 +365,16 @@ function choose_fastest_same_level(group, level_index, active_tag, probe) {
 
 function set_group_proxy(group, tag_name) {
     let result = module_capture([ "set_group_proxy", group.tag, tag_name, "" ]);
-    return result.status == 0;
+    if (result.status != 0)
+        return false;
+
+    let selected = clash_group_proxy(group);
+    if (selected != tag_name) {
+        log_message("selector API did not confirm " + group.tag + " -> " + tag_name +
+            (selected == "" ? " (selection unavailable)" : " (still " + selected + ")"), "warn");
+        return false;
+    }
+    return true;
 }
 
 function switch_group(state, group, selected, setter, now) {
@@ -372,18 +405,33 @@ function switch_group(state, group, selected, setter, now) {
     return true;
 }
 
-function init_group_state(group, now) {
+function group_level_index(group, tag_name) {
+    tag_name = as_string(tag_name);
+    if (tag_name == "")
+        return -1;
+    for (let i = 0; i < length(array_or_empty(group.levels)); i++)
+        for (let candidate in array_or_empty(object_or_empty(group.levels[i]).outbounds))
+            if (candidate == tag_name)
+                return i;
+    return -1;
+}
+
+function init_group_state(group, now, active_tag) {
     now = now == null ? now_seconds() : int(now);
+    active_tag = as_string(active_tag);
+    let level_index = group_level_index(group, active_tag);
+    if (level_index < 0)
+        active_tag = "";
     return {
-        active: "",
-        levelIndex: -1,
+        active: active_tag,
+        levelIndex: level_index,
         activeDelay: 0,
         consecutiveFailures: 0,
         pendingRecoveryTag: "",
         recoverySuccesses: 0,
         pendingFastestTag: "",
         fastestSuccesses: 0,
-        lastSwitchAt: 0,
+        lastSwitchAt: active_tag == "" ? 0 : now,
         nextActiveCheck: now,
         nextRecoveryCheck: now + duration_to_seconds(group.recovery_check_interval, 15),
         nextFastestCheck: now + duration_to_seconds(group.fastest_check_interval, 180)
@@ -478,9 +526,15 @@ function worker() {
     if (length(groups) == 0)
         return 0;
 
+    let snapshot = module_capture([ "get_proxies" ]);
+    let snapshot_output = snapshot.status == 0 ? snapshot.output : "";
     let states = {};
-    for (let group in groups)
-        states[group.tag] = init_group_state(group);
+    for (let group in groups) {
+        let selected = group_proxy_from_output(snapshot_output, group.tag);
+        states[group.tag] = init_group_state(group, null, selected);
+        if (selected != "" && states[group.tag].active == "")
+            log_message("ignoring unknown active selector member " + group.tag + " -> " + selected, "warn");
+    }
 
     while (true) {
         for (let group in groups)
@@ -539,7 +593,7 @@ function sequence_fixture(scenario_path) {
     let group = normalize_group(scenario.group, "fixture");
     let ticks = array_or_empty(scenario.ticks);
     let initial_now = length(ticks) > 0 ? int(object_or_empty(ticks[0]).now || 0) : 0;
-    let state = init_group_state(group, initial_now);
+    let state = init_group_state(group, initial_now, scenario.initial_active);
     let switches = [];
 
     for (let tick in ticks) {
@@ -552,7 +606,7 @@ function sequence_fixture(scenario_path) {
             },
             setter: function(_group, tag_name) {
                 push(switches, { now: int(tick.now || 0), tag: tag_name });
-                return true;
+                return tick.set_success !== false;
             }
         });
     }
@@ -574,7 +628,9 @@ else if (mode == "select-faster-fixture")
     select_faster_fixture(ARGV[1], ARGV[2], ARGV[3], ARGV[4]);
 else if (mode == "sequence-fixture")
     sequence_fixture(ARGV[1]);
+else if (mode == "group-proxy-fixture")
+    print(group_proxy_from_output(as_string(fs.readfile(ARGV[1]) || ""), ARGV[2]), "\n");
 else {
-    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|worker|select-fixture|select-faster-fixture|sequence-fixture>\n");
+    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|worker|select-fixture|select-faster-fixture|sequence-fixture|group-proxy-fixture>\n");
     exit(1);
 }

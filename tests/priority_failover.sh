@@ -725,4 +725,79 @@ if ((result.state || {}).active != "a")
     die("priority route did not recover to the preferred level\n");
 ' || fail "priority failure/recovery hysteresis sequence"
 
+cat >"$WORK_DIR/group-proxies.json" <<'JSON'
+{
+  "proxies": {
+    "fixture": { "type": "Selector", "now": "b", "all": [ "a", "b" ] }
+  }
+}
+JSON
+[ "$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" group-proxy-fixture "$WORK_DIR/group-proxies.json" fixture)" = "b" ] ||
+  fail "priority runtime should read the active selector member from Clash API"
+[ -z "$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" group-proxy-fixture "$WORK_DIR/group-proxies.json" missing)" ] ||
+  fail "unknown selector group should not produce a current member"
+printf '%s\n' '{"proxies":' >"$WORK_DIR/broken-group-proxies.json"
+[ -z "$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" group-proxy-fixture "$WORK_DIR/broken-group-proxies.json" fixture)" ] ||
+  fail "malformed Clash API response should not produce a current member"
+
+cat >"$WORK_DIR/restart-sequence.json" <<'JSON'
+{
+  "initial_active": "b",
+  "group": {
+    "tag": "fixture",
+    "active_check_interval": "5s",
+    "recovery_check_interval": "10s",
+    "minimum_hold_time": "60s",
+    "failure_threshold": 3,
+    "recovery_threshold": 3,
+    "levels": [
+      { "id": "top", "outbounds": [ "a" ] },
+      { "id": "fallback", "outbounds": [ "b" ] }
+    ]
+  },
+  "ticks": [
+    { "now": 100, "latencies": { "a": 30, "b": 70 } },
+    { "now": 110, "latencies": { "a": 30, "b": 70 } },
+    { "now": 160, "latencies": { "a": 30, "b": 70 } },
+    { "now": 170, "latencies": { "a": 30, "b": 70 } },
+    { "now": 180, "latencies": { "a": 30, "b": 70 } }
+  ]
+}
+JSON
+restart_state="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" sequence-fixture \
+  "$WORK_DIR/restart-sequence.json")"
+printf '%s\n' "$restart_state" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+let switches = result.switches || [];
+if (length(switches) != 1 || switches[0].tag != "a" || switches[0].now != 180)
+    die("worker restart did not preserve the active fallback and hold/recovery thresholds: " + sprintf("%J", switches) + "\n");
+' || fail "priority worker should recover the live selector member without resetting it"
+
+cat >"$WORK_DIR/unconfirmed-switch-sequence.json" <<'JSON'
+{
+  "group": {
+    "tag": "fixture",
+    "active_check_interval": "5s",
+    "failure_threshold": 1,
+    "levels": [
+      { "id": "top", "outbounds": [ "a" ] },
+      { "id": "fallback", "outbounds": [ "b" ] }
+    ]
+  },
+  "ticks": [
+    { "now": 100, "latencies": { "a": 30, "b": 70 } },
+    { "now": 105, "latencies": { "a": -1, "b": 70 }, "set_success": false }
+  ]
+}
+JSON
+unconfirmed="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" sequence-fixture \
+  "$WORK_DIR/unconfirmed-switch-sequence.json")"
+printf '%s\n' "$unconfirmed" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+if ((result.state || {}).active != "a" || (result.state || {}).levelIndex != 0)
+    die("unconfirmed selector change was committed to runtime state\n");
+' || fail "priority runtime must not commit an unconfirmed selector change"
+
 printf 'Priority failover checks passed\n'
