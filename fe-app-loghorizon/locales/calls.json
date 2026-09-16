@@ -408,6 +408,14 @@
     ]
   },
   {
+    "call": "Available",
+    "key": "Available",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:22",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:79"
+    ]
+  },
+  {
     "call": "Available actions",
     "key": "Available actions",
     "places": [
@@ -607,6 +615,7 @@
     "key": "Cannot receive checks result",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:102",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172",
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
@@ -709,8 +718,9 @@
     "call": "Checking, please wait",
     "key": "Checking, please wait",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:1042",
+      "src/loghorizon/tabs/diagnostic/initController.ts:1043",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:91",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160",
@@ -911,6 +921,13 @@
     ]
   },
   {
+    "call": "Connection path",
+    "key": "Connection path",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/contstants.ts:27"
+    ]
+  },
+  {
     "call": "Connection URL",
     "key": "Connection URL",
     "places": [
@@ -929,6 +946,13 @@
     "key": "Connectivity probe failed",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:145"
+    ]
+  },
+  {
+    "call": "Control request failed; this alone does not prove UDP blocking",
+    "key": "Control request failed; this alone does not prove UDP blocking",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:80"
     ]
   },
   {
@@ -1090,6 +1114,13 @@
     "key": "DHCP is managed manually",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/getDnsCheckPresentation.ts:36"
+    ]
+  },
+  {
+    "call": "Diagnostic tools are missing",
+    "key": "Diagnostic tools are missing",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:127"
     ]
   },
   {
@@ -1290,6 +1321,13 @@
     ]
   },
   {
+    "call": "DNS resolution failed",
+    "key": "DNS resolution failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:12"
+    ]
+  },
+  {
     "call": "DNS Rewrite TTL",
     "key": "DNS Rewrite TTL",
     "places": [
@@ -1374,6 +1412,13 @@
     "key": "DNS Unavailability Timeout",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:241"
+    ]
+  },
+  {
+    "call": "DNS, TCP handoff, TLS, and HTTP path is available",
+    "key": "DNS, TCP handoff, TLS, and HTTP path is available",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:157"
     ]
   },
   {
@@ -1945,12 +1990,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722"
+      "src/loghorizon/tabs/updates/initController.ts:722",
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177"
     ]
   },
   {
@@ -2105,7 +2150,7 @@
     "call": "Global check",
     "key": "Global check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:695"
+      "src/loghorizon/tabs/diagnostic/initController.ts:696"
     ]
   },
   {
@@ -2300,6 +2345,20 @@
     ]
   },
   {
+    "call": "HTTP request failed",
+    "key": "HTTP request failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:18"
+    ]
+  },
+  {
+    "call": "HTTPS works, but the QUIC control request failed",
+    "key": "HTTPS works, but the QUIC control request failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:156"
+    ]
+  },
+  {
     "call": "HWID",
     "key": "HWID",
     "places": [
@@ -2422,6 +2481,14 @@
     ]
   },
   {
+    "call": "Installed",
+    "key": "Installed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+    ]
+  },
+  {
     "call": "Installed version is newer than release",
     "key": "Installed version is newer than release",
     "places": [
@@ -2448,6 +2515,13 @@
     "key": "Interface monitoring for Bad WAN",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:473"
+    ]
+  },
+  {
+    "call": "Interpretation",
+    "key": "Interpretation",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:141"
     ]
   },
   {
@@ -2979,8 +3053,8 @@
     "call": "Latency test failed",
     "key": "Latency test failed",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:450",
-      "src/loghorizon/methods/shell/index.ts:471"
+      "src/loghorizon/methods/shell/index.ts:457",
+      "src/loghorizon/methods/shell/index.ts:478"
     ]
   },
   {
@@ -3495,6 +3569,13 @@
     ]
   },
   {
+    "call": "No default route",
+    "key": "No default route",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:20"
+    ]
+  },
+  {
     "call": "No enabled server inbounds configured",
     "key": "No enabled server inbounds configured",
     "places": [
@@ -3520,6 +3601,13 @@
     "key": "No public firewall port required",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:99"
+    ]
+  },
+  {
+    "call": "No result",
+    "key": "No result",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:35"
     ]
   },
   {
@@ -3599,7 +3687,9 @@
       "src/loghorizon/helpers/singBoxVariant.ts:37",
       "src/loghorizon/tabs/updates/initController.ts:933",
       "src/loghorizon/tabs/updates/initController.ts:946",
-      "src/loghorizon/tabs/updates/initController.ts:959"
+      "src/loghorizon/tabs/updates/initController.ts:959",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
     ]
   },
   {
@@ -3630,11 +3720,18 @@
     "call": "Not running",
     "key": "Not running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:128",
-      "src/loghorizon/tabs/diagnostic/initController.ts:116",
-      "src/loghorizon/tabs/diagnostic/initController.ts:348",
-      "src/loghorizon/tabs/diagnostic/initController.ts:405",
-      "src/loghorizon/tabs/diagnostic/initController.ts:491"
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:132",
+      "src/loghorizon/tabs/diagnostic/initController.ts:117",
+      "src/loghorizon/tabs/diagnostic/initController.ts:349",
+      "src/loghorizon/tabs/diagnostic/initController.ts:406",
+      "src/loghorizon/tabs/diagnostic/initController.ts:492"
+    ]
+  },
+  {
+    "call": "Not tested: the diagnostic curl build has no HTTP/3 support",
+    "key": "Not tested: the diagnostic curl build has no HTTP/3 support",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:71"
     ]
   },
   {
@@ -3736,8 +3833,8 @@
     "key": "Operation timed out",
     "places": [
       "src/helpers/withTimeout.ts:7",
-      "src/loghorizon/methods/shell/index.ts:420",
-      "src/loghorizon/methods/shell/index.ts:508"
+      "src/loghorizon/methods/shell/index.ts:427",
+      "src/loghorizon/methods/shell/index.ts:515"
     ]
   },
   {
@@ -3845,7 +3942,7 @@
     "call": "Pending",
     "key": "Pending",
     "places": [
-      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:63"
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:67"
     ]
   },
   {
@@ -4677,9 +4774,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:371",
-      "src/loghorizon/methods/shell/index.ts:392",
-      "src/loghorizon/tabs/diagnostic/initController.ts:597"
+      "src/loghorizon/tabs/diagnostic/initController.ts:598",
+      "src/loghorizon/methods/shell/index.ts:378",
+      "src/loghorizon/methods/shell/index.ts:399"
     ]
   },
   {
@@ -4772,7 +4869,7 @@
     "call": "Show sing-box config",
     "key": "Show sing-box config",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:765",
+      "src/loghorizon/tabs/diagnostic/initController.ts:766",
       "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127"
     ]
   },
@@ -5034,8 +5131,8 @@
     "call": "Subscription update failed",
     "key": "Subscription update failed",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:708",
-      "src/loghorizon/methods/shell/index.ts:728"
+      "src/loghorizon/methods/shell/index.ts:715",
+      "src/loghorizon/methods/shell/index.ts:735"
     ]
   },
   {
@@ -5120,6 +5217,27 @@
     "key": "Tailscale hostname",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3094"
+    ]
+  },
+  {
+    "call": "TCP connection failed",
+    "key": "TCP connection failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:14"
+    ]
+  },
+  {
+    "call": "TCP handoff",
+    "key": "TCP handoff",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:60"
+    ]
+  },
+  {
+    "call": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
+    "key": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:142"
     ]
   },
   {
@@ -5393,6 +5511,13 @@
     ]
   },
   {
+    "call": "TLS or upstream connection failed",
+    "key": "TLS or upstream connection failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:16"
+    ]
+  },
+  {
     "call": "Tolerance",
     "key": "Tolerance",
     "places": [
@@ -5405,6 +5530,13 @@
     "key": "Top level has the highest priority; lower levels are used as fallback",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3474"
+    ]
+  },
+  {
+    "call": "total",
+    "key": "total",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:60"
     ]
   },
   {
@@ -5998,7 +6130,7 @@
     "call": "View logs",
     "key": "View logs",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:730",
+      "src/loghorizon/tabs/diagnostic/initController.ts:731",
       "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118"
     ]
   },

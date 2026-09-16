@@ -1369,6 +1369,170 @@ function check_dns_available() {
     return 0;
 }
 
+function connectivity_probe_number(value) {
+    value = trim(as_string(value));
+    return value != "" ? value * 1 : 0;
+}
+
+function connectivity_probe_milliseconds(value) {
+    return int((connectivity_probe_number(value) * 1000) + 0.5);
+}
+
+function classify_connectivity_probe(status, output) {
+    let fields = split(replace(as_string(output), /[\r\n]+$/g, ""), "\t");
+    let http_code = int(fields[0] || "0", 10);
+    let connect_seconds = connectivity_probe_number(fields[1]);
+    let tls_seconds = connectivity_probe_number(fields[2]);
+    let total_seconds = connectivity_probe_number(fields[3]);
+    let stage = "ok";
+    let reason = "server_responded";
+    let available = status == 0 && http_code > 0;
+
+    if (!available) {
+        if (status == 6) {
+            stage = "dns";
+            reason = "dns_failed";
+        }
+        else if (connect_seconds <= 0) {
+            stage = "tcp";
+            reason = status == 28 ? "tcp_timeout" : "tcp_failed";
+        }
+        else if (tls_seconds <= 0) {
+            stage = "tls";
+            reason = status == 28 ? "tls_timeout" : "tls_failed";
+        }
+        else {
+            stage = "http";
+            reason = status == 28 ? "http_timeout" : "http_failed";
+        }
+    }
+
+    return {
+        available: available ? 1 : 0,
+        stage,
+        reason,
+        curl_status: status,
+        http_code,
+        tcp_ms: connectivity_probe_milliseconds(connect_seconds),
+        tls_ms: connectivity_probe_milliseconds(tls_seconds > connect_seconds ? tls_seconds - connect_seconds : 0),
+        total_ms: connectivity_probe_milliseconds(total_seconds)
+    };
+}
+
+function connectivity_probe_classify_fixture() {
+    let input = parse_json_or_null(read_stdin());
+    if (type(input) != "object")
+        return 1;
+    write_json(classify_connectivity_probe(int(input.status || 0, 10), as_string(input.output)));
+    return 0;
+}
+
+function connectivity_resolve(host, query_type) {
+    let active = runtime_dns.active_values(settings());
+    let args = [
+        "dig", "-p", as_string(runtime_dns.health_port("bootstrap", active.state.bootstrap_index)),
+        "@" + runtime_dns.DNS_HEALTH_ADDRESS, host, query_type, "+short", "+timeout=2", "+tries=1"
+    ];
+    for (let line in split(command_output_from_args(args), "\n")) {
+        let address = trim(as_string(line));
+        if ((query_type == "A" && valid_ipv4(address)) || (query_type == "AAAA" && core_ip.valid_ipv6(address)))
+            return address;
+    }
+    return "";
+}
+
+function connectivity_https_probe(host, url, address) {
+    if (address == "")
+        return {
+            available: 0,
+            stage: "dns",
+            reason: "dns_failed",
+            curl_status: 6,
+            http_code: 0,
+            tcp_ms: 0,
+            tls_ms: 0,
+            total_ms: 0
+        };
+
+    let resolve_address = index(address, ":") >= 0 ? "[" + address + "]" : address;
+    let args = [
+        "curl", "-sS", "--connect-timeout", "3", "--max-time", "5",
+        "--resolve", host + ":443:" + resolve_address,
+        "-o", "/dev/null", "-w", "%{http_code}\\t%{time_connect}\\t%{time_appconnect}\\t%{time_total}\\n",
+        url
+    ];
+    let result = command_capture(command_from_args(args) + " 2>/dev/null");
+    return classify_connectivity_probe(result.status, result.output);
+}
+
+function connectivity_family_probe(family, route_available, host, url) {
+    let address = connectivity_resolve(host, family == "ipv6" ? "AAAA" : "A");
+    let fake_address = index(address, "198.18.") == 0 || index(address, "198.19.") == 0 || index(lc(address), "fc") == 0 || index(lc(address), "fd") == 0;
+    if (!route_available && !fake_address)
+        return { available: 0, skipped: 1, stage: "route", reason: "no_default_route", curl_status: 0, http_code: 0, tcp_ms: 0, tls_ms: 0, total_ms: 0, dns_available: address != "" ? 1 : 0 };
+
+    let result = connectivity_https_probe(host, url, address);
+    result.skipped = 0;
+    result.dns_available = address != "" ? 1 : 0;
+    return result;
+}
+
+function connectivity_quic_probe() {
+    let curl_version = command_output_from_args([ "curl", "-V" ]);
+    if (index(curl_version, "HTTP3") < 0)
+        return { supported: 0, available: 0, skipped: 1, reason: "diagnostic_client_has_no_http3" };
+
+    let args = [
+        "curl", "--http3-only", "-sS", "--connect-timeout", "3", "--max-time", "5",
+        "-o", "/dev/null", "-w", "%{http_code}\\t%{time_connect}\\t%{time_appconnect}\\t%{time_total}\\n",
+        "https://www.gstatic.com/generate_204"
+    ];
+    let captured = command_capture(command_from_args(args) + " 2>/dev/null");
+    let result = classify_connectivity_probe(captured.status, captured.output);
+    result.supported = 1;
+    result.skipped = 0;
+    if (!result.available)
+        result.reason = "quic_" + result.reason;
+    return result;
+}
+
+function connectivity_summary(ipv4, ipv6, quic) {
+    if (ipv4.available || ipv6.available)
+        return quic.supported && !quic.available ? "https_ok_quic_failed" : "https_ok";
+    if ((!ipv4.skipped && ipv4.stage == "dns") || (!ipv6.skipped && ipv6.stage == "dns"))
+        return "dns_failed";
+    if ((!ipv4.skipped && ipv4.stage == "tcp") || (!ipv6.skipped && ipv6.stage == "tcp"))
+        return "tcp_failed";
+    if ((!ipv4.skipped && ipv4.stage == "tls") || (!ipv6.skipped && ipv6.stage == "tls"))
+        return "tls_failed";
+    return "unknown";
+}
+
+function check_connectivity_path() {
+    if (!command_exists("curl") || !command_exists("dig")) {
+        write_json({ available: 0, summary: "diagnostic_tools_missing", curl_available: command_exists("curl") ? 1 : 0, dig_available: command_exists("dig") ? 1 : 0 });
+        return 0;
+    }
+
+    let ipv4_route = trim(command_output_from_args([ "ip", "-4", "route", "show", "default" ])) != "";
+    let ipv6_route = trim(command_output_from_args([ "ip", "-6", "route", "show", "default" ])) != "";
+    let host = "www.gstatic.com";
+    let url = "https://www.gstatic.com/generate_204";
+    let ipv4 = connectivity_family_probe("ipv4", ipv4_route, host, url);
+    let ipv6 = connectivity_family_probe("ipv6", ipv6_route, host, url);
+    let quic = connectivity_quic_probe();
+
+    write_json({
+        available: ipv4.available || ipv6.available ? 1 : 0,
+        summary: connectivity_summary(ipv4, ipv6, quic),
+        target: "gstatic_generate_204",
+        ipv4,
+        ipv6,
+        quic
+    });
+    return 0;
+}
+
 function nft_chain_counter_status(chain) {
     let output = command_output_from_args([ "nft", "list", "chain", "inet", NFT_TABLE_NAME, chain ]);
     let status = words(status_output([ "nft-chain-counter-status" ], output));
@@ -2011,6 +2175,10 @@ else if (mode == "get-server-capabilities")
     exit(get_server_capabilities());
 else if (mode == "check-dns-available")
     exit(check_dns_available());
+else if (mode == "check-connectivity-path")
+    exit(check_connectivity_path());
+else if (mode == "connectivity-probe-classify-fixture")
+    exit(connectivity_probe_classify_fixture());
 else if (mode == "global-check")
     exit(global_check(ARGV[1] || "", ARGV[2] || ""));
 else if (mode == "validate-nfqws-strategy-json")

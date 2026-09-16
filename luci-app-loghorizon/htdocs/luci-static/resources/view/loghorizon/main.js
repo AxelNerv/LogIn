@@ -2474,6 +2474,7 @@ var logIn;
   let AvailableMethods;
   ((AvailableMethods2) => {
     AvailableMethods2["CHECK_DNS_AVAILABLE"] = "check_dns_available";
+    AvailableMethods2["CHECK_CONNECTIVITY_PATH"] = "check_connectivity_path";
     AvailableMethods2["CHECK_FAKEIP"] = "check_fakeip";
     AvailableMethods2["CHECK_NFT_RULES"] = "check_nft_rules";
     AvailableMethods2["CHECK_ZAPRET_RUNTIME"] = "check_zapret_runtime";
@@ -2682,6 +2683,12 @@ function createTransientRpcGraceTracker(graceMs) {
 var LogHorizonShellMethods = {
   checkDNSAvailable: async () => callBaseMethod(
     logIn.AvailableMethods.CHECK_DNS_AVAILABLE
+  ),
+  checkConnectivityPath: async () => callBaseMethod(
+    logIn.AvailableMethods.CHECK_CONNECTIVITY_PATH,
+    [],
+    "/usr/bin/loghorizon",
+    { timeout: 3e4 }
   ),
   checkFakeIP: async () => callBaseMethod(
     logIn.AvailableMethods.CHECK_FAKEIP
@@ -4219,6 +4226,7 @@ function getCheckTitle(name) {
 // src/loghorizon/tabs/diagnostic/checks/contstants.ts
 var DIAGNOSTICS_CHECKS = /* @__PURE__ */ ((DIAGNOSTICS_CHECKS2) => {
   DIAGNOSTICS_CHECKS2["DNS"] = "DNS";
+  DIAGNOSTICS_CHECKS2["CONNECTIVITY"] = "CONNECTIVITY";
   DIAGNOSTICS_CHECKS2["SINGBOX"] = "SINGBOX";
   DIAGNOSTICS_CHECKS2["NFT"] = "NFT";
   DIAGNOSTICS_CHECKS2["ZAPRET"] = "ZAPRET";
@@ -4235,43 +4243,48 @@ var DIAGNOSTICS_CHECKS_MAP = {
     title: getCheckTitle("DNS"),
     code: "DNS" /* DNS */
   },
-  ["SINGBOX" /* SINGBOX */]: {
+  ["CONNECTIVITY" /* CONNECTIVITY */]: {
     order: 2,
+    title: getCheckTitle(_("Connection path")),
+    code: "CONNECTIVITY" /* CONNECTIVITY */
+  },
+  ["SINGBOX" /* SINGBOX */]: {
+    order: 3,
     title: getCheckTitle("Sing-box"),
     code: "SINGBOX" /* SINGBOX */
   },
   ["NFT" /* NFT */]: {
-    order: 4,
+    order: 5,
     title: getCheckTitle("Nftables"),
     code: "NFT" /* NFT */
   },
   ["ZAPRET" /* ZAPRET */]: {
-    order: 5,
+    order: 6,
     title: getCheckTitle("Zapret"),
     code: "ZAPRET" /* ZAPRET */
   },
   ["BYEDPI" /* BYEDPI */]: {
-    order: 7,
+    order: 8,
     title: getCheckTitle("ByeDPI"),
     code: "BYEDPI" /* BYEDPI */
   },
   ["ZAPRET2" /* ZAPRET2 */]: {
-    order: 6,
+    order: 7,
     title: getCheckTitle("Zapret2"),
     code: "ZAPRET2" /* ZAPRET2 */
   },
   ["OUTBOUNDS" /* OUTBOUNDS */]: {
-    order: 8,
+    order: 9,
     title: getCheckTitle("Outbounds"),
     code: "OUTBOUNDS" /* OUTBOUNDS */
   },
   ["FAKEIP" /* FAKEIP */]: {
-    order: 9,
+    order: 10,
     title: getCheckTitle("FakeIP"),
     code: "FAKEIP" /* FAKEIP */
   },
   ["INBOUNDS" /* INBOUNDS */]: {
-    order: 3,
+    order: 4,
     title: getCheckTitle("Inbounds"),
     code: "INBOUNDS" /* INBOUNDS */
   }
@@ -4290,7 +4303,11 @@ function createDiagnosticCheck(code, description) {
   };
 }
 function getDiagnosticsChecks(description, options = {}) {
-  const checks = ["DNS" /* DNS */, "SINGBOX" /* SINGBOX */];
+  const checks = [
+    "DNS" /* DNS */,
+    "CONNECTIVITY" /* CONNECTIVITY */,
+    "SINGBOX" /* SINGBOX */
+  ];
   if (options.includeInbounds === true) {
     checks.push("INBOUNDS" /* INBOUNDS */);
   }
@@ -7735,6 +7752,132 @@ async function runDnsCheck() {
   }
 }
 
+// src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts
+function stageLabel(stage) {
+  switch (stage) {
+    case "dns":
+      return _("DNS resolution failed");
+    case "tcp":
+      return _("TCP connection failed");
+    case "tls":
+      return _("TLS or upstream connection failed");
+    case "http":
+      return _("HTTP request failed");
+    case "route":
+      return _("No default route");
+    default:
+      return _("Available");
+  }
+}
+function familyItem(family, probe, required) {
+  if (!probe) {
+    return {
+      state: required ? "error" : "warning",
+      key: family,
+      value: _("No result")
+    };
+  }
+  if (probe.skipped) {
+    return {
+      state: "warning",
+      key: `${family} HTTPS`,
+      value: stageLabel(probe.stage)
+    };
+  }
+  if (!probe.available) {
+    return {
+      state: required ? "error" : "warning",
+      key: `${family} HTTPS`,
+      value: `${stageLabel(probe.stage)} \xB7 curl ${probe.curl_status}`
+    };
+  }
+  const tcpHandoff = probe.tcp_ms > 0 ? `${probe.tcp_ms} ms` : "<1 ms";
+  return {
+    state: "success",
+    key: `${family} HTTPS`,
+    value: `HTTP ${probe.http_code} \xB7 ${_("TCP handoff")} ${tcpHandoff} \xB7 TLS ${probe.tls_ms} ms \xB7 ${_("total")} ${probe.total_ms} ms`
+  };
+}
+function quicItem(quic) {
+  if (!quic || !quic.supported) {
+    return {
+      state: "warning",
+      key: "QUIC / HTTP3",
+      value: _("Not tested: the diagnostic curl build has no HTTP/3 support")
+    };
+  }
+  return {
+    state: quic.available ? "success" : "warning",
+    key: "QUIC / HTTP3",
+    value: quic.available ? _("Available") : _("Control request failed; this alone does not prove UDP blocking")
+  };
+}
+async function runConnectivityPathCheck() {
+  const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.CONNECTIVITY;
+  updateCheckStore({
+    order,
+    code,
+    title,
+    description: _("Checking, please wait"),
+    state: "loading",
+    items: []
+  });
+  const response = await LogHorizonShellMethods.checkConnectivityPath();
+  if (!response.success) {
+    updateCheckStore({
+      order,
+      code,
+      title,
+      description: _("Cannot receive checks result"),
+      state: "error",
+      items: []
+    });
+    throw new Error("Connection path check failed");
+  }
+  const data = response.data;
+  if (data.summary === "diagnostic_tools_missing") {
+    const items2 = [
+      {
+        state: data.dig_available ? "success" : "error",
+        key: "dig",
+        value: data.dig_available ? _("Installed") : _("Not installed")
+      },
+      {
+        state: data.curl_available ? "success" : "error",
+        key: "curl",
+        value: data.curl_available ? _("Installed") : _("Not installed")
+      }
+    ];
+    updateCheckStore({
+      order,
+      code,
+      title,
+      description: _("Diagnostic tools are missing"),
+      state: "error",
+      items: items2
+    });
+    throw new Error("Connection path tools are missing");
+  }
+  const ipv4Required = !data.ipv6?.available;
+  const items = [
+    familyItem("IPv4", data.ipv4, ipv4Required),
+    familyItem("IPv6", data.ipv6, false),
+    quicItem(data.quic),
+    {
+      state: "warning",
+      key: _("Interpretation"),
+      value: _(
+        "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking."
+      )
+    }
+  ];
+  const quicFailure = Boolean(data.quic?.supported && !data.quic.available);
+  const state = data.available ? quicFailure ? "warning" : "success" : "error";
+  const description = data.available ? quicFailure ? _("HTTPS works, but the QUIC control request failed") : _("DNS, TCP handoff, TLS, and HTTP path is available") : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? "http");
+  updateCheckStore({ order, code, title, description, state, items });
+  if (!data.available) throw new Error("Connection path is unavailable");
+}
+
 // src/loghorizon/tabs/diagnostic/checks/runSingBoxCheck.ts
 async function runSingBoxCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.SINGBOX;
@@ -10540,6 +10683,7 @@ function setDiagnosticCheckLoading(code) {
 function getDiagnosticRunners(providerOptions) {
   return [
     { code: "DNS" /* DNS */, run: runDnsCheck },
+    { code: "CONNECTIVITY" /* CONNECTIVITY */, run: runConnectivityPathCheck },
     { code: "SINGBOX" /* SINGBOX */, run: runSingBoxCheck },
     ...providerOptions.includeInbounds ? [{ code: "INBOUNDS" /* INBOUNDS */, run: runInboundsCheck }] : [],
     { code: "NFT" /* NFT */, run: runNftCheck },

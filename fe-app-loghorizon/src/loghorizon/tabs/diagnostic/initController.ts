@@ -1,5 +1,6 @@
 import { onMount, preserveScrollForPage } from '../../../helpers';
 import { runDnsCheck } from './checks/runDnsCheck';
+import { runConnectivityPathCheck } from './checks/runConnectivityPathCheck';
 import { runSingBoxCheck } from './checks/runSingBoxCheck';
 import { runInboundsCheck } from './checks/runInboundsCheck';
 import { runNftCheck } from './checks/runNftCheck';
@@ -1052,6 +1053,7 @@ function getDiagnosticRunners(
 ): DiagnosticRunner[] {
   return [
     { code: DIAGNOSTICS_CHECKS.DNS, run: runDnsCheck },
+    { code: DIAGNOSTICS_CHECKS.CONNECTIVITY, run: runConnectivityPathCheck },
     { code: DIAGNOSTICS_CHECKS.SINGBOX, run: runSingBoxCheck },
     ...(providerOptions.includeInbounds
       ? [{ code: DIAGNOSTICS_CHECKS.INBOUNDS, run: runInboundsCheck }]

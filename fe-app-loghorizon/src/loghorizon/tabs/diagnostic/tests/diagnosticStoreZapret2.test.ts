@@ -13,6 +13,7 @@ describe('diagnostic store provider checks', () => {
 
     expect(checks.map((check) => check.code)).toEqual([
       DIAGNOSTICS_CHECKS.DNS,
+      DIAGNOSTICS_CHECKS.CONNECTIVITY,
       DIAGNOSTICS_CHECKS.SINGBOX,
       DIAGNOSTICS_CHECKS.NFT,
       DIAGNOSTICS_CHECKS.ZAPRET,

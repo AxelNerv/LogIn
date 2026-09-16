@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 17:27+0300\n"
-"PO-Revision-Date: 2026-09-16 17:27+0300\n"
+"POT-Creation-Date: 2026-09-16 18:09+0300\n"
+"PO-Revision-Date: 2026-09-16 18:09+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -184,6 +184,9 @@ msgstr "Автоматически проверять наличие новых 
 
 msgid "Automatically select the fastest node in the current level"
 msgstr "Автовыбор самого быстрого узла уровня"
+
+msgid "Available"
+msgstr "Доступно"
 
 msgid "Available actions"
 msgstr "Доступные действия"
@@ -383,6 +386,9 @@ msgstr "Настройте User-Agent в настройках элемента"
 msgid "Connect through"
 msgstr "Подключаться через"
 
+msgid "Connection path"
+msgstr "Путь соединения"
+
 msgid "Connection URL"
 msgstr "URL подключения"
 
@@ -391,6 +397,9 @@ msgstr "Подключения недоступны"
 
 msgid "Connectivity probe failed"
 msgstr "Проверка соединения не прошла"
+
+msgid "Control request failed; this alone does not prove UDP blocking"
+msgstr "Контрольный запрос не прошёл; само по себе это не доказывает блокировку UDP"
 
 msgid "Copied"
 msgstr "Скопировано"
@@ -457,6 +466,9 @@ msgstr "DHCP содержит DNS сервер"
 
 msgid "DHCP is managed manually"
 msgstr "DHCP управляется вручную"
+
+msgid "Diagnostic tools are missing"
+msgstr "Отсутствуют инструменты диагностики"
 
 msgid "Diagnostics"
 msgstr "Диагностика"
@@ -539,6 +551,9 @@ msgstr "DNS-протокол, который будет использовать
 msgid "DNS requests through section"
 msgstr "DNS-запросы через секцию"
 
+msgid "DNS resolution failed"
+msgstr "Не удалось разрешить DNS-имя"
+
 msgid "DNS Rewrite TTL"
 msgstr "Перезапись TTL для DNS"
 
@@ -574,6 +589,9 @@ msgstr ""
 
 msgid "DNS Unavailability Timeout"
 msgstr "Таймаут недоступности DNS"
+
+msgid "DNS, TCP handoff, TLS, and HTTP path is available"
+msgstr "Путь DNS, локальной передачи TCP, TLS и HTTP доступен"
 
 msgid "Do not panic, everything can be fixed, just..."
 msgstr "Не паникуйте, всё можно исправить, просто..."
@@ -956,6 +974,12 @@ msgstr "Ошибка HTTP"
 msgid "HTTP hosts"
 msgstr "HTTP-хосты"
 
+msgid "HTTP request failed"
+msgstr "HTTP-запрос не прошёл"
+
+msgid "HTTPS works, but the QUIC control request failed"
+msgstr "HTTPS работает, но контрольный запрос QUIC не прошёл"
+
 msgid "HWID"
 msgstr "HWID"
 
@@ -1004,6 +1028,9 @@ msgstr "Установить"
 msgid "Install another build:"
 msgstr "Установить другую сборку:"
 
+msgid "Installed"
+msgstr "Установлен"
+
 msgid "Installed version is newer than release"
 msgstr "Установлена версия новее релиза"
 
@@ -1015,6 +1042,9 @@ msgstr "Задержка при мониторинге интерфейсов"
 
 msgid "Interface monitoring for Bad WAN"
 msgstr "Мониторинг интерфейса для Bad WAN"
+
+msgid "Interpretation"
+msgstr "Интерпретация"
 
 msgid "Interrupt connections"
 msgstr "Прерывать соединения"
@@ -1451,6 +1481,9 @@ msgstr "Нет закрытых подключений"
 msgid "No conflict detected"
 msgstr "Конфликт не обнаружен"
 
+msgid "No default route"
+msgstr "Нет маршрута по умолчанию"
+
 msgid "No enabled server inbounds configured"
 msgstr "Включённые серверные inbounds не настроены"
 
@@ -1462,6 +1495,9 @@ msgstr "Другие правила маркировки не найдены"
 
 msgid "No public firewall port required"
 msgstr "Публичный порт в firewall не требуется"
+
+msgid "No result"
+msgstr "Нет результата"
 
 msgid "No rules use ByeDPI"
 msgstr "Нет правил, использующих ByeDPI"
@@ -1504,6 +1540,9 @@ msgstr "Не отвечает"
 
 msgid "Not running"
 msgstr "Не запущено"
+
+msgid "Not tested: the diagnostic curl build has no HTTP/3 support"
+msgstr "Не проверено: диагностическая сборка curl не поддерживает HTTP/3"
 
 msgid "Obfuscation"
 msgstr "Обфускация"
@@ -2126,6 +2165,15 @@ msgstr "Tailscale endpoint"
 msgid "Tailscale hostname"
 msgstr "Hostname Tailscale"
 
+msgid "TCP connection failed"
+msgstr "Не удалось установить TCP-соединение"
+
+msgid "TCP handoff"
+msgstr "передача TCP"
+
+msgid "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking."
+msgstr "Время TCP относится к локальной передаче прозрачному прокси. Сбой внешнего TCP или TLS может отображаться на этапе TLS, а один неудачный контрольный запрос не доказывает блокировку."
+
 msgid "Technical details"
 msgstr "Технические подробности"
 
@@ -2237,11 +2285,17 @@ msgstr "tiny"
 msgid "TLS certificate verification"
 msgstr "Проверка TLS-сертификата"
 
+msgid "TLS or upstream connection failed"
+msgstr "Не удалось установить внешнее соединение или выполнить TLS-рукопожатие"
+
 msgid "Tolerance"
 msgstr "Допуск"
 
 msgid "Top level has the highest priority; lower levels are used as fallback"
 msgstr "Верхний уровень имеет самый высокий приоритет; нижние уровни используются как резерв"
+
+msgid "total"
+msgstr "всего"
 
 msgid "Traffic"
 msgstr "Трафик"

@@ -53,6 +53,7 @@ export namespace logIn {
 
   export enum AvailableMethods {
     CHECK_DNS_AVAILABLE = 'check_dns_available',
+    CHECK_CONNECTIVITY_PATH = 'check_connectivity_path',
     CHECK_FAKEIP = 'check_fakeip',
     CHECK_NFT_RULES = 'check_nft_rules',
     CHECK_ZAPRET_RUNTIME = 'check_zapret_runtime',
@@ -380,6 +381,37 @@ export namespace logIn {
     dont_touch_dhcp: 0 | 1;
     dns_detoured: 0 | 1;
     dns_ech: 0 | 1;
+  }
+
+  export interface ConnectivityProbeResult {
+    available: 0 | 1;
+    skipped: 0 | 1;
+    stage: 'ok' | 'route' | 'dns' | 'tcp' | 'tls' | 'http';
+    reason: string;
+    curl_status: number;
+    http_code: number;
+    tcp_ms: number;
+    tls_ms: number;
+    total_ms: number;
+    dns_available?: 0 | 1;
+  }
+
+  export interface ConnectivityQuicResult {
+    supported: 0 | 1;
+    available: 0 | 1;
+    skipped: 0 | 1;
+    reason: string;
+  }
+
+  export interface ConnectivityPathCheckResult {
+    available: 0 | 1;
+    summary: string;
+    target?: string;
+    curl_available?: 0 | 1;
+    dig_available?: 0 | 1;
+    ipv4?: ConnectivityProbeResult;
+    ipv6?: ConnectivityProbeResult;
+    quic?: ConnectivityQuicResult;
   }
 
   export interface NftRulesCheckResult {

@@ -2,6 +2,7 @@ import { getCheckTitle } from '../helpers/getCheckTitle';
 
 export enum DIAGNOSTICS_CHECKS {
   DNS = 'DNS',
+  CONNECTIVITY = 'CONNECTIVITY',
   SINGBOX = 'SINGBOX',
   NFT = 'NFT',
   ZAPRET = 'ZAPRET',
@@ -21,43 +22,48 @@ export const DIAGNOSTICS_CHECKS_MAP: Record<
     title: getCheckTitle('DNS'),
     code: DIAGNOSTICS_CHECKS.DNS,
   },
-  [DIAGNOSTICS_CHECKS.SINGBOX]: {
+  [DIAGNOSTICS_CHECKS.CONNECTIVITY]: {
     order: 2,
+    title: getCheckTitle(_('Connection path')),
+    code: DIAGNOSTICS_CHECKS.CONNECTIVITY,
+  },
+  [DIAGNOSTICS_CHECKS.SINGBOX]: {
+    order: 3,
     title: getCheckTitle('Sing-box'),
     code: DIAGNOSTICS_CHECKS.SINGBOX,
   },
   [DIAGNOSTICS_CHECKS.NFT]: {
-    order: 4,
+    order: 5,
     title: getCheckTitle('Nftables'),
     code: DIAGNOSTICS_CHECKS.NFT,
   },
   [DIAGNOSTICS_CHECKS.ZAPRET]: {
-    order: 5,
+    order: 6,
     title: getCheckTitle('Zapret'),
     code: DIAGNOSTICS_CHECKS.ZAPRET,
   },
   [DIAGNOSTICS_CHECKS.BYEDPI]: {
-    order: 7,
+    order: 8,
     title: getCheckTitle('ByeDPI'),
     code: DIAGNOSTICS_CHECKS.BYEDPI,
   },
   [DIAGNOSTICS_CHECKS.ZAPRET2]: {
-    order: 6,
+    order: 7,
     title: getCheckTitle('Zapret2'),
     code: DIAGNOSTICS_CHECKS.ZAPRET2,
   },
   [DIAGNOSTICS_CHECKS.OUTBOUNDS]: {
-    order: 8,
+    order: 9,
     title: getCheckTitle('Outbounds'),
     code: DIAGNOSTICS_CHECKS.OUTBOUNDS,
   },
   [DIAGNOSTICS_CHECKS.FAKEIP]: {
-    order: 9,
+    order: 10,
     title: getCheckTitle('FakeIP'),
     code: DIAGNOSTICS_CHECKS.FAKEIP,
   },
   [DIAGNOSTICS_CHECKS.INBOUNDS]: {
-    order: 3,
+    order: 4,
     title: getCheckTitle('Inbounds'),
     code: DIAGNOSTICS_CHECKS.INBOUNDS,
   },

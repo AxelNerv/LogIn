@@ -209,6 +209,13 @@ export const LogHorizonShellMethods = {
     callBaseMethod<logIn.DnsCheckResult>(
       logIn.AvailableMethods.CHECK_DNS_AVAILABLE,
     ),
+  checkConnectivityPath: async () =>
+    callBaseMethod<logIn.ConnectivityPathCheckResult>(
+      logIn.AvailableMethods.CHECK_CONNECTIVITY_PATH,
+      [],
+      '/usr/bin/loghorizon',
+      { timeout: 30000 },
+    ),
   checkFakeIP: async () =>
     callBaseMethod<logIn.FakeIPCheckResult>(
       logIn.AvailableMethods.CHECK_FAKEIP,

@@ -31,7 +31,11 @@ export function getDiagnosticsChecks(
   description: string,
   options: DiagnosticsProviderOptions = {},
 ): Array<IDiagnosticsChecksStoreItem> {
-  const checks = [DIAGNOSTICS_CHECKS.DNS, DIAGNOSTICS_CHECKS.SINGBOX];
+  const checks = [
+    DIAGNOSTICS_CHECKS.DNS,
+    DIAGNOSTICS_CHECKS.CONNECTIVITY,
+    DIAGNOSTICS_CHECKS.SINGBOX,
+  ];
 
   if (options.includeInbounds === true) {
     checks.push(DIAGNOSTICS_CHECKS.INBOUNDS);

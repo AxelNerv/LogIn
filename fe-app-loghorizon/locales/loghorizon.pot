@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 14:27+0300\n"
-"PO-Revision-Date: 2026-09-16 14:27+0300\n"
+"POT-Creation-Date: 2026-09-16 15:09+0300\n"
+"PO-Revision-Date: 2026-09-16 15:09+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -256,6 +256,11 @@ msgstr ""
 msgid "Automatically select the fastest node in the current level"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:22
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:79
+msgid "Available"
+msgstr ""
+
 #: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:45
 msgid "Available actions"
 msgstr ""
@@ -371,6 +376,7 @@ msgid "Cancel"
 msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:102
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27
 #: src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172
 #: src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28
@@ -434,8 +440,9 @@ msgstr ""
 msgid "Check URL"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:1042
+#: src/loghorizon/tabs/diagnostic/initController.ts:1043
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:91
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15
 #: src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160
@@ -561,6 +568,10 @@ msgstr ""
 msgid "Connect through"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/contstants.ts:27
+msgid "Connection path"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7810
 msgid "Connection URL"
 msgstr ""
@@ -571,6 +582,10 @@ msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:145
 msgid "Connectivity probe failed"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:80
+msgid "Control request failed; this alone does not prove UDP blocking"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1561
@@ -666,6 +681,10 @@ msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/getDnsCheckPresentation.ts:36
 msgid "DHCP is managed manually"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:127
+msgid "Diagnostic tools are missing"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471
@@ -784,6 +803,10 @@ msgstr ""
 msgid "DNS requests through section"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:12
+msgid "DNS resolution failed"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:287
 msgid "DNS Rewrite TTL"
 msgstr ""
@@ -833,6 +856,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:241
 msgid "DNS Unavailability Timeout"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:157
+msgid "DNS, TCP handoff, TLS, and HTTP path is available"
 msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts:26
@@ -1166,12 +1193,12 @@ msgstr ""
 msgid "Failed to copy!"
 msgstr ""
 
-#: src/loghorizon/methods/shell/index.ts:170
-#: src/loghorizon/methods/shell/index.ts:177
 #: src/loghorizon/tabs/updates/initController.ts:511
 #: src/loghorizon/tabs/updates/initController.ts:512
 #: src/loghorizon/tabs/updates/initController.ts:572
 #: src/loghorizon/tabs/updates/initController.ts:722
+#: src/loghorizon/methods/shell/index.ts:170
+#: src/loghorizon/methods/shell/index.ts:177
 msgid "Failed to execute"
 msgstr ""
 
@@ -1263,7 +1290,7 @@ msgstr ""
 msgid "Get global check"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:695
+#: src/loghorizon/tabs/diagnostic/initController.ts:696
 msgid "Global check"
 msgstr ""
 
@@ -1377,6 +1404,14 @@ msgstr ""
 msgid "HTTP hosts"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:18
+msgid "HTTP request failed"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:156
+msgid "HTTPS works, but the QUIC control request failed"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2732
 msgid "HWID"
 msgstr ""
@@ -1451,6 +1486,11 @@ msgstr ""
 msgid "Install another build:"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120
+msgid "Installed"
+msgstr ""
+
 #: src/loghorizon/tabs/updates/initController.ts:294
 #: src/loghorizon/tabs/updates/initController.ts:1020
 msgid "Installed version is newer than release"
@@ -1466,6 +1506,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:473
 msgid "Interface monitoring for Bad WAN"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:141
+msgid "Interpretation"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2916
@@ -1774,8 +1818,8 @@ msgstr ""
 msgid "Latency improvement threshold"
 msgstr ""
 
-#: src/loghorizon/methods/shell/index.ts:450
-#: src/loghorizon/methods/shell/index.ts:471
+#: src/loghorizon/methods/shell/index.ts:457
+#: src/loghorizon/methods/shell/index.ts:478
 msgid "Latency test failed"
 msgstr ""
 
@@ -2077,6 +2121,10 @@ msgstr ""
 msgid "No conflict detected"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:20
+msgid "No default route"
+msgstr ""
+
 #: src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:187
 msgid "No enabled server inbounds configured"
 msgstr ""
@@ -2091,6 +2139,10 @@ msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:99
 msgid "No public firewall port required"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:35
+msgid "No result"
 msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:79
@@ -2140,6 +2192,8 @@ msgstr ""
 #: src/loghorizon/tabs/updates/initController.ts:933
 #: src/loghorizon/tabs/updates/initController.ts:946
 #: src/loghorizon/tabs/updates/initController.ts:959
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120
 msgid "Not installed"
 msgstr ""
 
@@ -2158,12 +2212,16 @@ msgstr ""
 msgid "Not responding"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:128
-#: src/loghorizon/tabs/diagnostic/initController.ts:116
-#: src/loghorizon/tabs/diagnostic/initController.ts:348
-#: src/loghorizon/tabs/diagnostic/initController.ts:405
-#: src/loghorizon/tabs/diagnostic/initController.ts:491
+#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:132
+#: src/loghorizon/tabs/diagnostic/initController.ts:117
+#: src/loghorizon/tabs/diagnostic/initController.ts:349
+#: src/loghorizon/tabs/diagnostic/initController.ts:406
+#: src/loghorizon/tabs/diagnostic/initController.ts:492
 msgid "Not running"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:71
+msgid "Not tested: the diagnostic curl build has no HTTP/3 support"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2896
@@ -2222,8 +2280,8 @@ msgid "Open Project Page"
 msgstr ""
 
 #: src/helpers/withTimeout.ts:7
-#: src/loghorizon/methods/shell/index.ts:420
-#: src/loghorizon/methods/shell/index.ts:508
+#: src/loghorizon/methods/shell/index.ts:427
+#: src/loghorizon/methods/shell/index.ts:515
 msgid "Operation timed out"
 msgstr ""
 
@@ -2286,7 +2344,7 @@ msgstr ""
 msgid "Pause updates"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:63
+#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:67
 msgid "Pending"
 msgstr ""
 
@@ -2770,9 +2828,9 @@ msgstr ""
 msgid "Servers on dashboard"
 msgstr ""
 
-#: src/loghorizon/methods/shell/index.ts:371
-#: src/loghorizon/methods/shell/index.ts:392
-#: src/loghorizon/tabs/diagnostic/initController.ts:597
+#: src/loghorizon/tabs/diagnostic/initController.ts:598
+#: src/loghorizon/methods/shell/index.ts:378
+#: src/loghorizon/methods/shell/index.ts:399
 msgid "Service action failed"
 msgstr ""
 
@@ -2826,7 +2884,7 @@ msgstr ""
 msgid "Show servers whose names match the expression."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:765
+#: src/loghorizon/tabs/diagnostic/initController.ts:766
 #: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127
 msgid "Show sing-box config"
 msgstr ""
@@ -2977,8 +3035,8 @@ msgstr ""
 msgid "Subscription info:"
 msgstr ""
 
-#: src/loghorizon/methods/shell/index.ts:708
-#: src/loghorizon/methods/shell/index.ts:728
+#: src/loghorizon/methods/shell/index.ts:715
+#: src/loghorizon/methods/shell/index.ts:735
 msgid "Subscription update failed"
 msgstr ""
 
@@ -3028,6 +3086,18 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3094
 msgid "Tailscale hostname"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:14
+msgid "TCP connection failed"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:60
+msgid "TCP handoff"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:142
+msgid "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:338
@@ -3189,6 +3259,10 @@ msgstr ""
 msgid "TLS certificate verification"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:16
+msgid "TLS or upstream connection failed"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2875
 #: src/loghorizon/tabs/dashboard/initController.ts:905
 msgid "Tolerance"
@@ -3196,6 +3270,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3474
 msgid "Top level has the highest priority; lower levels are used as fallback"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:60
+msgid "total"
 msgstr ""
 
 #: src/loghorizon/tabs/dashboard/initController.ts:1538
@@ -3560,7 +3638,7 @@ msgstr ""
 msgid "Via country.is"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:730
+#: src/loghorizon/tabs/diagnostic/initController.ts:731
 #: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118
 msgid "View logs"
 msgstr ""
