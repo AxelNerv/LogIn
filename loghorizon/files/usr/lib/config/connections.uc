@@ -941,7 +941,7 @@ function priority_group_latency_tolerance(section, value) {
 
 function priority_group_interrupt_exist_connections(section, value) {
     let child = priority_group_child(section, value);
-    return child != null ? child_bool(child, "interrupt_exist_connections", true) : true;
+    return child != null ? child_bool(child, "interrupt_exist_connections", false) : false;
 }
 
 function priority_group_pin_dashboard(section, value) {

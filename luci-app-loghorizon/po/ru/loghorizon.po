@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 22:37+0300\n"
-"PO-Revision-Date: 2026-09-15 22:37+0300\n"
+"POT-Creation-Date: 2026-09-16 17:27+0300\n"
+"PO-Revision-Date: 2026-09-16 17:27+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -349,6 +349,9 @@ msgstr "Закрыть все подключения"
 
 msgid "Close connection"
 msgstr "Закрыть подключение"
+
+msgid "Close existing connections when Priority switches server. Keep disabled to preserve healthy calls and downloads; connections on a failed route must reconnect."
+msgstr "Закрывать существующие соединения при переключении сервера Priority. Оставьте выключенным, чтобы не прерывать работающие звонки и загрузки; соединения на отказавшем маршруте должны переподключиться."
 
 msgid "Closed"
 msgstr "Закрытые"
@@ -1015,9 +1018,6 @@ msgstr "Мониторинг интерфейса для Bad WAN"
 
 msgid "Interrupt connections"
 msgstr "Прерывать соединения"
-
-msgid "Interrupt connections when priority failover switches server"
-msgstr "Разрывать соединения при переключении сервера приоритетом"
 
 msgid "Interrupt connections when URLTest switches the selected server"
 msgstr "Прерывать соединения, когда URLTest переключает выбранный сервер"

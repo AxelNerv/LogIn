@@ -2551,7 +2551,7 @@ function defaultPriorityGroupSettings() {
     recovery_threshold: "3",
     minimum_hold_time: "60s",
     latency_tolerance: "50",
-    interrupt_exist_connections: "1",
+    interrupt_exist_connections: "0",
     pin_dashboard: "1",
   };
 }
@@ -2569,7 +2569,7 @@ function priorityGroupChildDefaults() {
     recovery_threshold: "3",
     minimum_hold_time: "60s",
     latency_tolerance: "50",
-    interrupt_exist_connections: "1",
+    interrupt_exist_connections: "0",
     pin_dashboard: "1",
   };
 }
@@ -3451,9 +3451,11 @@ function addPriorityGroupItemOptions(itemSection, options = {}) {
     form.Flag,
     "interrupt_exist_connections",
     _("Interrupt connections"),
-    _("Interrupt connections when priority failover switches server"),
+    _(
+      "Close existing connections when Priority switches server. Keep disabled to preserve healthy calls and downloads; connections on a failed route must reconnect.",
+    ),
   );
-  o.default = "1";
+  o.default = "0";
   o.rmempty = false;
 
   o = itemSection.option(

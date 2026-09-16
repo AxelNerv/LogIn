@@ -112,7 +112,7 @@ cat >"$WORK_DIR/fixture.json" <<'JSON'
       "active_check_interval": "10s",
       "check_timeout": "4s",
       "recovery_check_interval": "30s",
-      "interrupt_exist_connections": "0"
+      "interrupt_exist_connections": "1"
     }
   ],
   "priority_level": [
@@ -190,10 +190,10 @@ if (!main || !backup)
     fail("expected one selector per priority group");
 if (main.type != "selector" || backup.type != "selector")
     fail("priority groups must be sing-box selectors");
-if (main.interrupt_exist_connections !== true)
-    fail("main priority interrupt flag should default to true");
-if (backup.interrupt_exist_connections !== false)
-    fail("backup priority interrupt flag should be false");
+if (main.interrupt_exist_connections !== false)
+    fail("main priority should preserve existing connections by default");
+if (backup.interrupt_exist_connections !== true)
+    fail("backup priority should honor explicit connection interruption");
 assert_array(main.outbounds, [ "proxy-2-out", "proxy-3-out" ], "main priority outbounds");
 assert_array(backup.outbounds, [ "proxy-3-out" ], "backup priority outbounds");
 if (main.default != "proxy-2-out")
@@ -219,7 +219,7 @@ if (cached.failure_threshold != "3" || cached.recovery_threshold != "3" ||
     fail("priority hysteresis metadata was not cached");
 if (cached.pick_fastest !== true || cached.switch_to_faster_same_priority !== true)
     fail("priority boolean metadata was not cached");
-if (cached.interrupt_exist_connections !== true || cached.pin_dashboard !== true)
+if (cached.interrupt_exist_connections !== false || cached.pin_dashboard !== true)
     fail("priority dashboard/default metadata was not cached");
 assert_array(cached.outbounds, [ "proxy-2-out", "proxy-3-out" ], "cached priority outbounds");
 if (length(cached.levels || []) != 2 || cached.levels[0].id != "pl_upper" || cached.levels[1].id != "pl_lower")
