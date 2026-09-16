@@ -13,6 +13,8 @@ const LIB_DIR = getenv("LOGHORIZON_LIB") || "/usr/lib/loghorizon";
 const RUNTIME_STATE_DIR = getenv("LOGHORIZON_RUNTIME_STATE_DIR") || "/var/run/loghorizon";
 const SECTION_CACHE_DIR = getenv("LOGHORIZON_SECTION_CACHE_DIR") || RUNTIME_STATE_DIR + "/section-cache";
 const PRIORITY_PID_FILE = getenv("LOGHORIZON_PRIORITY_PID_FILE") || RUNTIME_STATE_DIR + "/priority.pid";
+const PRIORITY_WORKER_PID_FILE = getenv("LOGHORIZON_PRIORITY_WORKER_PID_FILE") || RUNTIME_STATE_DIR + "/priority-worker.pid";
+const PRIORITY_RUN_FILE = getenv("LOGHORIZON_PRIORITY_RUN_FILE") || RUNTIME_STATE_DIR + "/priority.enabled";
 const PRIORITY_UC = getenv("LOGHORIZON_PRIORITY_UC") || LIB_DIR + "/singbox/priority.uc";
 const DIAGNOSTICS_UC = getenv("LOGHORIZON_DIAGNOSTICS_UC") || LIB_DIR + "/diagnostics/runtime.uc";
 
@@ -543,15 +545,44 @@ function worker() {
     }
 }
 
+function supervisor() {
+    while (fs.stat(PRIORITY_RUN_FILE) != null) {
+        if (length(priority_groups_from_cache()) == 0)
+            break;
+
+        let worker_command = command_from_args([ "ucode", "-L", LIB_DIR, PRIORITY_UC, "worker" ]);
+        let shell_command = worker_command + " >/dev/null 2>&1 1000>&- & child=$!; " +
+            "echo \"$child\" >" + shell_quote(PRIORITY_WORKER_PID_FILE) + "; " +
+            "wait \"$child\"; status=$?; rm -f " + shell_quote(PRIORITY_WORKER_PID_FILE) + "; exit \"$status\"";
+        let status = command_status(command_from_args([ "sh", "-c", shell_command ]));
+
+        if (fs.stat(PRIORITY_RUN_FILE) == null)
+            break;
+        log_message("worker exited unexpectedly (status " + as_string(status) + "); restarting", "warn");
+        command_success_from_args([ "sleep", "2" ]);
+    }
+
+    remove_file(PRIORITY_WORKER_PID_FILE);
+    return 0;
+}
+
 function process_running(pid) {
     pid = trim(as_string(pid));
     return pid != "" && match(pid, /^[0-9]+$/) != null && command_success_from_args([ "kill", "-0", pid ]);
 }
 
 function stop_runtime() {
-    let pid = file_first_line(PRIORITY_PID_FILE);
-    if (process_running(pid))
-        command_success_from_args([ "kill", pid ]);
+    remove_file(PRIORITY_RUN_FILE);
+
+    let worker_pid = file_first_line(PRIORITY_WORKER_PID_FILE);
+    if (process_running(worker_pid))
+        command_success_from_args([ "kill", worker_pid ]);
+
+    let supervisor_pid = file_first_line(PRIORITY_PID_FILE);
+    if (process_running(supervisor_pid))
+        command_success_from_args([ "kill", supervisor_pid ]);
+
+    remove_file(PRIORITY_WORKER_PID_FILE);
     remove_file(PRIORITY_PID_FILE);
     return 0;
 }
@@ -564,10 +595,15 @@ function start_runtime() {
 
     if (!ensure_dir(RUNTIME_STATE_DIR))
         return 1;
+    if (!fs.writefile(PRIORITY_RUN_FILE, "1\n"))
+        return 1;
 
-    let command = command_from_args([ "ucode", "-L", LIB_DIR, PRIORITY_UC, "worker" ]) +
+    let command = command_from_args([ "ucode", "-L", LIB_DIR, PRIORITY_UC, "supervisor" ]) +
         " >/dev/null 2>&1 1000>&- & echo $! >" + shell_quote(PRIORITY_PID_FILE);
-    return command_status(command);
+    let status = command_status(command);
+    if (status != 0)
+        remove_file(PRIORITY_RUN_FILE);
+    return status;
 }
 
 function select_fixture(group_path, latency_path, start_index, end_index, skip_tag) {
@@ -622,6 +658,8 @@ else if (mode == "stop-runtime")
     exit(stop_runtime());
 else if (mode == "worker")
     exit(worker());
+else if (mode == "supervisor")
+    exit(supervisor());
 else if (mode == "select-fixture")
     select_fixture(ARGV[1], ARGV[2], ARGV[3], ARGV[4], ARGV[5]);
 else if (mode == "select-faster-fixture")
@@ -631,6 +669,6 @@ else if (mode == "sequence-fixture")
 else if (mode == "group-proxy-fixture")
     print(group_proxy_from_output(as_string(fs.readfile(ARGV[1]) || ""), ARGV[2]), "\n");
 else {
-    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|worker|select-fixture|select-faster-fixture|sequence-fixture|group-proxy-fixture>\n");
+    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|supervisor|worker|select-fixture|select-faster-fixture|sequence-fixture|group-proxy-fixture>\n");
     exit(1);
 }

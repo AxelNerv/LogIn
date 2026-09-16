@@ -9,6 +9,14 @@ PRIORITY_UC="$LOGHORIZON_LIB/singbox/priority.uc"
 WORK_DIR="$(mktemp -d)"
 
 cleanup() {
+  if [ -n "${supervisor_process:-}" ]; then
+    [ -n "${run_file:-}" ] && rm -f "$run_file"
+    if [ -n "${worker_pid:-}" ]; then
+      supervised_worker="$(cat "$worker_pid" 2>/dev/null || true)"
+      [ -n "$supervised_worker" ] && kill "$supervised_worker" 2>/dev/null || true
+    fi
+    kill "$supervisor_process" 2>/dev/null || true
+  fi
   rm -rf "$WORK_DIR"
 }
 trap cleanup EXIT
@@ -799,5 +807,70 @@ let result = json(fs.readfile("/dev/stdin"));
 if ((result.state || {}).active != "a" || (result.state || {}).levelIndex != 0)
     die("unconfirmed selector change was committed to runtime state\n");
 ' || fail "priority runtime must not commit an unconfirmed selector change"
+
+real_ucode="$(command -v ucode)"
+supervisor_dir="$WORK_DIR/supervisor"
+supervisor_bin="$supervisor_dir/bin"
+supervisor_pid="$supervisor_dir/priority.pid"
+worker_pid="$supervisor_dir/priority-worker.pid"
+run_file="$supervisor_dir/priority.enabled"
+mkdir -p "$supervisor_bin"
+cat >"$supervisor_bin/ucode" <<'SH'
+#!/bin/sh
+trap 'exit 0' TERM INT
+while :; do sleep 30; done
+SH
+chmod +x "$supervisor_bin/ucode"
+: >"$run_file"
+
+LOGHORIZON_PRIORITY_PID_FILE="$supervisor_pid" \
+LOGHORIZON_PRIORITY_WORKER_PID_FILE="$worker_pid" \
+LOGHORIZON_PRIORITY_RUN_FILE="$run_file" \
+LOGHORIZON_PRIORITY_UC="$PRIORITY_UC" \
+LOGHORIZON_SECTION_CACHE_DIR="$output.section-cache" \
+LOGHORIZON_RUNTIME_STATE_DIR="$supervisor_dir" \
+LOGHORIZON_LIB="$LOGHORIZON_LIB" \
+PATH="$supervisor_bin:$PATH" \
+  "$real_ucode" -L "$LOGHORIZON_LIB" "$PRIORITY_UC" supervisor >/dev/null 2>&1 &
+supervisor_process=$!
+printf '%s\n' "$supervisor_process" >"$supervisor_pid"
+
+first_worker=""
+for _ in $(seq 1 50); do
+  first_worker="$(cat "$worker_pid" 2>/dev/null || true)"
+  [ -n "$first_worker" ] && kill -0 "$first_worker" 2>/dev/null && break
+  sleep 0.1
+done
+[ -n "$first_worker" ] && kill -0 "$first_worker" 2>/dev/null ||
+  fail "priority supervisor did not start its worker"
+kill "$first_worker" 2>/dev/null || fail "failed to stop the supervised priority worker"
+
+replacement_worker=""
+for _ in $(seq 1 70); do
+  replacement_worker="$(cat "$worker_pid" 2>/dev/null || true)"
+  if [ -n "$replacement_worker" ] && [ "$replacement_worker" != "$first_worker" ] &&
+      kill -0 "$replacement_worker" 2>/dev/null; then
+    break
+  fi
+  sleep 0.1
+done
+[ -n "$replacement_worker" ] && [ "$replacement_worker" != "$first_worker" ] &&
+  kill -0 "$replacement_worker" 2>/dev/null ||
+  fail "priority supervisor did not replace the exited worker"
+
+LOGHORIZON_PRIORITY_PID_FILE="$supervisor_pid" \
+LOGHORIZON_PRIORITY_WORKER_PID_FILE="$worker_pid" \
+LOGHORIZON_PRIORITY_RUN_FILE="$run_file" \
+LOGHORIZON_PRIORITY_UC="$PRIORITY_UC" \
+LOGHORIZON_SECTION_CACHE_DIR="$output.section-cache" \
+LOGHORIZON_RUNTIME_STATE_DIR="$supervisor_dir" \
+LOGHORIZON_LIB="$LOGHORIZON_LIB" \
+PATH="$supervisor_bin:$PATH" \
+  "$real_ucode" -L "$LOGHORIZON_LIB" "$PRIORITY_UC" stop-runtime
+sleep 0.2
+[ ! -e "$run_file" ] && [ ! -e "$worker_pid" ] && [ ! -e "$supervisor_pid" ] ||
+  fail "priority stop-runtime left supervisor state behind"
+kill -0 "$replacement_worker" 2>/dev/null &&
+  fail "priority stop-runtime left the replacement worker running"
 
 printf 'Priority failover checks passed\n'
