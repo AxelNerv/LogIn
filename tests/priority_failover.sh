@@ -817,8 +817,7 @@ run_file="$supervisor_dir/priority.enabled"
 mkdir -p "$supervisor_bin"
 cat >"$supervisor_bin/ucode" <<'SH'
 #!/bin/sh
-trap 'exit 0' TERM INT
-while :; do sleep 30; done
+exec sleep 30
 SH
 chmod +x "$supervisor_bin/ucode"
 : >"$run_file"
