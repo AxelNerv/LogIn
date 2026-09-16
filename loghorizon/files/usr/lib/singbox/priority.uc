@@ -6,6 +6,7 @@ let common = require("core.common");
 let as_string = common.as_string;
 let read_json_file = common.read_json_file;
 let write_json = common.write_json;
+let write_json_file = common.write_json_file;
 let array_or_empty = common.array_or_empty;
 let object_or_empty = common.object_or_empty;
 
@@ -15,6 +16,7 @@ const SECTION_CACHE_DIR = getenv("LOGHORIZON_SECTION_CACHE_DIR") || RUNTIME_STAT
 const PRIORITY_PID_FILE = getenv("LOGHORIZON_PRIORITY_PID_FILE") || RUNTIME_STATE_DIR + "/priority.pid";
 const PRIORITY_WORKER_PID_FILE = getenv("LOGHORIZON_PRIORITY_WORKER_PID_FILE") || RUNTIME_STATE_DIR + "/priority-worker.pid";
 const PRIORITY_RUN_FILE = getenv("LOGHORIZON_PRIORITY_RUN_FILE") || RUNTIME_STATE_DIR + "/priority.enabled";
+const PRIORITY_STATE_FILE = getenv("LOGHORIZON_PRIORITY_STATE_FILE") || RUNTIME_STATE_DIR + "/priority-state.json";
 const PRIORITY_UC = getenv("LOGHORIZON_PRIORITY_UC") || LIB_DIR + "/singbox/priority.uc";
 const DIAGNOSTICS_UC = getenv("LOGHORIZON_DIAGNOSTICS_UC") || LIB_DIR + "/diagnostics/runtime.uc";
 
@@ -136,6 +138,17 @@ function bounded_positive_int(value, fallback, maximum) {
 
 function normalize_group(group, tag_name) {
     group = object_or_empty(group);
+    let primary_health_url = as_string(group.health_url || "https://www.gstatic.com/generate_204");
+    let health_urls = primary_health_url == "" ? [] : [ primary_health_url ];
+    for (let health_url in array_or_empty(group.health_urls)) {
+        health_url = as_string(health_url);
+        if (health_url != "" && index(health_urls, health_url) < 0 && length(health_urls) < 3)
+            push(health_urls, health_url);
+    }
+    let fallback_health_url = "https://cp.cloudflare.com/generate_204";
+    if (index(health_urls, fallback_health_url) < 0 && length(health_urls) < 3)
+        push(health_urls, fallback_health_url);
+
     let levels = [];
     for (let level in array_or_empty(group.levels)) {
         let outbounds = [];
@@ -159,7 +172,9 @@ function normalize_group(group, tag_name) {
         tag: as_string(group.tag || tag_name),
         section: as_string(group.section || ""),
         displayName: as_string(group.displayName || group.name || tag_name),
-        health_url: as_string(group.health_url || "https://www.gstatic.com/generate_204"),
+        health_url: primary_health_url,
+        health_urls,
+        probe_budget: as_string(group.probe_budget || "4s"),
         active_check_interval: as_string(group.active_check_interval || "5s"),
         check_timeout: as_string(group.check_timeout || "2s"),
         recovery_check_interval: as_string(group.recovery_check_interval || "15s"),
@@ -267,24 +282,83 @@ function clash_group_proxy(group) {
     return group_proxy_from_output(result.output, group.tag);
 }
 
+function summarize_probes(results) {
+    results = array_or_empty(results);
+    let successes = 0;
+    let failures = 0;
+    let unknown = 0;
+    let delay = null;
+    let target_index = -1;
+
+    for (let i = 0; i < length(results); i++) {
+        let result = object_or_empty(results[i]);
+        if (result.status == "healthy" || result.alive === true) {
+            successes++;
+            let candidate_delay = int(result.delay || 0, 10);
+            if (delay == null || candidate_delay < delay) {
+                delay = candidate_delay;
+                target_index = i;
+            }
+        }
+        else if (result.status == "unknown")
+            unknown++;
+        else
+            failures++;
+    }
+
+    if (successes > 0)
+        return {
+            alive: true,
+            delay: delay == null ? 0 : delay,
+            status: failures > 0 || unknown > 0 ? "degraded" : "healthy",
+            successes,
+            failures,
+            unknown,
+            targetIndex: target_index
+        };
+    if (unknown > 0)
+        return { alive: false, delay: 0, status: "unknown", successes, failures, unknown, targetIndex: -1 };
+    return { alive: false, delay: 0, status: "down", successes, failures, unknown, targetIndex: -1 };
+}
+
 function clash_probe(tag_name, group) {
-    let timeout = as_string(duration_to_milliseconds(group.check_timeout, 2000));
-    let result = module_capture([ "get_proxy_latency", tag_name, timeout, group.health_url ]);
-    if (result.status != 0)
-        return { alive: false, delay: 0 };
+    let health_urls = array_or_empty(group.health_urls);
+    if (length(health_urls) == 0)
+        health_urls = [ group.health_url ];
+    let configured_timeout = duration_to_milliseconds(group.check_timeout, 2000);
+    let total_budget = duration_to_milliseconds(group.probe_budget, 4000);
+    let timeout = int(total_budget / length(health_urls));
+    if (timeout < 250)
+        timeout = 250;
+    if (timeout > configured_timeout)
+        timeout = configured_timeout;
 
-    let delay = parse_delay_output(result.output);
-    if (delay == null)
-        return { alive: false, delay: 0 };
+    let results = [];
+    for (let health_url in health_urls) {
+        let result = module_capture([ "get_proxy_latency", tag_name, as_string(timeout), health_url ]);
+        if (result.status != 0) {
+            push(results, { alive: false, delay: 0, status: "unknown" });
+            continue;
+        }
 
-    return { alive: true, delay };
+        let delay = parse_delay_output(result.output);
+        if (delay == null)
+            push(results, { alive: false, delay: 0, status: "down" });
+        else {
+            push(results, { alive: true, delay, status: "healthy" });
+            return summarize_probes(results);
+        }
+    }
+    return summarize_probes(results);
 }
 
 function fixture_probe(latencies, tag_name) {
     let value = object_or_empty(latencies)[tag_name];
+    if (value == "unknown")
+        return { alive: false, delay: 0, status: "unknown" };
     if (value == null || as_string(value) == "" || int(value, 10) < 0)
-        return { alive: false, delay: 0 };
-    return { alive: true, delay: int(value, 10) };
+        return { alive: false, delay: 0, status: "down" };
+    return { alive: true, delay: int(value, 10), status: "healthy" };
 }
 
 function choose_from_level(group, level_index, probe, skip_tag) {
@@ -428,6 +502,9 @@ function init_group_state(group, now, active_tag) {
         active: active_tag,
         levelIndex: level_index,
         activeDelay: 0,
+        healthStatus: "unknown",
+        lastProbeAt: 0,
+        lastError: "not_checked",
         consecutiveFailures: 0,
         pendingRecoveryTag: "",
         recoverySuccesses: 0,
@@ -457,9 +534,16 @@ function tick_group(state, group, runtime) {
 
     if (state.active != "" && now >= state.nextActiveCheck) {
         let active = probe(state.active, group);
+        state.healthStatus = as_string(active.status || (active.alive ? "healthy" : "down"));
+        state.lastProbeAt = now;
+        state.lastError = active.alive ? "" : state.healthStatus;
         if (active.alive) {
             state.activeDelay = active.delay;
             state.consecutiveFailures = 0;
+        }
+        else if (state.healthStatus == "unknown") {
+            state.nextActiveCheck = now + duration_to_seconds(group.active_check_interval, 5);
+            return;
         }
         else {
             state.consecutiveFailures++;
@@ -523,6 +607,35 @@ function tick_group(state, group, runtime) {
     }
 }
 
+function write_runtime_state(groups, states) {
+    let output = { updatedAt: now_seconds(), groups: {} };
+    for (let group in groups) {
+        let state = object_or_empty(states[group.tag]);
+        output.groups[group.tag] = {
+            section: group.section,
+            displayName: group.displayName,
+            healthUrls: group.health_urls,
+            active: as_string(state.active),
+            levelIndex: int(state.levelIndex == null ? -1 : state.levelIndex),
+            healthStatus: as_string(state.healthStatus || "unknown"),
+            activeDelay: int(state.activeDelay || 0),
+            consecutiveFailures: int(state.consecutiveFailures || 0),
+            lastProbeAt: int(state.lastProbeAt || 0),
+            lastSwitchAt: int(state.lastSwitchAt || 0),
+            lastError: as_string(state.lastError)
+        };
+    }
+
+    let temporary = PRIORITY_STATE_FILE + ".tmp." + as_string(now_seconds());
+    if (!write_json_file(temporary, output))
+        return false;
+    if (!fs.rename(temporary, PRIORITY_STATE_FILE)) {
+        remove_file(temporary);
+        return false;
+    }
+    return true;
+}
+
 function worker() {
     let groups = priority_groups_from_cache();
     if (length(groups) == 0)
@@ -541,6 +654,8 @@ function worker() {
     while (true) {
         for (let group in groups)
             tick_group(states[group.tag], group);
+        if (!write_runtime_state(groups, states))
+            log_message("failed to write runtime state", "warn");
         system("sleep 1");
     }
 }
@@ -584,6 +699,7 @@ function stop_runtime() {
 
     remove_file(PRIORITY_WORKER_PID_FILE);
     remove_file(PRIORITY_PID_FILE);
+    remove_file(PRIORITY_STATE_FILE);
     return 0;
 }
 
@@ -595,6 +711,7 @@ function start_runtime() {
 
     if (!ensure_dir(RUNTIME_STATE_DIR))
         return 1;
+    remove_file(PRIORITY_STATE_FILE);
     if (!fs.writefile(PRIORITY_RUN_FILE, "1\n"))
         return 1;
 
@@ -650,6 +767,23 @@ function sequence_fixture(scenario_path) {
     write_json({ state, switches });
 }
 
+function probe_summary_fixture(path) {
+    write_json(summarize_probes(array_or_empty(read_json_file(path))));
+}
+
+function probe_config_fixture(path) {
+    let group = normalize_group(read_json_file(path), "fixture");
+    write_json({ health_urls: group.health_urls, probe_budget: group.probe_budget });
+}
+
+function status_runtime() {
+    let state = object_or_empty(read_json_file(PRIORITY_STATE_FILE));
+    state.running = process_running(file_first_line(PRIORITY_PID_FILE));
+    if (type(state.groups) != "object")
+        state.groups = {};
+    write_json(state);
+}
+
 let mode = ARGV[0] || "";
 
 if (mode == "start-runtime")
@@ -668,7 +802,13 @@ else if (mode == "sequence-fixture")
     sequence_fixture(ARGV[1]);
 else if (mode == "group-proxy-fixture")
     print(group_proxy_from_output(as_string(fs.readfile(ARGV[1]) || ""), ARGV[2]), "\n");
+else if (mode == "probe-summary-fixture")
+    probe_summary_fixture(ARGV[1]);
+else if (mode == "probe-config-fixture")
+    probe_config_fixture(ARGV[1]);
+else if (mode == "status")
+    status_runtime();
 else {
-    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|supervisor|worker|select-fixture|select-faster-fixture|sequence-fixture|group-proxy-fixture>\n");
+    warn("Usage: singbox/priority.uc <start-runtime|stop-runtime|supervisor|worker|status|select-fixture|select-faster-fixture|sequence-fixture|group-proxy-fixture|probe-summary-fixture|probe-config-fixture>\n");
     exit(1);
 }

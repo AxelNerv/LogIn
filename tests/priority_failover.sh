@@ -808,6 +808,91 @@ if ((result.state || {}).active != "a" || (result.state || {}).levelIndex != 0)
     die("unconfirmed selector change was committed to runtime state\n");
 ' || fail "priority runtime must not commit an unconfirmed selector change"
 
+cat >"$WORK_DIR/probe-healthy.json" <<'JSON'
+[
+  { "alive": true, "delay": 31, "status": "healthy" },
+  { "alive": true, "delay": 48, "status": "healthy" }
+]
+JSON
+cat >"$WORK_DIR/probe-degraded.json" <<'JSON'
+[
+  { "alive": false, "delay": 0, "status": "down" },
+  { "alive": true, "delay": 52, "status": "healthy" }
+]
+JSON
+cat >"$WORK_DIR/probe-unknown.json" <<'JSON'
+[
+  { "alive": false, "delay": 0, "status": "unknown" },
+  { "alive": false, "delay": 0, "status": "down" }
+]
+JSON
+cat >"$WORK_DIR/probe-down.json" <<'JSON'
+[
+  { "alive": false, "delay": 0, "status": "down" },
+  { "alive": false, "delay": 0, "status": "down" }
+]
+JSON
+for probe_case in healthy degraded unknown down; do
+  probe_summary="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" probe-summary-fixture \
+    "$WORK_DIR/probe-$probe_case.json")"
+  PROBE_SUMMARY="$probe_summary" EXPECTED_STATUS="$probe_case" node - <<'NODE'
+const value = JSON.parse(process.env.PROBE_SUMMARY);
+if (value.status !== process.env.EXPECTED_STATUS) {
+  console.error(`probe status mismatch: ${JSON.stringify(value)}`);
+  process.exit(1);
+}
+if ((value.status === 'healthy' || value.status === 'degraded') !== value.alive) {
+  console.error(`probe alive/status mismatch: ${JSON.stringify(value)}`);
+  process.exit(1);
+}
+NODE
+done
+
+probe_config="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" probe-config-fixture \
+  "$WORK_DIR/select-first-live-group.json")"
+PROBE_CONFIG="$probe_config" node - <<'NODE'
+const value = JSON.parse(process.env.PROBE_CONFIG);
+if (JSON.stringify(value.health_urls) !== JSON.stringify([
+  'https://www.gstatic.com/generate_204',
+  'https://cp.cloudflare.com/generate_204',
+]) || value.probe_budget !== '4s') {
+  console.error(`default bounded multi-target probe config mismatch: ${JSON.stringify(value)}`);
+  process.exit(1);
+}
+NODE
+
+cat >"$WORK_DIR/unknown-sequence.json" <<'JSON'
+{
+  "initial_active": "a",
+  "group": {
+    "tag": "fixture",
+    "active_check_interval": "5s",
+    "failure_threshold": 3,
+    "levels": [
+      { "id": "top", "outbounds": [ "a" ] },
+      { "id": "fallback", "outbounds": [ "b" ] }
+    ]
+  },
+  "ticks": [
+    { "now": 100, "latencies": { "a": "unknown", "b": 70 } },
+    { "now": 105, "latencies": { "a": -1, "b": 70 } },
+    { "now": 110, "latencies": { "a": -1, "b": 70 } },
+    { "now": 115, "latencies": { "a": -1, "b": 70 } }
+  ]
+}
+JSON
+unknown_sequence="$(ucode -L "$LOGHORIZON_LIB" "$PRIORITY_UC" sequence-fixture \
+  "$WORK_DIR/unknown-sequence.json")"
+printf '%s\n' "$unknown_sequence" | ucode -e '
+let fs = require("fs");
+let result = json(fs.readfile("/dev/stdin"));
+let switches = result.switches || [];
+if (length(switches) != 1 || switches[0].tag != "b" || switches[0].now != 115)
+    die("unknown probe incorrectly counted as a route failure: " + sprintf("%J", switches) + "\n");
+if ((result.state || {}).healthStatus != "down" || (result.state || {}).lastProbeAt != 115)
+    die("priority health status was not exported into state\n");
+' || fail "unknown control-plane errors must not trigger failover"
+
 real_ucode="$(command -v ucode)"
 supervisor_dir="$WORK_DIR/supervisor"
 supervisor_bin="$supervisor_dir/bin"

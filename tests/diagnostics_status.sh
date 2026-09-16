@@ -169,6 +169,10 @@ mkdir -p "$fake_bin"
 cat >"$fake_bin/curl" <<'SH'
 #!/usr/bin/env sh
 printf '%s\n' "$*" >>"$FAKE_CURL_LOG"
+if [ "${FAKE_CURL_INVALID:-0}" = "1" ]; then
+  printf '%s\n' 'not-json'
+  exit 0
+fi
 case "$*" in
   *'127.0.0.1:9090/proxies') printf '%s\n' '{"proxies":{"urltest":{"type":"URLTest"},"provider-urltest":{"type":"urltest"},"proxy-a":{"type":"VLESS"},"proxy-b":{"type":"Trojan"}}}' ;;
   *) printf '%s\n' '{"delay":1}' ;;
@@ -188,6 +192,14 @@ PATH="$fake_bin:$PATH" \
   fail "clash-api get_proxy_latency should use fake curl successfully"
 grep -Fq "url=https://latency.example/generate_204" "$WORK_DIR/fake-curl.log" ||
   fail "clash-api latency check must use settings.latency_test_url"
+if FAKE_CURL_INVALID=1 \
+  FAKE_CURL_LOG="$WORK_DIR/fake-curl-invalid.log" \
+  LOGHORIZON_UCI_STATE_FILE="$uci_state" \
+  LOGHORIZON_LIB="$LOGHORIZON_LIB" \
+  PATH="$fake_bin:$PATH" \
+    ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_RUNTIME" clash-api get_proxy_latency proxy-out 5000 >/dev/null 2>&1; then
+  fail "clash-api must report malformed control-plane JSON as an error"
+fi
 
 latency_action_dir="$WORK_DIR/ui-state/latency-actions"
 mkdir -p "$latency_action_dir"

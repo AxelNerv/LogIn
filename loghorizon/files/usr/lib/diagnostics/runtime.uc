@@ -1601,8 +1601,10 @@ function check_fakeip() {
 }
 
 function clash_json_output(args) {
-    print(status_output([ "stdin-json" ], command_output(command_from_args(args))));
-    return 0;
+    let result = status_capture([ "stdin-json" ], command_output(command_from_args(args)));
+    if (result.output != "")
+        print(result.output);
+    return result.status;
 }
 
 function clash_api_url() {
