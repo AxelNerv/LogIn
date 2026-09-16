@@ -23,30 +23,30 @@ assert_contains() {
 }
 
 success="$(run_fixture '{"status":0,"output":"204\t0.020\t0.065\t0.080\n"}')"
-assert_contains "$success" '"available":1' 'successful HTTPS probe'
-assert_contains "$success" '"stage":"ok"' 'successful HTTPS stage'
-assert_contains "$success" '"tcp_ms":20' 'TCP timing'
-assert_contains "$success" '"tls_ms":45' 'TLS timing'
-assert_contains "$success" '"total_ms":80' 'total timing'
+assert_contains "$success" '"available": 1' 'successful HTTPS probe'
+assert_contains "$success" '"stage": "ok"' 'successful HTTPS stage'
+assert_contains "$success" '"tcp_ms": 20' 'TCP timing'
+assert_contains "$success" '"tls_ms": 45' 'TLS timing'
+assert_contains "$success" '"total_ms": 80' 'total timing'
 
 server_response="$(run_fixture '{"status":0,"output":"403\t0.010\t0.030\t0.040"}')"
-assert_contains "$server_response" '"available":1' 'HTTP response proves path availability'
-assert_contains "$server_response" '"http_code":403' 'HTTP status is reported without treating it as blocking'
+assert_contains "$server_response" '"available": 1' 'HTTP response proves path availability'
+assert_contains "$server_response" '"http_code": 403' 'HTTP status is reported without treating it as blocking'
 
 tcp_timeout="$(run_fixture '{"status":28,"output":"000\t0.000\t0.000\t4.001"}')"
-assert_contains "$tcp_timeout" '"stage":"tcp"' 'TCP timeout stage'
-assert_contains "$tcp_timeout" '"reason":"tcp_timeout"' 'TCP timeout reason'
+assert_contains "$tcp_timeout" '"stage": "tcp"' 'TCP timeout stage'
+assert_contains "$tcp_timeout" '"reason": "tcp_timeout"' 'TCP timeout reason'
 
 tls_failure="$(run_fixture '{"status":35,"output":"000\t0.018\t0.000\t0.031"}')"
-assert_contains "$tls_failure" '"stage":"tls"' 'TLS failure stage'
-assert_contains "$tls_failure" '"reason":"tls_failed"' 'TLS failure reason'
+assert_contains "$tls_failure" '"stage": "tls"' 'TLS failure stage'
+assert_contains "$tls_failure" '"reason": "tls_failed"' 'TLS failure reason'
 
 http_timeout="$(run_fixture '{"status":28,"output":"000\t0.015\t0.055\t8.001"}')"
-assert_contains "$http_timeout" '"stage":"http"' 'HTTP timeout stage'
-assert_contains "$http_timeout" '"reason":"http_timeout"' 'HTTP timeout reason'
+assert_contains "$http_timeout" '"stage": "http"' 'HTTP timeout stage'
+assert_contains "$http_timeout" '"reason": "http_timeout"' 'HTTP timeout reason'
 
 dns_failure="$(run_fixture '{"status":6,"output":"000\t0.000\t0.000\t0.002"}')"
-assert_contains "$dns_failure" '"stage":"dns"' 'DNS failure stage'
+assert_contains "$dns_failure" '"stage": "dns"' 'DNS failure stage'
 
 grep -Fq 'check_connectivity_path: [ "diagnostics/runtime.uc", "check-connectivity-path", 0 ]' "$CLI" ||
   fail 'CLI must expose the bounded connectivity path diagnostic'
