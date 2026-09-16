@@ -1427,6 +1427,159 @@ function connectivity_probe_classify_fixture() {
     return 0;
 }
 
+function diagnostic_uint_file(path) {
+    let value = trim(as_string(fs.readfile(path)));
+    return match(value, /^[0-9]+$/) != null ? int(value, 10) : null;
+}
+
+function connectivity_cpu_sample(data) {
+    let first = split(as_string(data), "\n")[0] || "";
+    let fields = words(first);
+    if (length(fields) < 5 || fields[0] != "cpu")
+        return null;
+    let total = 0;
+    for (let i = 1; i < length(fields) && i <= 8; i++)
+        total += arg_number(fields[i]);
+    return { total, idle: arg_number(fields[4]) + arg_number(fields[5]) };
+}
+
+function connectivity_memory_sample(data) {
+    let total_kib = null;
+    let available_kib = null;
+    for (let line in split(as_string(data), "\n")) {
+        let matched = match(line, /^(MemTotal|MemAvailable):[ \t]+([0-9]+)[ \t]+kB$/);
+        if (!matched)
+            continue;
+        if (matched[1] == "MemTotal")
+            total_kib = int(matched[2], 10);
+        else
+            available_kib = int(matched[2], 10);
+    }
+    return { total_kib, available_kib };
+}
+
+function connectivity_nfqueue_sample(data) {
+    let result = { available: data != null ? 1 : 0, queues: 0, queued: 0, kernel_dropped: 0, userspace_dropped: 0 };
+    if (data == null)
+        return result;
+    for (let line in split(as_string(data), "\n")) {
+        let fields = words(line);
+        if (length(fields) < 7)
+            continue;
+        result.queues++;
+        result.queued += arg_number(fields[2]);
+        result.kernel_dropped += arg_number(fields[5]);
+        result.userspace_dropped += arg_number(fields[6]);
+    }
+    return result;
+}
+
+function connectivity_default_interfaces() {
+    let seen = {};
+    for (let family in [ "-4", "-6" ]) {
+        for (let line in split(command_output_from_args([ "ip", family, "route", "show", "default" ]), "\n")) {
+            let fields = words(line);
+            for (let i = 0; i + 1 < length(fields); i++)
+                if (fields[i] == "dev" && match(fields[i + 1], /^[A-Za-z0-9_.:@-]+$/) != null)
+                    seen[fields[i + 1]] = true;
+        }
+    }
+    return sort(keys(seen));
+}
+
+function connectivity_qdisc_sample(interface) {
+    if (!command_exists("tc"))
+        return { available: 0, backlog_bytes: 0, backlog_packets: 0, requeues: 0 };
+    let result = { available: 1, backlog_bytes: 0, backlog_packets: 0, requeues: 0 };
+    for (let line in split(command_output_from_args([ "tc", "-s", "qdisc", "show", "dev", interface ]), "\n")) {
+        let matched = match(line, /backlog[ \t]+([0-9]+)b[ \t]+([0-9]+)p[ \t]+requeues[ \t]+([0-9]+)/);
+        if (!matched)
+            continue;
+        result.backlog_bytes += int(matched[1], 10);
+        result.backlog_packets += int(matched[2], 10);
+        result.requeues += int(matched[3], 10);
+    }
+    return result;
+}
+
+function connectivity_resource_snapshot() {
+    let interfaces = [];
+    for (let interface in connectivity_default_interfaces()) {
+        let base = "/sys/class/net/" + interface + "/statistics/";
+        push(interfaces, {
+            name: interface,
+            rx_dropped: diagnostic_uint_file(base + "rx_dropped") || 0,
+            tx_dropped: diagnostic_uint_file(base + "tx_dropped") || 0,
+            qdisc: connectivity_qdisc_sample(interface)
+        });
+    }
+    let load = words(as_string(fs.readfile("/proc/loadavg")));
+    return {
+        cpu: connectivity_cpu_sample(fs.readfile("/proc/stat")),
+        memory: connectivity_memory_sample(fs.readfile("/proc/meminfo")),
+        load: { one: load[0] || "", five: load[1] || "", fifteen: load[2] || "" },
+        conntrack: {
+            count: diagnostic_uint_file("/proc/sys/net/netfilter/nf_conntrack_count"),
+            max: diagnostic_uint_file("/proc/sys/net/netfilter/nf_conntrack_max")
+        },
+        nfqueue: connectivity_nfqueue_sample(fs.readfile("/proc/net/netfilter/nfnetlink_queue")),
+        interfaces
+    };
+}
+
+function nonnegative_delta(after, before) {
+    after = after == null ? 0 : after;
+    before = before == null ? 0 : before;
+    return after >= before ? after - before : 0;
+}
+
+function connectivity_resource_result(before, after) {
+    let cpu_percent = null;
+    if (before.cpu && after.cpu) {
+        let total_delta = nonnegative_delta(after.cpu.total, before.cpu.total);
+        let idle_delta = nonnegative_delta(after.cpu.idle, before.cpu.idle);
+        if (total_delta > 0)
+            cpu_percent = int((((total_delta - idle_delta) * 1000) / total_delta) + 0.5) / 10;
+    }
+
+    let before_interfaces = {};
+    for (let item in before.interfaces || [])
+        before_interfaces[item.name] = item;
+    let interfaces = [];
+    for (let item in after.interfaces || []) {
+        let previous = before_interfaces[item.name] || {};
+        push(interfaces, {
+            name: item.name,
+            rx_dropped_delta: nonnegative_delta(item.rx_dropped, previous.rx_dropped),
+            tx_dropped_delta: nonnegative_delta(item.tx_dropped, previous.tx_dropped),
+            qdisc: item.qdisc
+        });
+    }
+
+    return {
+        cpu_percent,
+        memory: after.memory,
+        load: after.load,
+        conntrack: after.conntrack,
+        nfqueue: {
+            available: after.nfqueue.available,
+            queues: after.nfqueue.queues,
+            queued: after.nfqueue.queued,
+            kernel_dropped_delta: nonnegative_delta(after.nfqueue.kernel_dropped, before.nfqueue.kernel_dropped),
+            userspace_dropped_delta: nonnegative_delta(after.nfqueue.userspace_dropped, before.nfqueue.userspace_dropped)
+        },
+        interfaces
+    };
+}
+
+function connectivity_resource_fixture() {
+    let input = parse_json_or_null(read_stdin());
+    if (type(input) != "object" || type(input.before) != "object" || type(input.after) != "object")
+        return 1;
+    write_json(connectivity_resource_result(input.before, input.after));
+    return 0;
+}
+
 function connectivity_resolve(host, query_type) {
     let active = runtime_dns.active_values(settings());
     let args = [
@@ -1514,6 +1667,7 @@ function check_connectivity_path() {
         return 0;
     }
 
+    let resources_before = connectivity_resource_snapshot();
     let ipv4_route = trim(command_output_from_args([ "ip", "-4", "route", "show", "default" ])) != "";
     let ipv6_route = trim(command_output_from_args([ "ip", "-6", "route", "show", "default" ])) != "";
     let host = "www.gstatic.com";
@@ -1528,7 +1682,8 @@ function check_connectivity_path() {
         target: "gstatic_generate_204",
         ipv4,
         ipv6,
-        quic
+        quic,
+        resources: connectivity_resource_result(resources_before, connectivity_resource_snapshot())
     });
     return 0;
 }
@@ -2179,6 +2334,8 @@ else if (mode == "check-connectivity-path")
     exit(check_connectivity_path());
 else if (mode == "connectivity-probe-classify-fixture")
     exit(connectivity_probe_classify_fixture());
+else if (mode == "connectivity-resource-fixture")
+    exit(connectivity_resource_fixture());
 else if (mode == "global-check")
     exit(global_check(ARGV[1] || "", ARGV[2] || ""));
 else if (mode == "validate-nfqws-strategy-json")

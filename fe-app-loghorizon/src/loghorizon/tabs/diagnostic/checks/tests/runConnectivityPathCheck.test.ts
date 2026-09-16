@@ -57,6 +57,32 @@ describe('runConnectivityPathCheck', () => {
           skipped: 1,
           reason: 'diagnostic_client_has_no_http3',
         },
+        resources: {
+          cpu_percent: 12.5,
+          memory: { total_kib: 262144, available_kib: 131072 },
+          load: { one: '0.10', five: '0.20', fifteen: '0.30' },
+          conntrack: { count: 128, max: 16384 },
+          nfqueue: {
+            available: 1,
+            queues: 2,
+            queued: 0,
+            kernel_dropped_delta: 0,
+            userspace_dropped_delta: 0,
+          },
+          interfaces: [
+            {
+              name: 'wan',
+              rx_dropped_delta: 0,
+              tx_dropped_delta: 0,
+              qdisc: {
+                available: 1,
+                backlog_bytes: 0,
+                backlog_packets: 0,
+                requeues: 0,
+              },
+            },
+          ],
+        },
       },
     });
 
@@ -72,6 +98,11 @@ describe('runConnectivityPathCheck', () => {
             value: 'HTTP 204 · TCP handoff 20 ms · TLS 45 ms · total 80 ms',
           }),
           expect.objectContaining({ state: 'warning', key: 'QUIC / HTTP3' }),
+          expect.objectContaining({
+            state: 'success',
+            key: 'Packet queues during check',
+            value: 'NFQUEUE drops 0 · interface drops 0 · qdisc backlog 0',
+          }),
         ]),
       }),
     );

@@ -48,6 +48,13 @@ assert_contains "$http_timeout" '"reason": "http_timeout"' 'HTTP timeout reason'
 dns_failure="$(run_fixture '{"status":6,"output":"000\t0.000\t0.000\t0.002"}')"
 assert_contains "$dns_failure" '"stage": "dns"' 'DNS failure stage'
 
+resources="$(printf '%s\n' '{"before":{"cpu":{"total":1000,"idle":800},"memory":{"total_kib":262144,"available_kib":131072},"load":{"one":"0.10","five":"0.20","fifteen":"0.30"},"conntrack":{"count":100,"max":16384},"nfqueue":{"available":1,"queues":2,"queued":0,"kernel_dropped":10,"userspace_dropped":3},"interfaces":[{"name":"wan","rx_dropped":20,"tx_dropped":5,"qdisc":{"available":1,"backlog_bytes":0,"backlog_packets":0,"requeues":0}}]},"after":{"cpu":{"total":1200,"idle":940},"memory":{"total_kib":262144,"available_kib":126976},"load":{"one":"0.20","five":"0.20","fifteen":"0.30"},"conntrack":{"count":110,"max":16384},"nfqueue":{"available":1,"queues":2,"queued":1,"kernel_dropped":12,"userspace_dropped":4},"interfaces":[{"name":"wan","rx_dropped":21,"tx_dropped":5,"qdisc":{"available":1,"backlog_bytes":1200,"backlog_packets":2,"requeues":1}}]}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-resource-fixture)"
+assert_contains "$resources" '"cpu_percent": 30' 'CPU usage across diagnostic window'
+assert_contains "$resources" '"kernel_dropped_delta": 2' 'NFQUEUE kernel drop delta'
+assert_contains "$resources" '"userspace_dropped_delta": 1' 'NFQUEUE userspace drop delta'
+assert_contains "$resources" '"rx_dropped_delta": 1' 'interface drop delta'
+assert_contains "$resources" '"backlog_packets": 2' 'qdisc backlog snapshot'
+
 grep -Fq 'check_connectivity_path: [ "diagnostics/runtime.uc", "check-connectivity-path", 0 ]' "$CLI" ||
   fail 'CLI must expose the bounded connectivity path diagnostic'
 

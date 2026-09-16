@@ -403,6 +403,33 @@ export namespace logIn {
     reason: string;
   }
 
+  export interface ConnectivityQdiscResult {
+    available: 0 | 1;
+    backlog_bytes: number;
+    backlog_packets: number;
+    requeues: number;
+  }
+
+  export interface ConnectivityResourcesResult {
+    cpu_percent: number | null;
+    memory: { total_kib: number | null; available_kib: number | null };
+    load: { one: string; five: string; fifteen: string };
+    conntrack: { count: number | null; max: number | null };
+    nfqueue: {
+      available: 0 | 1;
+      queues: number;
+      queued: number;
+      kernel_dropped_delta: number;
+      userspace_dropped_delta: number;
+    };
+    interfaces: Array<{
+      name: string;
+      rx_dropped_delta: number;
+      tx_dropped_delta: number;
+      qdisc: ConnectivityQdiscResult;
+    }>;
+  }
+
   export interface ConnectivityPathCheckResult {
     available: 0 | 1;
     summary: string;
@@ -412,6 +439,7 @@ export namespace logIn {
     ipv4?: ConnectivityProbeResult;
     ipv6?: ConnectivityProbeResult;
     quic?: ConnectivityQuicResult;
+    resources?: ConnectivityResourcesResult;
   }
 
   export interface NftRulesCheckResult {

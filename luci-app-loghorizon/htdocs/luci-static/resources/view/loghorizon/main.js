@@ -7812,6 +7812,47 @@ function quicItem(quic) {
     value: quic.available ? _("Available") : _("Control request failed; this alone does not prove UDP blocking")
   };
 }
+function resourceItems(resources) {
+  if (!resources) return [];
+  const memoryAvailable = resources.memory.available_kib;
+  const memoryTotal = resources.memory.total_kib;
+  const memoryPercent = memoryAvailable !== null && memoryTotal !== null && memoryTotal > 0 ? Math.round(memoryAvailable * 100 / memoryTotal) : null;
+  const conntrackPercent = resources.conntrack.count !== null && resources.conntrack.max !== null && resources.conntrack.max > 0 ? Math.round(resources.conntrack.count * 100 / resources.conntrack.max) : null;
+  const nfqueueDrops = resources.nfqueue.kernel_dropped_delta + resources.nfqueue.userspace_dropped_delta;
+  const interfaceDrops = resources.interfaces.reduce(
+    (sum, item) => sum + item.rx_dropped_delta + item.tx_dropped_delta,
+    0
+  );
+  const backlogPackets = resources.interfaces.reduce(
+    (sum, item) => sum + (item.qdisc?.backlog_packets ?? 0),
+    0
+  );
+  const qdiscAvailable = resources.interfaces.some(
+    (item) => item.qdisc?.available
+  );
+  return [
+    {
+      state: resources.cpu_percent === null || resources.cpu_percent >= 90 ? "warning" : "success",
+      key: _("Router load during check"),
+      value: `${_("CPU")} ${resources.cpu_percent ?? "?"}% \xB7 ${_("load average")} ${resources.load.one || "?"} / ${resources.load.five || "?"} / ${resources.load.fifteen || "?"}`
+    },
+    {
+      state: memoryPercent === null || memoryPercent < 10 ? "warning" : "success",
+      key: _("Available memory"),
+      value: memoryAvailable !== null && memoryPercent !== null ? `${Math.round(memoryAvailable / 1024)} MiB \xB7 ${memoryPercent}%` : _("Not available")
+    },
+    {
+      state: conntrackPercent === null || conntrackPercent >= 90 ? "warning" : "success",
+      key: _("Connection tracking table"),
+      value: resources.conntrack.count !== null && resources.conntrack.max !== null && conntrackPercent !== null ? `${resources.conntrack.count} / ${resources.conntrack.max} \xB7 ${conntrackPercent}%` : _("Not available")
+    },
+    {
+      state: !resources.nfqueue.available || nfqueueDrops > 0 || interfaceDrops > 0 ? "warning" : "success",
+      key: _("Packet queues during check"),
+      value: resources.nfqueue.available ? `${_("NFQUEUE drops")} ${nfqueueDrops} \xB7 ${_("interface drops")} ${interfaceDrops} \xB7 ${_("qdisc backlog")} ${qdiscAvailable ? backlogPackets : _("Not available")}` : _("NFQUEUE counters are not available")
+    }
+  ];
+}
 async function runConnectivityPathCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.CONNECTIVITY;
   updateCheckStore({
@@ -7863,6 +7904,7 @@ async function runConnectivityPathCheck() {
     familyItem("IPv4", data.ipv4, ipv4Required),
     familyItem("IPv6", data.ipv6, false),
     quicItem(data.quic),
+    ...resourceItems(data.resources),
     {
       state: "warning",
       key: _("Interpretation"),

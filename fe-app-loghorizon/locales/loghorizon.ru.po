@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 18:09+0300\n"
-"PO-Revision-Date: 2026-09-16 18:09+0300\n"
+"POT-Creation-Date: 2026-09-16 18:23+0300\n"
+"PO-Revision-Date: 2026-09-16 18:23+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -190,6 +190,9 @@ msgstr "Доступно"
 
 msgid "Available actions"
 msgstr "Доступные действия"
+
+msgid "Available memory"
+msgstr "Доступная память"
 
 msgid "Backend validation failed: %s"
 msgstr "Backend-проверка завершилась ошибкой: %s"
@@ -389,6 +392,9 @@ msgstr "Подключаться через"
 msgid "Connection path"
 msgstr "Путь соединения"
 
+msgid "Connection tracking table"
+msgstr "Таблица отслеживания соединений"
+
 msgid "Connection URL"
 msgstr "URL подключения"
 
@@ -415,6 +421,9 @@ msgstr "Не удалось сравнить публичные IP FakeIP и к�
 
 msgid "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running."
 msgstr "Не удалось прочитать состояние службы logIn. Установленные компоненты и провайдеры DPI могут отображаться неверно. Проверьте, запущена ли служба."
+
+msgid "CPU"
+msgstr "ЦП"
 
 msgid "Current section cannot be used as its own transit section"
 msgstr "Текущую секцию нельзя использовать как транзит для самой себя"
@@ -510,7 +519,7 @@ msgid "DNS Check Interval"
 msgstr "Период проверки DNS"
 
 msgid "DNS endpoint address must be an IPv4 or IPv6 literal"
-msgstr ""
+msgstr "Адрес конечной точки DNS должен быть IPv4- или IPv6-адресом"
 
 msgid "DNS failures before switching"
 msgstr "Ошибок DNS до переключения"
@@ -567,7 +576,7 @@ msgid "DNS server used by the resolver"
 msgstr "DNS-сервер, который будет использовать резолвер"
 
 msgid "DNS server used to resolve upstream DNS and proxy names. Protected presets connect to a pinned IP while verifying the resolver TLS name, so they do not need open UDP DNS."
-msgstr ""
+msgstr "DNS-сервер для разрешения имён вышестоящих DNS и прокси. Защищённые пресеты подключаются к закреплённому IP и проверяют TLS-имя резолвера, поэтому открытый UDP DNS им не нужен."
 
 msgid "DNS Servers"
 msgstr "DNS-серверы"
@@ -585,7 +594,7 @@ msgid "DNS through section"
 msgstr "DNS через секцию"
 
 msgid "DNS TLS server name must be a domain name"
-msgstr ""
+msgstr "TLS-имя DNS-сервера должно быть доменным именем"
 
 msgid "DNS Unavailability Timeout"
 msgstr "Таймаут недоступности DNS"
@@ -735,7 +744,7 @@ msgid "Enable YACD WAN Access"
 msgstr "Включить доступ YACD WAN"
 
 msgid "Enabled"
-msgstr ""
+msgstr "Включено"
 
 msgid "Encrypted Client Hello (ECH)"
 msgstr "Шифрование имени сервера (ECH)"
@@ -1034,6 +1043,9 @@ msgstr "Установлен"
 msgid "Installed version is newer than release"
 msgstr "Установлена версия новее релиза"
 
+msgid "interface drops"
+msgstr "потери интерфейсов"
+
 msgid "Interface Monitoring"
 msgstr "Мониторинг интерфейса"
 
@@ -1062,7 +1074,7 @@ msgid "Invalid CIDR prefix"
 msgstr "Неверный префикс CIDR"
 
 msgid "Invalid DNS endpoint URL"
-msgstr ""
+msgstr "Некорректный URL конечной точки DNS"
 
 msgid "Invalid DNS server format. Examples: 8.8.8.8 or dns.example.com or dns.example.com/nicedns for DoH"
 msgstr "Неверный формат DNS-сервера. Примеры: 8.8.8.8, dns.example.com или dns.example.com/nicedns для DoH"
@@ -1298,6 +1310,9 @@ msgstr "Порт прослушивания"
 msgid "Listening port"
 msgstr "Слушающий порт"
 
+msgid "load average"
+msgstr "средняя нагрузка"
+
 msgid "Loading client link..."
 msgstr "Загрузка клиентской ссылки..."
 
@@ -1371,7 +1386,7 @@ msgid "Main DNS"
 msgstr "Основной DNS"
 
 msgid "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback."
-msgstr ""
+msgstr "Основной DNS-сервер. Схема URL может переопределить протокол отдельной записи, например использовать QUIC как основной вариант, а HTTPS/TLS как резервный."
 
 msgid "Match destination IPs or subnets"
 msgstr "Совпадение по IP-адресам или подсетям назначения"
@@ -1445,6 +1460,12 @@ msgstr "Настройки сетевого интерфейса"
 msgid "New version %s is available for %s"
 msgstr "Доступна новая версия %s для %s"
 
+msgid "NFQUEUE counters are not available"
+msgstr "Счётчики NFQUEUE недоступны"
+
+msgid "NFQUEUE drops"
+msgstr "потери NFQUEUE"
+
 msgid "NFQUEUE range is available"
 msgstr "Диапазон NFQUEUE свободен"
 
@@ -1516,6 +1537,9 @@ msgstr "Узлы"
 
 msgid "None"
 msgstr "Нет"
+
+msgid "Not available"
+msgstr "Недоступно"
 
 msgid "Not configured"
 msgstr "Не настроено"
@@ -1600,6 +1624,9 @@ msgstr "outbounds должен быть непустым массивом стр
 
 msgid "Output Network Interface"
 msgstr "Выходной сетевой интерфейс"
+
+msgid "Packet queues during check"
+msgstr "Очереди пакетов во время проверки"
 
 msgid "Pad multiplexed streams"
 msgstr "Добивать потоки наполнителем"
@@ -1700,6 +1727,9 @@ msgstr "Маршрут через прокси или VPN"
 msgid "Public host"
 msgstr "Публичный хост"
 
+msgid "qdisc backlog"
+msgstr "очередь qdisc"
+
 msgid "QR code is too large"
 msgstr "QR-код слишком большой"
 
@@ -1783,6 +1813,9 @@ msgstr "Маршрут"
 
 msgid "Route requests to this DNS server through another section."
 msgstr "Направлять запросы к этому DNS-серверу через другую секцию."
+
+msgid "Router load during check"
+msgstr "Нагрузка роутера во время проверки"
 
 msgid "Routing mode"
 msgstr "Режим маршрутизации"

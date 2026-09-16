@@ -423,6 +423,13 @@
     ]
   },
   {
+    "call": "Available memory",
+    "key": "Available memory",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:125"
+    ]
+  },
+  {
     "call": "Backend validation failed: %s",
     "key": "Backend validation failed: %s",
     "places": [
@@ -615,7 +622,7 @@
     "key": "Cannot receive checks result",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:102",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:175",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172",
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
@@ -720,7 +727,7 @@
     "places": [
       "src/loghorizon/tabs/diagnostic/initController.ts:1043",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:91",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:164",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160",
@@ -928,6 +935,13 @@
     ]
   },
   {
+    "call": "Connection tracking table",
+    "key": "Connection tracking table",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:136"
+    ]
+  },
+  {
     "call": "Connection URL",
     "key": "Connection URL",
     "places": [
@@ -993,6 +1007,13 @@
     "key": "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:526"
+    ]
+  },
+  {
+    "call": "CPU",
+    "key": "CPU",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
     ]
   },
   {
@@ -1120,7 +1141,7 @@
     "call": "Diagnostic tools are missing",
     "key": "Diagnostic tools are missing",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:127"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:200"
     ]
   },
   {
@@ -1418,7 +1439,7 @@
     "call": "DNS, TCP handoff, TLS, and HTTP path is available",
     "key": "DNS, TCP handoff, TLS, and HTTP path is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:157"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:231"
     ]
   },
   {
@@ -1990,12 +2011,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722",
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177"
+      "src/loghorizon/tabs/updates/initController.ts:722"
     ]
   },
   {
@@ -2355,7 +2376,7 @@
     "call": "HTTPS works, but the QUIC control request failed",
     "key": "HTTPS works, but the QUIC control request failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:156"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:230"
     ]
   },
   {
@@ -2484,8 +2505,8 @@
     "call": "Installed",
     "key": "Installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:188",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:193"
     ]
   },
   {
@@ -2494,6 +2515,13 @@
     "places": [
       "src/loghorizon/tabs/updates/initController.ts:294",
       "src/loghorizon/tabs/updates/initController.ts:1020"
+    ]
+  },
+  {
+    "call": "interface drops",
+    "key": "interface drops",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
     ]
   },
   {
@@ -2521,7 +2549,7 @@
     "call": "Interpretation",
     "key": "Interpretation",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:141"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:215"
     ]
   },
   {
@@ -3129,6 +3157,13 @@
     ]
   },
   {
+    "call": "load average",
+    "key": "load average",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+    ]
+  },
+  {
     "call": "Loading client link...",
     "key": "Loading client link...",
     "places": [
@@ -3480,6 +3515,20 @@
     ]
   },
   {
+    "call": "NFQUEUE counters are not available",
+    "key": "NFQUEUE counters are not available",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:152"
+    ]
+  },
+  {
+    "call": "NFQUEUE drops",
+    "key": "NFQUEUE drops",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
+    ]
+  },
+  {
     "call": "NFQUEUE range is available",
     "key": "NFQUEUE range is available",
     "places": [
@@ -3658,6 +3707,14 @@
     ]
   },
   {
+    "call": "Not available",
+    "key": "Not available",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:129",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:142"
+    ]
+  },
+  {
     "call": "Not configured",
     "key": "Not configured",
     "places": [
@@ -3688,8 +3745,8 @@
       "src/loghorizon/tabs/updates/initController.ts:933",
       "src/loghorizon/tabs/updates/initController.ts:946",
       "src/loghorizon/tabs/updates/initController.ts:959",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:115",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:188",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:193"
     ]
   },
   {
@@ -3871,6 +3928,13 @@
     "key": "Output Network Interface",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:420"
+    ]
+  },
+  {
+    "call": "Packet queues during check",
+    "key": "Packet queues during check",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:149"
     ]
   },
   {
@@ -4117,6 +4181,13 @@
     ]
   },
   {
+    "call": "qdisc backlog",
+    "key": "qdisc backlog",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
+    ]
+  },
+  {
     "call": "QR code is too large",
     "key": "QR code is too large",
     "places": [
@@ -4311,6 +4382,13 @@
     "key": "Route requests to this DNS server through another section.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7528"
+    ]
+  },
+  {
+    "call": "Router load during check",
+    "key": "Router load during check",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:119"
     ]
   },
   {
@@ -4774,9 +4852,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:598",
       "src/loghorizon/methods/shell/index.ts:378",
-      "src/loghorizon/methods/shell/index.ts:399"
+      "src/loghorizon/methods/shell/index.ts:399",
+      "src/loghorizon/tabs/diagnostic/initController.ts:598"
     ]
   },
   {
@@ -5237,7 +5315,7 @@
     "call": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "key": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:142"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:216"
     ]
   },
   {
