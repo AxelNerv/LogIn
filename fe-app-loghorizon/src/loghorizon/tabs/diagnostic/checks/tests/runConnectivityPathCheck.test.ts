@@ -213,13 +213,89 @@ describe('runConnectivityPathCheck', () => {
     expect(mocks.updateCheckStore).toHaveBeenLastCalledWith(
       expect.objectContaining({
         state: 'warning',
-        description: 'HTTPS works, but the QUIC control path is degraded',
+        description: 'HTTPS works, but one control path is degraded',
         items: expect.arrayContaining([
           expect.objectContaining({
             state: 'warning',
             key: 'UDP / QUIC / DoQ',
             value:
               'Available through 1 of 2 independent targets · adguard 70 ms · alidns: timeout',
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it('shows only active VPN server metadata and marks fallback control degraded', async () => {
+    mocks.checkConnectivityPath.mockResolvedValue({
+      success: true,
+      data: {
+        available: 1,
+        summary: 'https_ok',
+        ipv4: {
+          available: 1,
+          skipped: 0,
+          stage: 'ok',
+          reason: 'server_responded',
+          curl_status: 0,
+          http_code: 204,
+          tcp_ms: 1,
+          tls_ms: 20,
+          total_ms: 30,
+        },
+        quic: {
+          supported: 1,
+          available: 1,
+          skipped: 0,
+          degraded: 0,
+          reason: 'doq_available',
+          targets: [],
+        },
+        user_servers: {
+          available: 1,
+          skipped: 0,
+          degraded: 1,
+          reason: 'servers_degraded',
+          successful_servers: 2,
+          server_count: 2,
+          servers: [
+            {
+              name: 'main-node',
+              type: 'VLESS',
+              available: 1,
+              degraded: 0,
+              reason: 'primary_available',
+              delay_ms: 42,
+            },
+            {
+              name: 'discord-node',
+              type: 'Hysteria2',
+              available: 1,
+              degraded: 1,
+              reason: 'fallback_available',
+              delay_ms: 67,
+            },
+          ],
+        },
+      },
+    });
+
+    await expect(runConnectivityPathCheck()).resolves.toBeUndefined();
+    expect(mocks.updateCheckStore).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        state: 'warning',
+        description: 'HTTPS works, but one control path is degraded',
+        items: expect.arrayContaining([
+          expect.objectContaining({
+            state: 'success',
+            key: 'Active VPN server: main-node',
+            value: 'VLESS · 42 ms · Available',
+          }),
+          expect.objectContaining({
+            state: 'warning',
+            key: 'Active VPN server: discord-node',
+            value:
+              'Hysteria2 · 67 ms · Available only through fallback control',
           }),
         ]),
       }),

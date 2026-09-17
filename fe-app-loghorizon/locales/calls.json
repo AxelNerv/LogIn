@@ -110,6 +110,15 @@
     ]
   },
   {
+    "call": "Active VPN server",
+    "key": "Active VPN server",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:203",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:214",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:220"
+    ]
+  },
+  {
     "call": "adapted files",
     "key": "adapted files",
     "places": [
@@ -412,7 +421,8 @@
     "key": "Available",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:22",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:101"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:101",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:223"
     ]
   },
   {
@@ -427,6 +437,13 @@
     "key": "Available memory",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:158"
+    ]
+  },
+  {
+    "call": "Available only through fallback control",
+    "key": "Available only through fallback control",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:222"
     ]
   },
   {
@@ -478,6 +495,13 @@
     "key": "Bootstrap DNS Servers",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:211"
+    ]
+  },
+  {
+    "call": "Both independent control requests failed",
+    "key": "Both independent control requests failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:215"
     ]
   },
   {
@@ -629,7 +653,7 @@
     "key": "Cannot receive checks result",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:208",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:246",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172",
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
@@ -734,7 +758,7 @@
     "places": [
       "src/loghorizon/tabs/diagnostic/initController.ts:1043",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:197",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:235",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160",
@@ -781,6 +805,13 @@
     "key": "CIDR must be between 0 and 32 for IPv4 or 0 and 128 for IPv6",
     "places": [
       "src/validators/validateSubnet.ts:35"
+    ]
+  },
+  {
+    "call": "Clash API is unavailable",
+    "key": "Clash API is unavailable",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:196"
     ]
   },
   {
@@ -1141,7 +1172,7 @@
     "call": "Diagnostic tools are missing",
     "key": "Diagnostic tools are missing",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:233"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:271"
     ]
   },
   {
@@ -1446,7 +1477,7 @@
     "call": "DNS, TCP handoff, TLS, and HTTP path is available",
     "key": "DNS, TCP handoff, TLS, and HTTP path is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:266"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:311"
     ]
   },
   {
@@ -2025,12 +2056,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722"
+      "src/loghorizon/tabs/updates/initController.ts:722",
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177"
     ]
   },
   {
@@ -2172,6 +2203,13 @@
     "key": "Generated inbound",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:89"
+    ]
+  },
+  {
+    "call": "Generated sing-box config is unavailable",
+    "key": "Generated sing-box config is unavailable",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:198"
     ]
   },
   {
@@ -2387,10 +2425,10 @@
     ]
   },
   {
-    "call": "HTTPS works, but the QUIC control path is degraded",
-    "key": "HTTPS works, but the QUIC control path is degraded",
+    "call": "HTTPS works, but one control path is degraded",
+    "key": "HTTPS works, but one control path is degraded",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:265"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:310"
     ]
   },
   {
@@ -2526,8 +2564,8 @@
     "call": "Installed",
     "key": "Installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:221",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:226"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:264"
     ]
   },
   {
@@ -2570,7 +2608,7 @@
     "call": "Interpretation",
     "key": "Interpretation",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:248"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:287"
     ]
   },
   {
@@ -3625,6 +3663,13 @@
     ]
   },
   {
+    "call": "No active VPN server is used by current routes",
+    "key": "No active VPN server is used by current routes",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:199"
+    ]
+  },
+  {
     "call": "No closed connections",
     "key": "No closed connections",
     "places": [
@@ -3774,8 +3819,8 @@
       "src/loghorizon/tabs/updates/initController.ts:933",
       "src/loghorizon/tabs/updates/initController.ts:946",
       "src/loghorizon/tabs/updates/initController.ts:959",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:221",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:226"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:264"
     ]
   },
   {
@@ -3811,6 +3856,13 @@
       "src/loghorizon/tabs/diagnostic/initController.ts:349",
       "src/loghorizon/tabs/diagnostic/initController.ts:406",
       "src/loghorizon/tabs/diagnostic/initController.ts:492"
+    ]
+  },
+  {
+    "call": "Not tested",
+    "key": "Not tested",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:204"
     ]
   },
   {
@@ -4881,9 +4933,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/initController.ts:598",
       "src/loghorizon/methods/shell/index.ts:378",
-      "src/loghorizon/methods/shell/index.ts:399",
-      "src/loghorizon/tabs/diagnostic/initController.ts:598"
+      "src/loghorizon/methods/shell/index.ts:399"
     ]
   },
   {
@@ -5344,7 +5396,7 @@
     "call": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "key": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:249"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:288"
     ]
   },
   {
@@ -5913,6 +5965,13 @@
     "key": "Unknown NFQWS2 flag.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6494"
+    ]
+  },
+  {
+    "call": "Unknown protocol",
+    "key": "Unknown protocol",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:210"
     ]
   },
   {

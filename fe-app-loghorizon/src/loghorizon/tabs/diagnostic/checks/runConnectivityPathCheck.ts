@@ -187,6 +187,44 @@ function resourceItems(
   ];
 }
 
+function userServerItems(
+  result: logIn.ConnectivityUserServersResult | undefined,
+): IDiagnosticsChecksItem[] {
+  if (!result || result.skipped) {
+    const reason =
+      result?.reason === 'clash_api_unavailable'
+        ? _('Clash API is unavailable')
+        : result?.reason === 'config_unavailable'
+          ? _('Generated sing-box config is unavailable')
+          : _('No active VPN server is used by current routes');
+    return [
+      {
+        state: 'warning',
+        key: _('Active VPN server'),
+        value: `${_('Not tested')} · ${reason}`,
+      },
+    ];
+  }
+
+  return (result.servers ?? []).map((server) => {
+    const protocol = server.type || _('Unknown protocol');
+    if (!server.available) {
+      return {
+        state: 'error',
+        key: `${_('Active VPN server')}: ${server.name}`,
+        value: `${protocol} · ${_('Both independent control requests failed')}`,
+      };
+    }
+    return {
+      state: server.degraded ? 'warning' : 'success',
+      key: `${_('Active VPN server')}: ${server.name}`,
+      value: server.degraded
+        ? `${protocol} · ${server.delay_ms} ms · ${_('Available only through fallback control')}`
+        : `${protocol} · ${server.delay_ms} ms · ${_('Available')}`,
+    };
+  });
+}
+
 export async function runConnectivityPathCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.CONNECTIVITY;
 
@@ -242,6 +280,7 @@ export async function runConnectivityPathCheck() {
     familyItem('IPv4', data.ipv4, ipv4Required),
     familyItem('IPv6', data.ipv6, false),
     quicItem(data.quic),
+    ...userServerItems(data.user_servers),
     ...resourceItems(data.resources),
     {
       state: 'warning' as CheckState,
@@ -255,14 +294,20 @@ export async function runConnectivityPathCheck() {
   const quicFailure = Boolean(
     data.quic?.supported && (!data.quic.available || data.quic.degraded),
   );
+  const userServerFailure = Boolean(
+    data.user_servers &&
+      !data.user_servers.skipped &&
+      (!data.user_servers.available || data.user_servers.degraded),
+  );
+  const controlPathFailure = quicFailure || userServerFailure;
   const state: CheckState = data.available
-    ? quicFailure
+    ? controlPathFailure
       ? 'warning'
       : 'success'
     : 'error';
   const description = data.available
-    ? quicFailure
-      ? _('HTTPS works, but the QUIC control path is degraded')
+    ? controlPathFailure
+      ? _('HTTPS works, but one control path is degraded')
       : _('DNS, TCP handoff, TLS, and HTTP path is available')
     : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? 'http');
 

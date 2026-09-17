@@ -7877,6 +7877,33 @@ function resourceItems(resources) {
     }
   ];
 }
+function userServerItems(result) {
+  if (!result || result.skipped) {
+    const reason = result?.reason === "clash_api_unavailable" ? _("Clash API is unavailable") : result?.reason === "config_unavailable" ? _("Generated sing-box config is unavailable") : _("No active VPN server is used by current routes");
+    return [
+      {
+        state: "warning",
+        key: _("Active VPN server"),
+        value: `${_("Not tested")} \xB7 ${reason}`
+      }
+    ];
+  }
+  return (result.servers ?? []).map((server) => {
+    const protocol = server.type || _("Unknown protocol");
+    if (!server.available) {
+      return {
+        state: "error",
+        key: `${_("Active VPN server")}: ${server.name}`,
+        value: `${protocol} \xB7 ${_("Both independent control requests failed")}`
+      };
+    }
+    return {
+      state: server.degraded ? "warning" : "success",
+      key: `${_("Active VPN server")}: ${server.name}`,
+      value: server.degraded ? `${protocol} \xB7 ${server.delay_ms} ms \xB7 ${_("Available only through fallback control")}` : `${protocol} \xB7 ${server.delay_ms} ms \xB7 ${_("Available")}`
+    };
+  });
+}
 async function runConnectivityPathCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.CONNECTIVITY;
   updateCheckStore({
@@ -7928,6 +7955,7 @@ async function runConnectivityPathCheck() {
     familyItem("IPv4", data.ipv4, ipv4Required),
     familyItem("IPv6", data.ipv6, false),
     quicItem(data.quic),
+    ...userServerItems(data.user_servers),
     ...resourceItems(data.resources),
     {
       state: "warning",
@@ -7940,8 +7968,12 @@ async function runConnectivityPathCheck() {
   const quicFailure = Boolean(
     data.quic?.supported && (!data.quic.available || data.quic.degraded)
   );
-  const state = data.available ? quicFailure ? "warning" : "success" : "error";
-  const description = data.available ? quicFailure ? _("HTTPS works, but the QUIC control path is degraded") : _("DNS, TCP handoff, TLS, and HTTP path is available") : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? "http");
+  const userServerFailure = Boolean(
+    data.user_servers && !data.user_servers.skipped && (!data.user_servers.available || data.user_servers.degraded)
+  );
+  const controlPathFailure = quicFailure || userServerFailure;
+  const state = data.available ? controlPathFailure ? "warning" : "success" : "error";
+  const description = data.available ? controlPathFailure ? _("HTTPS works, but one control path is degraded") : _("DNS, TCP handoff, TLS, and HTTP path is available") : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? "http");
   updateCheckStore({ order, code, title, description, state, items });
   if (!data.available) throw new Error("Connection path is unavailable");
 }

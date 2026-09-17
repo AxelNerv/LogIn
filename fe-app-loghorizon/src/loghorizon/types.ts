@@ -439,6 +439,23 @@ export namespace logIn {
     }>;
   }
 
+  export interface ConnectivityUserServersResult {
+    available: 0 | 1;
+    skipped: 0 | 1;
+    degraded: 0 | 1;
+    reason: string;
+    successful_servers?: number;
+    server_count?: number;
+    servers: Array<{
+      name: string;
+      type: string;
+      available: 0 | 1;
+      degraded: 0 | 1;
+      reason: string;
+      delay_ms: number;
+    }>;
+  }
+
   export interface ConnectivityPathCheckResult {
     available: 0 | 1;
     summary: string;
@@ -448,6 +465,7 @@ export namespace logIn {
     ipv4?: ConnectivityProbeResult;
     ipv6?: ConnectivityProbeResult;
     quic?: ConnectivityQuicResult;
+    user_servers?: ConnectivityUserServersResult;
     resources?: ConnectivityResourcesResult;
   }
 

@@ -224,6 +224,10 @@ function object_or_empty(value) {
     return type(value) == "object" ? value : {};
 }
 
+function array_or_empty(value) {
+    return type(value) == "array" ? value : [];
+}
+
 function option(section, key, fallback) {
     if (fallback == null)
         fallback = "";
@@ -1758,6 +1762,171 @@ function connectivity_summary(ipv4, ipv6, quic) {
     return "unknown";
 }
 
+function connectivity_clash_api_url() {
+    let address = replace(module_output(SINGBOX_RUNTIME_UC, [ "service-listen-address" ]), /[\r\n]+$/g, "");
+    if (address == "")
+        address = "127.0.0.1";
+    return address + ":" + SB_CLASH_API_CONTROLLER_PORT;
+}
+
+function connectivity_clash_auth_args() {
+    let cfg = settings();
+    if (!bool_option(cfg, "enable_yacd_wan_access", false))
+        return [];
+    return [ "--header", "Authorization: Bearer " + option(cfg, "yacd_secret_key", "") ];
+}
+
+function connectivity_clash_urlencode(value) {
+    return replace(status_output([ "url-encode", value ], null), /[\r\n]+$/g, "");
+}
+
+function connectivity_route_roots(config) {
+    let route = object_or_empty(object_or_empty(config).route);
+    let roots = [];
+    let seen = {};
+    let final_tag = as_string(route.final);
+    if (final_tag != "") {
+        push(roots, final_tag);
+        seen[final_tag] = true;
+    }
+    for (let rule in array_or_empty(route.rules)) {
+        let tag = as_string(object_or_empty(rule).outbound);
+        if (tag != "" && !seen[tag]) {
+            push(roots, tag);
+            seen[tag] = true;
+        }
+    }
+    return roots;
+}
+
+function connectivity_user_proxy_leaf(proxies, root) {
+    let current = as_string(root);
+    let visited = {};
+    for (let depth = 0; depth < 16 && current != ""; depth++) {
+        if (visited[current])
+            return null;
+        visited[current] = true;
+        let proxy = object_or_empty(object_or_empty(proxies)[current]);
+        if (length(keys(proxy)) == 0)
+            return null;
+        let selected = as_string(proxy.now);
+        if (selected != "" && selected != current) {
+            current = selected;
+            continue;
+        }
+        let proxy_type = as_string(proxy.type);
+        let ignored = lc(proxy_type);
+        if (ignored == "" || ignored == "direct" || ignored == "reject" || ignored == "block" ||
+            ignored == "dns" || ignored == "compatible" || ignored == "selector" ||
+            ignored == "fallback" || ignored == "urltest")
+            return null;
+        return { tag: current, type: proxy_type };
+    }
+    return null;
+}
+
+function connectivity_user_server_selection(config, proxies) {
+    let servers = [];
+    let seen = {};
+    for (let root in connectivity_route_roots(config)) {
+        let leaf = connectivity_user_proxy_leaf(proxies, root);
+        if (leaf == null || seen[leaf.tag])
+            continue;
+        seen[leaf.tag] = true;
+        push(servers, leaf);
+        if (length(servers) >= 4)
+            break;
+    }
+    return servers;
+}
+
+function connectivity_user_server_delay(base_url, auth, server, url) {
+    let endpoint = base_url + "/proxies/" + connectivity_clash_urlencode(server.tag) + "/delay";
+    let args = [ "curl", "-G", "-sS", "--max-time", "4", endpoint ];
+    for (let item in auth) push(args, item);
+    push(args, "--data-urlencode");
+    push(args, "url=" + url);
+    push(args, "--data-urlencode");
+    push(args, "timeout=2500");
+    let captured = command_capture(command_from_args(args) + " 2>/dev/null");
+    let value = parse_json_or_null(captured.output);
+    let delay = arg_number(object_or_empty(value).delay);
+    return {
+        available: captured.status == 0 && delay > 0 ? 1 : 0,
+        delay_ms: delay,
+        curl_status: captured.status
+    };
+}
+
+function connectivity_user_server_classify(server, primary, fallback) {
+    if (primary.available)
+        return { name: server.tag, type: server.type, available: 1, degraded: 0, reason: "primary_available", delay_ms: primary.delay_ms };
+    if (fallback.available)
+        return { name: server.tag, type: server.type, available: 1, degraded: 1, reason: "fallback_available", delay_ms: fallback.delay_ms };
+    return { name: server.tag, type: server.type, available: 0, degraded: 0, reason: "server_unavailable", delay_ms: 0 };
+}
+
+function connectivity_user_servers_probe() {
+    let config = read_json_file(SING_BOX_CONFIG_PATH);
+    if (config == null)
+        return { available: 0, skipped: 1, degraded: 0, reason: "config_unavailable", servers: [] };
+
+    let base_url = connectivity_clash_api_url();
+    let auth = connectivity_clash_auth_args();
+    let args = [ "curl", "-sS", "--max-time", "3" ];
+    for (let item in auth) push(args, item);
+    push(args, base_url + "/proxies");
+    let response = command_capture(command_from_args(args) + " 2>/dev/null");
+    let payload = parse_json_or_null(response.output);
+    if (response.status != 0 || payload == null)
+        return { available: 0, skipped: 1, degraded: 0, reason: "clash_api_unavailable", servers: [] };
+
+    let selected = connectivity_user_server_selection(config, object_or_empty(object_or_empty(payload).proxies));
+    if (length(selected) == 0)
+        return { available: 0, skipped: 1, degraded: 0, reason: "no_active_user_server", servers: [] };
+
+    let servers = [];
+    let successful = 0;
+    let degraded = 0;
+    for (let server in selected) {
+        let primary = connectivity_user_server_delay(base_url, auth, server, "https://www.gstatic.com/generate_204");
+        let fallback = primary.available
+            ? { available: 0, delay_ms: 0, curl_status: 0 }
+            : connectivity_user_server_delay(base_url, auth, server, "https://cp.cloudflare.com/generate_204");
+        let result = connectivity_user_server_classify(server, primary, fallback);
+        push(servers, result);
+        if (result.available)
+            successful++;
+        if (result.degraded)
+            degraded = 1;
+    }
+    return {
+        available: successful > 0 ? 1 : 0,
+        skipped: 0,
+        degraded: degraded || successful < length(servers) ? 1 : 0,
+        reason: successful == length(servers) && !degraded ? "servers_available" : (successful > 0 ? "servers_degraded" : "servers_unavailable"),
+        successful_servers: successful,
+        server_count: length(servers),
+        servers
+    };
+}
+
+function connectivity_user_server_selection_fixture() {
+    let fixture = object_or_empty(parse_json_or_null(read_stdin()));
+    write_json(connectivity_user_server_selection(object_or_empty(fixture.config), object_or_empty(fixture.proxies)));
+    return 0;
+}
+
+function connectivity_user_server_classify_fixture() {
+    let fixture = object_or_empty(parse_json_or_null(read_stdin()));
+    write_json(connectivity_user_server_classify(
+        object_or_empty(fixture.server),
+        object_or_empty(fixture.primary),
+        object_or_empty(fixture.fallback)
+    ));
+    return 0;
+}
+
 function check_connectivity_path() {
     if (!command_exists("curl") || !command_exists("dig")) {
         write_json({ available: 0, summary: "diagnostic_tools_missing", curl_available: command_exists("curl") ? 1 : 0, dig_available: command_exists("dig") ? 1 : 0 });
@@ -1772,6 +1941,7 @@ function check_connectivity_path() {
     let ipv4 = connectivity_family_probe("ipv4", ipv4_route, host, url);
     let ipv6 = connectivity_family_probe("ipv6", ipv6_route, host, url);
     let quic = connectivity_quic_probe();
+    let user_servers = connectivity_user_servers_probe();
 
     write_json({
         available: ipv4.available || ipv6.available ? 1 : 0,
@@ -1780,6 +1950,7 @@ function check_connectivity_path() {
         ipv4,
         ipv6,
         quic,
+        user_servers,
         resources: connectivity_resource_result(resources_before, connectivity_resource_snapshot())
     });
     return 0;
@@ -2435,6 +2606,10 @@ else if (mode == "connectivity-doq-classify-fixture")
     exit(connectivity_doq_classify_fixture());
 else if (mode == "connectivity-resource-fixture")
     exit(connectivity_resource_fixture());
+else if (mode == "connectivity-user-server-selection-fixture")
+    exit(connectivity_user_server_selection_fixture());
+else if (mode == "connectivity-user-server-classify-fixture")
+    exit(connectivity_user_server_classify_fixture());
 else if (mode == "global-check")
     exit(global_check(ARGV[1] || "", ARGV[2] || ""));
 else if (mode == "validate-nfqws-strategy-json")

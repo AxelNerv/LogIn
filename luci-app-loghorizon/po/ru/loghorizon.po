@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 13:26+0300\n"
-"PO-Revision-Date: 2026-09-17 13:26+0300\n"
+"POT-Creation-Date: 2026-09-17 13:46+0300\n"
+"PO-Revision-Date: 2026-09-17 13:46+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -58,6 +58,9 @@ msgstr "Активные соединения"
 
 msgid "Active Main DNS"
 msgstr "Активный основной DNS"
+
+msgid "Active VPN server"
+msgstr "Активный VPN-сервер"
 
 msgid "adapted files"
 msgstr "заменённые файлы"
@@ -194,6 +197,9 @@ msgstr "Доступные действия"
 msgid "Available memory"
 msgstr "Доступная память"
 
+msgid "Available only through fallback control"
+msgstr "Доступен только через резервную проверку"
+
 msgid "Available through %s of %s independent targets"
 msgstr "Доступно через %s из %s независимых целей"
 
@@ -214,6 +220,9 @@ msgstr "Bootstrap DNS"
 
 msgid "Bootstrap DNS Servers"
 msgstr "Bootstrap DNS-серверы"
+
+msgid "Both independent control requests failed"
+msgstr "Обе независимые контрольные проверки не прошли"
 
 msgid "Browser FakeIP check could not be completed"
 msgstr "Не удалось выполнить проверку FakeIP в браузере"
@@ -331,6 +340,9 @@ msgstr "Проверки пройдены с ручным DHCP"
 
 msgid "CIDR must be between 0 and 32 for IPv4 or 0 and 128 for IPv6"
 msgstr "CIDR должен быть от 0 до 32 для IPv4 или от 0 до 128 для IPv6"
+
+msgid "Clash API is unavailable"
+msgstr "Clash API недоступен"
 
 msgid "Clear the FakeIP cache"
 msgstr "Сбросить кеш FakeIP"
@@ -902,6 +914,9 @@ msgstr "Генерировать HWID из аппаратной информац
 msgid "Generated inbound"
 msgstr "Созданный inbound"
 
+msgid "Generated sing-box config is unavailable"
+msgstr "Сгенерированный конфиг sing-box недоступен"
+
 msgid "Get global check"
 msgstr "Получить глобальную проверку"
 
@@ -992,8 +1007,8 @@ msgstr "HTTP-хосты"
 msgid "HTTP request failed"
 msgstr "HTTP-запрос не прошёл"
 
-msgid "HTTPS works, but the QUIC control path is degraded"
-msgstr "HTTPS работает, но контрольный путь QUIC частично недоступен"
+msgid "HTTPS works, but one control path is degraded"
+msgstr "HTTPS работает, но один из контрольных путей работает нестабильно"
 
 msgid "HWID"
 msgstr "HWID"
@@ -1505,6 +1520,9 @@ msgstr "Нет"
 msgid "No active connections"
 msgstr "Нет активных подключений"
 
+msgid "No active VPN server is used by current routes"
+msgstr "Текущие маршруты не используют активный VPN-сервер"
+
 msgid "No closed connections"
 msgstr "Нет закрытых подключений"
 
@@ -1576,6 +1594,9 @@ msgstr "Не отвечает"
 
 msgid "Not running"
 msgstr "Не запущено"
+
+msgid "Not tested"
+msgstr "Не проверено"
 
 msgid "Not tested: the sing-box build has no QUIC support"
 msgstr "Не проверено: сборка sing-box не поддерживает QUIC"
@@ -2446,6 +2467,9 @@ msgstr "Неизвестный флаг NFQWS."
 
 msgid "Unknown NFQWS2 flag."
 msgstr "Неизвестный флаг NFQWS2."
+
+msgid "Unknown protocol"
+msgstr "Неизвестный протокол"
 
 msgid "Unsafe file permissions"
 msgstr "Небезопасные права файла"

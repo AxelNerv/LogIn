@@ -65,6 +65,30 @@ assert_contains "$resources" '"userspace_dropped_delta": 1' 'NFQUEUE userspace d
 assert_contains "$resources" '"rx_dropped_delta": 1' 'interface drop delta'
 assert_contains "$resources" '"backlog_packets": 2' 'qdisc backlog snapshot'
 
+selection="$(printf '%s\n' '{"config":{"route":{"final":"main","rules":[{"outbound":"discord"},{"outbound":"direct"},{"outbound":"cycle-a"}]}},"proxies":{"main":{"type":"Selector","now":"main-node"},"main-node":{"type":"VLESS","server":"203.0.113.10","uuid":"must-not-leak"},"discord":{"type":"Fallback","now":"discord-node"},"discord-node":{"type":"Hysteria2","server":"198.51.100.20","password":"must-not-leak"},"direct":{"type":"Direct"},"cycle-a":{"type":"Selector","now":"cycle-b"},"cycle-b":{"type":"Selector","now":"cycle-a"}}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-user-server-selection-fixture)"
+assert_contains "$selection" '"tag": "main-node"' 'selected VLESS leaf'
+assert_contains "$selection" '"type": "VLESS"' 'selected VLESS type'
+assert_contains "$selection" '"tag": "discord-node"' 'selected Hysteria2 leaf'
+assert_contains "$selection" '"type": "Hysteria2"' 'selected Hysteria2 type'
+if printf '%s\n' "$selection" | grep -Eq '203\.0\.113\.10|198\.51\.100\.20|must-not-leak'; then
+  fail 'active server selection leaked endpoint or credentials'
+fi
+if printf '%s\n' "$selection" | grep -Fq 'cycle-a'; then
+  fail 'selector cycle must not become an active server'
+fi
+
+primary_server="$(printf '%s\n' '{"server":{"tag":"main-node","type":"VLESS"},"primary":{"available":1,"delay_ms":42},"fallback":{"available":0,"delay_ms":0}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-user-server-classify-fixture)"
+assert_contains "$primary_server" '"reason": "primary_available"' 'primary active server control'
+assert_contains "$primary_server" '"delay_ms": 42' 'primary active server latency'
+
+fallback_server="$(printf '%s\n' '{"server":{"tag":"discord-node","type":"Hysteria2"},"primary":{"available":0,"delay_ms":0},"fallback":{"available":1,"delay_ms":67}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-user-server-classify-fixture)"
+assert_contains "$fallback_server" '"degraded": 1' 'fallback active server control'
+assert_contains "$fallback_server" '"reason": "fallback_available"' 'fallback active server reason'
+
+failed_server="$(printf '%s\n' '{"server":{"tag":"offline","type":"VLESS"},"primary":{"available":0,"delay_ms":0},"fallback":{"available":0,"delay_ms":0}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-user-server-classify-fixture)"
+assert_contains "$failed_server" '"available": 0' 'failed active server control'
+assert_contains "$failed_server" '"reason": "server_unavailable"' 'failed active server reason'
+
 grep -Fq 'check_connectivity_path: [ "diagnostics/runtime.uc", "check-connectivity-path", 0 ]' "$CLI" ||
   fail 'CLI must expose the bounded connectivity path diagnostic'
 
