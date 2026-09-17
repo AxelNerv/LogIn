@@ -67,17 +67,47 @@ function quicItem(
   if (!quic || !quic.supported) {
     return {
       state: 'warning',
-      key: 'QUIC / HTTP3',
-      value: _('Not tested: the diagnostic curl build has no HTTP/3 support'),
+      key: 'UDP / QUIC / DoQ',
+      value: _('Not tested: the sing-box build has no QUIC support'),
+    };
+  }
+
+  const targetDetails = (quic.targets ?? [])
+    .map((target) => {
+      if (target.available) return `${target.name} ${target.latency_ms} ms`;
+      let reason = _('failed');
+      if (target.reason === 'doq_timeout') reason = _('timeout');
+      else if (target.reason === 'doq_tls_failed')
+        reason = _('TLS validation failed');
+      else if (target.reason === 'doq_route_unavailable')
+        reason = _('No route');
+      else if (target.reason === 'doq_dns_response_error')
+        reason = _('DNS response error');
+      return `${target.name}: ${reason}`;
+    })
+    .join(' · ');
+
+  if (quic.available) {
+    return {
+      state: quic.degraded ? 'warning' : 'success',
+      key: 'UDP / QUIC / DoQ',
+      value: quic.degraded
+        ? `${_('Available through %s of %s independent targets')
+            .replace('%s', String(quic.successful_targets ?? 0))
+            .replace(
+              '%s',
+              String(quic.target_count ?? 0),
+            )}${targetDetails ? ` · ${targetDetails}` : ''}`
+        : `${_('Available')}${targetDetails ? ` · ${targetDetails}` : ''}`,
     };
   }
 
   return {
-    state: quic.available ? 'success' : 'warning',
-    key: 'QUIC / HTTP3',
-    value: quic.available
-      ? _('Available')
-      : _('Control request failed; this alone does not prove UDP blocking'),
+    state: 'warning',
+    key: 'UDP / QUIC / DoQ',
+    value: `${_(
+      'Independent DoQ controls failed; this alone does not prove UDP blocking',
+    )}${targetDetails ? ` · ${targetDetails}` : ''}`,
   };
 }
 
@@ -222,7 +252,9 @@ export async function runConnectivityPathCheck() {
     },
   ];
 
-  const quicFailure = Boolean(data.quic?.supported && !data.quic.available);
+  const quicFailure = Boolean(
+    data.quic?.supported && (!data.quic.available || data.quic.degraded),
+  );
   const state: CheckState = data.available
     ? quicFailure
       ? 'warning'
@@ -230,7 +262,7 @@ export async function runConnectivityPathCheck() {
     : 'error';
   const description = data.available
     ? quicFailure
-      ? _('HTTPS works, but the QUIC control request failed')
+      ? _('HTTPS works, but the QUIC control path is degraded')
       : _('DNS, TCP handoff, TLS, and HTTP path is available')
     : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? 'http');
 

@@ -1630,23 +1630,120 @@ function connectivity_family_probe(family, route_available, host, url) {
     return result;
 }
 
-function connectivity_quic_probe() {
-    let curl_version = command_output_from_args([ "curl", "-V" ]);
-    if (index(curl_version, "HTTP3") < 0)
-        return { supported: 0, available: 0, skipped: 1, reason: "diagnostic_client_has_no_http3" };
+function connectivity_doq_classify(status, output, log_output) {
+    let response = as_string(output);
+    let logs = lc(as_string(log_output));
+    let timing = match(response, /Query time:[ \t]+([0-9]+)[ \t]+msec/);
+    let available = status == 0 && match(response, /status:[ \t]+NOERROR/) != null;
+    let reason = "doq_available";
+    if (!available) {
+        if (index(logs, "certificate") >= 0 || index(logs, "tls handshake") >= 0)
+            reason = "doq_tls_failed";
+        else if (index(logs, "network is unreachable") >= 0 || index(logs, "no route to host") >= 0)
+            reason = "doq_route_unavailable";
+        else if (index(logs, "timeout") >= 0 || index(logs, "deadline exceeded") >= 0 || status == 9)
+            reason = "doq_timeout";
+        else if (status == 0)
+            reason = "doq_dns_response_error";
+        else
+            reason = "doq_failed";
+    }
+    return {
+        available: available ? 1 : 0,
+        reason,
+        latency_ms: timing ? int(timing[1], 10) : 0
+    };
+}
 
-    let args = [
-        "curl", "--http3-only", "-sS", "--connect-timeout", "3", "--max-time", "5",
-        "-o", "/dev/null", "-w", "%{http_code}\\t%{time_connect}\\t%{time_appconnect}\\t%{time_total}\\n",
-        "https://www.gstatic.com/generate_204"
-    ];
-    let captured = command_capture(command_from_args(args) + " 2>/dev/null");
-    let result = classify_connectivity_probe(captured.status, captured.output);
-    result.supported = 1;
-    result.skipped = 0;
-    if (!result.available)
-        result.reason = "quic_" + result.reason;
+function connectivity_doq_classify_fixture() {
+    let input = parse_json_or_null(read_stdin());
+    if (type(input) != "object")
+        return 1;
+    write_json(connectivity_doq_classify(int(input.status || 0, 10), input.output, input.log_output));
+    return 0;
+}
+
+function connectivity_doq_config(target, port) {
+    return {
+        log: { level: "error", timestamp: false },
+        dns: {
+            servers: [ {
+                type: "quic",
+                tag: "doq-control",
+                server: target.address,
+                server_port: 853,
+                tls: { enabled: true, server_name: target.server_name }
+            } ],
+            final: "doq-control",
+            strategy: "ipv4_only"
+        },
+        inbounds: [ { type: "direct", tag: "dns-in", listen: "127.0.0.1", listen_port: port } ],
+        outbounds: [ { type: "direct", tag: "direct" } ],
+        route: {
+            rules: [ { action: "hijack-dns", inbound: "dns-in" } ],
+            final: "direct",
+            auto_detect_interface: true
+        }
+    };
+}
+
+function connectivity_doq_target(target, port, work_dir) {
+    let config_path = work_dir + "/" + target.name + ".json";
+    let log_path = work_dir + "/" + target.name + ".log";
+    if (fs.writefile(config_path, sprintf("%J\n", connectivity_doq_config(target, port))) == null)
+        return { name: target.name, available: 0, reason: "doq_setup_failed", latency_ms: 0 };
+
+    command_success_from_args([ "chmod", "600", config_path ]);
+    let script = command_from_args([ SING_BOX_BIN_PATH, "run", "-c", config_path ]) +
+        " >" + shell_quote(log_path) + " 2>&1 & pid=$!; " +
+        "trap 'kill $pid 2>/dev/null; wait $pid 2>/dev/null' EXIT INT TERM; " +
+        "sleep 1; " +
+        command_from_args([ "dig", "@127.0.0.1", "-p", as_string(port), "www.gstatic.com", "A", "+time=4", "+tries=1", "+stats" ]) +
+        " 2>&1; rc=$?; exit $rc";
+    let captured = command_capture(command_from_args([ "sh", "-c", script ]));
+    let result = connectivity_doq_classify(captured.status, captured.output, fs.readfile(log_path));
+    result.name = target.name;
     return result;
+}
+
+function connectivity_quic_probe() {
+    let version = command_output_from_args([ SING_BOX_BIN_PATH, "version" ]);
+    if (version == "" || index(version, "with_quic") < 0)
+        return { supported: 0, available: 0, skipped: 1, degraded: 0, reason: "diagnostic_core_has_no_quic", targets: [] };
+
+    let work_dir = trim(command_output_from_args([ "mktemp", "-d", "/tmp/loghorizon-doq.XXXXXX" ]));
+    if (work_dir == "")
+        return { supported: 1, available: 0, skipped: 1, degraded: 0, reason: "doq_setup_failed", targets: [] };
+
+    let pid_fields = words(as_string(fs.readfile("/proc/self/stat")));
+    let base_port = 20000 + (arg_number(pid_fields[0]) % 30000);
+    let targets = [];
+    let controls = [
+        { name: "adguard", address: "94.140.14.14", server_name: "dns.adguard-dns.com" },
+        { name: "alidns", address: "223.5.5.5", server_name: "dns.alidns.com" }
+    ];
+    for (let i = 0; i < length(controls); i++)
+        push(targets, connectivity_doq_target(controls[i], base_port + i, work_dir));
+
+    for (let target in controls) {
+        fs.unlink(work_dir + "/" + target.name + ".json");
+        fs.unlink(work_dir + "/" + target.name + ".log");
+    }
+    command_success_from_args([ "rmdir", work_dir ]);
+    let successful = 0;
+    for (let target in targets)
+        if (target.available)
+            successful++;
+    return {
+        supported: 1,
+        available: successful > 0 ? 1 : 0,
+        skipped: 0,
+        degraded: successful > 0 && successful < length(targets) ? 1 : 0,
+        reason: successful == length(targets) ? "doq_available" : (successful > 0 ? "doq_degraded" : "doq_failed"),
+        successful_targets: successful,
+        target_count: length(targets),
+        targets
+    };
 }
 
 function connectivity_summary(ipv4, ipv6, quic) {
@@ -2334,6 +2431,8 @@ else if (mode == "check-connectivity-path")
     exit(check_connectivity_path());
 else if (mode == "connectivity-probe-classify-fixture")
     exit(connectivity_probe_classify_fixture());
+else if (mode == "connectivity-doq-classify-fixture")
+    exit(connectivity_doq_classify_fixture());
 else if (mode == "connectivity-resource-fixture")
     exit(connectivity_resource_fixture());
 else if (mode == "global-check")

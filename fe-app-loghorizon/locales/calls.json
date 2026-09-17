@@ -412,7 +412,7 @@
     "key": "Available",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:22",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:79"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:101"
     ]
   },
   {
@@ -426,7 +426,14 @@
     "call": "Available memory",
     "key": "Available memory",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:125"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:158"
+    ]
+  },
+  {
+    "call": "Available through %s of %s independent targets",
+    "key": "Available through %s of %s independent targets",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:95"
     ]
   },
   {
@@ -622,7 +629,7 @@
     "key": "Cannot receive checks result",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:175",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:208",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172",
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
@@ -727,7 +734,7 @@
     "places": [
       "src/loghorizon/tabs/diagnostic/initController.ts:1043",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:164",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:197",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160",
@@ -749,17 +756,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
     ]
   },
   {
@@ -827,10 +834,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3931",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267",
       "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882"
+      "src/loghorizon/tabs/monitoring/initController.ts:882",
+      "src/loghorizon/tabs/dashboard/initController.ts:1017",
+      "src/loghorizon/tabs/dashboard/initController.ts:1267"
     ]
   },
   {
@@ -938,7 +945,7 @@
     "call": "Connection tracking table",
     "key": "Connection tracking table",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:136"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:169"
     ]
   },
   {
@@ -960,13 +967,6 @@
     "key": "Connectivity probe failed",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:145"
-    ]
-  },
-  {
-    "call": "Control request failed; this alone does not prove UDP blocking",
-    "key": "Control request failed; this alone does not prove UDP blocking",
-    "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:80"
     ]
   },
   {
@@ -1013,7 +1013,7 @@
     "call": "CPU",
     "key": "CPU",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:153"
     ]
   },
   {
@@ -1141,7 +1141,7 @@
     "call": "Diagnostic tools are missing",
     "key": "Diagnostic tools are missing",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:200"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:233"
     ]
   },
   {
@@ -1349,6 +1349,13 @@
     ]
   },
   {
+    "call": "DNS response error",
+    "key": "DNS response error",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:85"
+    ]
+  },
+  {
     "call": "DNS Rewrite TTL",
     "key": "DNS Rewrite TTL",
     "places": [
@@ -1439,7 +1446,7 @@
     "call": "DNS, TCP handoff, TLS, and HTTP path is available",
     "key": "DNS, TCP handoff, TLS, and HTTP path is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:231"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:266"
     ]
   },
   {
@@ -1984,6 +1991,13 @@
     ]
   },
   {
+    "call": "failed",
+    "key": "failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:78"
+    ]
+  },
+  {
     "call": "Failed to close connection",
     "key": "Failed to close connection",
     "places": [
@@ -2373,10 +2387,10 @@
     ]
   },
   {
-    "call": "HTTPS works, but the QUIC control request failed",
-    "key": "HTTPS works, but the QUIC control request failed",
+    "call": "HTTPS works, but the QUIC control path is degraded",
+    "key": "HTTPS works, but the QUIC control path is degraded",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:230"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:265"
     ]
   },
   {
@@ -2481,6 +2495,13 @@
     ]
   },
   {
+    "call": "Independent DoQ controls failed; this alone does not prove UDP blocking",
+    "key": "Independent DoQ controls failed; this alone does not prove UDP blocking",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:108"
+    ]
+  },
+  {
     "call": "Information",
     "key": "Information",
     "places": [
@@ -2505,8 +2526,8 @@
     "call": "Installed",
     "key": "Installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:188",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:193"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:221",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:226"
     ]
   },
   {
@@ -2521,7 +2542,7 @@
     "call": "interface drops",
     "key": "interface drops",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:184"
     ]
   },
   {
@@ -2549,7 +2570,7 @@
     "call": "Interpretation",
     "key": "Interpretation",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:215"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:248"
     ]
   },
   {
@@ -2979,8 +3000,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
     ]
   },
   {
@@ -3160,7 +3181,7 @@
     "call": "load average",
     "key": "load average",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:120"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:153"
     ]
   },
   {
@@ -3518,14 +3539,14 @@
     "call": "NFQUEUE counters are not available",
     "key": "NFQUEUE counters are not available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:152"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:185"
     ]
   },
   {
     "call": "NFQUEUE drops",
     "key": "NFQUEUE drops",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:184"
     ]
   },
   {
@@ -3660,6 +3681,13 @@
     ]
   },
   {
+    "call": "No route",
+    "key": "No route",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:83"
+    ]
+  },
+  {
     "call": "No rules use ByeDPI",
     "key": "No rules use ByeDPI",
     "places": [
@@ -3710,8 +3738,9 @@
     "call": "Not available",
     "key": "Not available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:129",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:142"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:162",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:175",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:184"
     ]
   },
   {
@@ -3745,8 +3774,8 @@
       "src/loghorizon/tabs/updates/initController.ts:933",
       "src/loghorizon/tabs/updates/initController.ts:946",
       "src/loghorizon/tabs/updates/initController.ts:959",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:188",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:193"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:221",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:226"
     ]
   },
   {
@@ -3785,8 +3814,8 @@
     ]
   },
   {
-    "call": "Not tested: the diagnostic curl build has no HTTP/3 support",
-    "key": "Not tested: the diagnostic curl build has no HTTP/3 support",
+    "call": "Not tested: the sing-box build has no QUIC support",
+    "key": "Not tested: the sing-box build has no QUIC support",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:71"
     ]
@@ -3934,7 +3963,7 @@
     "call": "Packet queues during check",
     "key": "Packet queues during check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:149"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:182"
     ]
   },
   {
@@ -4184,7 +4213,7 @@
     "call": "qdisc backlog",
     "key": "qdisc backlog",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:151"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:184"
     ]
   },
   {
@@ -4388,7 +4417,7 @@
     "call": "Router load during check",
     "key": "Router load during check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:119"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:152"
     ]
   },
   {
@@ -5315,7 +5344,7 @@
     "call": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "key": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:216"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:249"
     ]
   },
   {
@@ -5575,6 +5604,13 @@
     ]
   },
   {
+    "call": "timeout",
+    "key": "timeout",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:79"
+    ]
+  },
+  {
     "call": "tiny",
     "key": "tiny",
     "places": [
@@ -5593,6 +5629,13 @@
     "key": "TLS or upstream connection failed",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:16"
+    ]
+  },
+  {
+    "call": "TLS validation failed",
+    "key": "TLS validation failed",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:81"
     ]
   },
   {

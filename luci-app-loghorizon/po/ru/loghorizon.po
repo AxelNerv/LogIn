@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 18:23+0300\n"
-"PO-Revision-Date: 2026-09-16 18:23+0300\n"
+"POT-Creation-Date: 2026-09-17 13:26+0300\n"
+"PO-Revision-Date: 2026-09-17 13:26+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -193,6 +193,9 @@ msgstr "Доступные действия"
 
 msgid "Available memory"
 msgstr "Доступная память"
+
+msgid "Available through %s of %s independent targets"
+msgstr "Доступно через %s из %s независимых целей"
 
 msgid "Backend validation failed: %s"
 msgstr "Backend-проверка завершилась ошибкой: %s"
@@ -404,9 +407,6 @@ msgstr "Подключения недоступны"
 msgid "Connectivity probe failed"
 msgstr "Проверка соединения не прошла"
 
-msgid "Control request failed; this alone does not prove UDP blocking"
-msgstr "Контрольный запрос не прошёл; само по себе это не доказывает блокировку UDP"
-
 msgid "Copied"
 msgstr "Скопировано"
 
@@ -562,6 +562,9 @@ msgstr "DNS-запросы через секцию"
 
 msgid "DNS resolution failed"
 msgstr "Не удалось разрешить DNS-имя"
+
+msgid "DNS response error"
+msgstr "ошибка DNS-ответа"
 
 msgid "DNS Rewrite TTL"
 msgstr "Перезапись TTL для DNS"
@@ -827,6 +830,9 @@ msgstr "Внешние конфиги nfqws обходят управление 
 msgid "External nfqws2 config files bypass logIn queue management and explicit validation."
 msgstr "Внешние конфиги nfqws2 обходят управление очередями и явную валидацию logIn."
 
+msgid "failed"
+msgstr "ошибка"
+
 msgid "Failed to close connection"
 msgstr "Не удалось закрыть подключение"
 
@@ -986,8 +992,8 @@ msgstr "HTTP-хосты"
 msgid "HTTP request failed"
 msgstr "HTTP-запрос не прошёл"
 
-msgid "HTTPS works, but the QUIC control request failed"
-msgstr "HTTPS работает, но контрольный запрос QUIC не прошёл"
+msgid "HTTPS works, but the QUIC control path is degraded"
+msgstr "HTTPS работает, но контрольный путь QUIC частично недоступен"
 
 msgid "HWID"
 msgstr "HWID"
@@ -1027,6 +1033,9 @@ msgstr "Учитывать IP-адреса и подсети"
 
 msgid "Include servers"
 msgstr "Включить серверы"
+
+msgid "Independent DoQ controls failed; this alone does not prove UDP blocking"
+msgstr "Независимые проверки DoQ не прошли; само по себе это не доказывает блокировку UDP"
 
 msgid "Information"
 msgstr "Информация"
@@ -1520,6 +1529,9 @@ msgstr "Публичный порт в firewall не требуется"
 msgid "No result"
 msgstr "Нет результата"
 
+msgid "No route"
+msgstr "нет маршрута"
+
 msgid "No rules use ByeDPI"
 msgstr "Нет правил, использующих ByeDPI"
 
@@ -1565,8 +1577,8 @@ msgstr "Не отвечает"
 msgid "Not running"
 msgstr "Не запущено"
 
-msgid "Not tested: the diagnostic curl build has no HTTP/3 support"
-msgstr "Не проверено: диагностическая сборка curl не поддерживает HTTP/3"
+msgid "Not tested: the sing-box build has no QUIC support"
+msgstr "Не проверено: сборка sing-box не поддерживает QUIC"
 
 msgid "Obfuscation"
 msgstr "Обфускация"
@@ -2312,6 +2324,9 @@ msgstr "Время в секундах для кэширования DNS зап�
 msgid "Time skew tolerance"
 msgstr "Допуск расхождения времени"
 
+msgid "timeout"
+msgstr "тайм-аут"
+
 msgid "tiny"
 msgstr "tiny"
 
@@ -2320,6 +2335,9 @@ msgstr "Проверка TLS-сертификата"
 
 msgid "TLS or upstream connection failed"
 msgstr "Не удалось установить внешнее соединение или выполнить TLS-рукопожатие"
+
+msgid "TLS validation failed"
+msgstr "ошибка проверки TLS"
 
 msgid "Tolerance"
 msgstr "Допуск"

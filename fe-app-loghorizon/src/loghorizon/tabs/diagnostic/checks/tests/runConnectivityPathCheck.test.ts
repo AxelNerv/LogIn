@@ -97,7 +97,10 @@ describe('runConnectivityPathCheck', () => {
             key: 'IPv4 HTTPS',
             value: 'HTTP 204 · TCP handoff 20 ms · TLS 45 ms · total 80 ms',
           }),
-          expect.objectContaining({ state: 'warning', key: 'QUIC / HTTP3' }),
+          expect.objectContaining({
+            state: 'warning',
+            key: 'UDP / QUIC / DoQ',
+          }),
           expect.objectContaining({
             state: 'success',
             key: 'Packet queues during check',
@@ -157,6 +160,66 @@ describe('runConnectivityPathCheck', () => {
             key: 'Interpretation',
             value:
               'TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.',
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it('reports a partial DoQ result as degraded instead of blocked', async () => {
+    mocks.checkConnectivityPath.mockResolvedValue({
+      success: true,
+      data: {
+        available: 1,
+        summary: 'https_ok',
+        ipv4: {
+          available: 1,
+          skipped: 0,
+          stage: 'ok',
+          reason: 'server_responded',
+          curl_status: 0,
+          http_code: 204,
+          tcp_ms: 1,
+          tls_ms: 20,
+          total_ms: 30,
+        },
+        quic: {
+          supported: 1,
+          available: 1,
+          skipped: 0,
+          degraded: 1,
+          reason: 'doq_degraded',
+          successful_targets: 1,
+          target_count: 2,
+          targets: [
+            {
+              name: 'adguard',
+              available: 1,
+              reason: 'doq_available',
+              latency_ms: 70,
+            },
+            {
+              name: 'alidns',
+              available: 0,
+              reason: 'doq_timeout',
+              latency_ms: 0,
+            },
+          ],
+        },
+      },
+    });
+
+    await expect(runConnectivityPathCheck()).resolves.toBeUndefined();
+    expect(mocks.updateCheckStore).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        state: 'warning',
+        description: 'HTTPS works, but the QUIC control path is degraded',
+        items: expect.arrayContaining([
+          expect.objectContaining({
+            state: 'warning',
+            key: 'UDP / QUIC / DoQ',
+            value:
+              'Available through 1 of 2 independent targets · adguard 70 ms · alidns: timeout',
           }),
         ]),
       }),

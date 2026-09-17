@@ -400,7 +400,16 @@ export namespace logIn {
     supported: 0 | 1;
     available: 0 | 1;
     skipped: 0 | 1;
+    degraded?: 0 | 1;
     reason: string;
+    successful_targets?: number;
+    target_count?: number;
+    targets?: Array<{
+      name: string;
+      available: 0 | 1;
+      reason: string;
+      latency_ms: number;
+    }>;
   }
 
   export interface ConnectivityQdiscResult {
