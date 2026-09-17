@@ -301,4 +301,42 @@ describe('runConnectivityPathCheck', () => {
       }),
     );
   });
+
+  it('surfaces a local history write failure', async () => {
+    mocks.checkConnectivityPath.mockResolvedValue({
+      success: true,
+      data: {
+        available: 1,
+        summary: 'https_ok',
+        history_saved: 0,
+        history_reason: 'history_write_failed',
+        ipv4: {
+          available: 1,
+          skipped: 0,
+          stage: 'ok',
+          reason: 'server_responded',
+          curl_status: 0,
+          http_code: 204,
+          tcp_ms: 1,
+          tls_ms: 20,
+          total_ms: 30,
+        },
+      },
+    });
+
+    await expect(runConnectivityPathCheck()).resolves.toBeUndefined();
+    expect(mocks.updateCheckStore).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        state: 'warning',
+        description: 'Connectivity works, but diagnostic history was not saved',
+        items: expect.arrayContaining([
+          expect.objectContaining({
+            state: 'warning',
+            key: 'Connectivity history',
+            value: 'The diagnostic result could not be saved locally',
+          }),
+        ]),
+      }),
+    );
+  });
 });

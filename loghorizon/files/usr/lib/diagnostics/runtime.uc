@@ -17,6 +17,8 @@ const LOGHORIZON_LUCI_VIEW_DIR = getenv("LOGHORIZON_LUCI_VIEW_DIR") || constants
 const RUNTIME_STATE_DIR = getenv("LOGHORIZON_RUNTIME_STATE_DIR") || "/var/run/loghorizon";
 const SYSTEM_INFO_CACHE_FILE = getenv("LOGHORIZON_SYSTEM_INFO_CACHE_FILE") || RUNTIME_STATE_DIR + "/system-info.json";
 const SYSTEM_INFO_CACHE_TTL = int(getenv("LOGHORIZON_SYSTEM_INFO_CACHE_TTL") || "3600");
+const CONNECTIVITY_HISTORY_FILE = getenv("LOGHORIZON_DIAGNOSTICS_HISTORY_FILE") || "/etc/loghorizon/connectivity-history.json";
+const CONNECTIVITY_HISTORY_MAX_ENTRIES = int(getenv("LOGHORIZON_DIAGNOSTICS_HISTORY_MAX_ENTRIES") || "32");
 const TMP_SING_BOX_FOLDER = getenv("TMP_SING_BOX_FOLDER") || constants.TMP_SING_BOX_FOLDER || "/tmp/sing-box";
 const TMP_RULESET_FOLDER = getenv("TMP_RULESET_FOLDER") || constants.TMP_RULESET_FOLDER || TMP_SING_BOX_FOLDER + "/rulesets";
 const TMP_SUBSCRIPTION_FOLDER = getenv("TMP_SUBSCRIPTION_FOLDER") || constants.TMP_SUBSCRIPTION_FOLDER || TMP_SING_BOX_FOLDER + "/subscriptions";
@@ -1927,9 +1929,196 @@ function connectivity_user_server_classify_fixture() {
     return 0;
 }
 
+function connectivity_history_safe_token(value, fallback) {
+    value = as_string(value);
+    return value != "" && length(value) <= 32 && match(value, /^[A-Za-z0-9._+-]+$/) != null
+        ? value
+        : as_string(fallback);
+}
+
+function connectivity_history_probe(probe) {
+    probe = object_or_empty(probe);
+    return {
+        available: probe.available ? 1 : 0,
+        skipped: probe.skipped ? 1 : 0,
+        stage: connectivity_history_safe_token(probe.stage, "unknown"),
+        reason: connectivity_history_safe_token(probe.reason, "unknown"),
+        curl_status: arg_number(probe.curl_status),
+        http_code: arg_number(probe.http_code),
+        tcp_ms: arg_number(probe.tcp_ms),
+        tls_ms: arg_number(probe.tls_ms),
+        total_ms: arg_number(probe.total_ms)
+    };
+}
+
+function connectivity_history_quic(quic) {
+    quic = object_or_empty(quic);
+    let targets = [];
+    for (let target in array_or_empty(quic.targets)) {
+        target = object_or_empty(target);
+        push(targets, {
+            name: connectivity_history_safe_token(target.name, "control"),
+            available: target.available ? 1 : 0,
+            reason: connectivity_history_safe_token(target.reason, "unknown"),
+            latency_ms: arg_number(target.latency_ms)
+        });
+        if (length(targets) >= 4)
+            break;
+    }
+    return {
+        supported: quic.supported ? 1 : 0,
+        available: quic.available ? 1 : 0,
+        skipped: quic.skipped ? 1 : 0,
+        degraded: quic.degraded ? 1 : 0,
+        reason: connectivity_history_safe_token(quic.reason, "unknown"),
+        targets
+    };
+}
+
+function connectivity_history_user_servers(user_servers) {
+    user_servers = object_or_empty(user_servers);
+    let servers = [];
+    for (let server in array_or_empty(user_servers.servers)) {
+        server = object_or_empty(server);
+        push(servers, {
+            type: connectivity_history_safe_token(server.type, "unknown"),
+            available: server.available ? 1 : 0,
+            degraded: server.degraded ? 1 : 0,
+            reason: connectivity_history_safe_token(server.reason, "unknown"),
+            delay_ms: arg_number(server.delay_ms)
+        });
+        if (length(servers) >= 4)
+            break;
+    }
+    return {
+        available: user_servers.available ? 1 : 0,
+        skipped: user_servers.skipped ? 1 : 0,
+        degraded: user_servers.degraded ? 1 : 0,
+        reason: connectivity_history_safe_token(user_servers.reason, "unknown"),
+        successful_servers: arg_number(user_servers.successful_servers),
+        server_count: arg_number(user_servers.server_count),
+        servers
+    };
+}
+
+function connectivity_history_resources(resources) {
+    resources = object_or_empty(resources);
+    let memory = object_or_empty(resources.memory);
+    let load = object_or_empty(resources.load);
+    let conntrack = object_or_empty(resources.conntrack);
+    let nfqueue = object_or_empty(resources.nfqueue);
+    let interface_rx_drops = 0;
+    let interface_tx_drops = 0;
+    let qdisc_backlog_packets = 0;
+    for (let interface in array_or_empty(resources.interfaces)) {
+        interface = object_or_empty(interface);
+        interface_rx_drops += arg_number(interface.rx_dropped_delta);
+        interface_tx_drops += arg_number(interface.tx_dropped_delta);
+        qdisc_backlog_packets += arg_number(object_or_empty(interface.qdisc).backlog_packets);
+    }
+    return {
+        cpu_percent: resources.cpu_percent == null ? null : resources.cpu_percent,
+        memory_total_kib: memory.total_kib == null ? null : arg_number(memory.total_kib),
+        memory_available_kib: memory.available_kib == null ? null : arg_number(memory.available_kib),
+        load_one: connectivity_history_safe_token(load.one, "unknown"),
+        load_five: connectivity_history_safe_token(load.five, "unknown"),
+        load_fifteen: connectivity_history_safe_token(load.fifteen, "unknown"),
+        conntrack_count: conntrack.count == null ? null : arg_number(conntrack.count),
+        conntrack_max: conntrack.max == null ? null : arg_number(conntrack.max),
+        nfqueue_kernel_drops: arg_number(nfqueue.kernel_dropped_delta),
+        nfqueue_userspace_drops: arg_number(nfqueue.userspace_dropped_delta),
+        interface_rx_drops,
+        interface_tx_drops,
+        qdisc_backlog_packets
+    };
+}
+
+function connectivity_history_entry(result, timestamp) {
+    result = object_or_empty(result);
+    return {
+        timestamp: arg_number(timestamp),
+        available: result.available ? 1 : 0,
+        summary: connectivity_history_safe_token(result.summary, "unknown"),
+        ipv4: connectivity_history_probe(result.ipv4),
+        ipv6: connectivity_history_probe(result.ipv6),
+        quic: connectivity_history_quic(result.quic),
+        user_servers: connectivity_history_user_servers(result.user_servers),
+        resources: connectivity_history_resources(result.resources)
+    };
+}
+
+function connectivity_history_limit() {
+    return CONNECTIVITY_HISTORY_MAX_ENTRIES > 0 && CONNECTIVITY_HISTORY_MAX_ENTRIES <= 128
+        ? CONNECTIVITY_HISTORY_MAX_ENTRIES
+        : 32;
+}
+
+function connectivity_history_updated(history, result, timestamp) {
+    history = object_or_empty(history);
+    let entries = array_or_empty(history.entries);
+    let next_entries = [];
+    let max_entries = connectivity_history_limit();
+    let keep_from = length(entries) >= max_entries ? length(entries) - max_entries + 1 : 0;
+    for (let i = keep_from; i < length(entries); i++)
+        push(next_entries, entries[i]);
+    push(next_entries, connectivity_history_entry(result, timestamp));
+    return { format_version: 1, max_entries, entries: next_entries };
+}
+
+function connectivity_history_store(result) {
+    let parent = trim(command_output_from_args([ "dirname", CONNECTIVITY_HISTORY_FILE ]));
+    if (parent == "" || !ensure_dir(parent))
+        return { saved: 0, reason: "history_directory_failed" };
+
+    let history = null;
+    if (file_exists(CONNECTIVITY_HISTORY_FILE)) {
+        history = read_json_file(CONNECTIVITY_HISTORY_FILE);
+        if (history == null || type(object_or_empty(history).entries) != "array")
+            return { saved: 0, reason: "history_invalid" };
+    }
+    let updated = connectivity_history_updated(history, result, int(clock()[0]));
+    let temporary = CONNECTIVITY_HISTORY_FILE + ".tmp." + as_string(int(clock()[0])) + "." + as_string(int(clock()[1]));
+    if (fs.writefile(temporary, sprintf("%J\n", updated)) == null)
+        return { saved: 0, reason: "history_write_failed" };
+    if (!command_success_from_args([ "chmod", "600", temporary ]) || !fs.rename(temporary, CONNECTIVITY_HISTORY_FILE)) {
+        remove_file(temporary);
+        return { saved: 0, reason: "history_commit_failed" };
+    }
+    return { saved: 1, reason: "history_saved" };
+}
+
+function connectivity_history_get() {
+    if (!file_exists(CONNECTIVITY_HISTORY_FILE)) {
+        write_json({ format_version: 1, max_entries: connectivity_history_limit(), entries: [] });
+        return 0;
+    }
+    let history = read_json_file(CONNECTIVITY_HISTORY_FILE);
+    if (history == null || type(object_or_empty(history).entries) != "array") {
+        write_json({ available: 0, reason: "history_invalid" });
+        return 1;
+    }
+    write_json(history);
+    return 0;
+}
+
+function connectivity_history_entry_fixture() {
+    write_json(connectivity_history_entry(object_or_empty(parse_json_or_null(read_stdin())), 1700000000));
+    return 0;
+}
+
+function connectivity_history_updated_fixture() {
+    let fixture = object_or_empty(parse_json_or_null(read_stdin()));
+    write_json(connectivity_history_updated(fixture.history, object_or_empty(fixture.result), 1700000000));
+    return 0;
+}
+
 function check_connectivity_path() {
     if (!command_exists("curl") || !command_exists("dig")) {
-        write_json({ available: 0, summary: "diagnostic_tools_missing", curl_available: command_exists("curl") ? 1 : 0, dig_available: command_exists("dig") ? 1 : 0 });
+        let result = { available: 0, summary: "diagnostic_tools_missing", curl_available: command_exists("curl") ? 1 : 0, dig_available: command_exists("dig") ? 1 : 0 };
+        let history = connectivity_history_store(result);
+        result.history_saved = history.saved;
+        result.history_reason = history.reason;
+        write_json(result);
         return 0;
     }
 
@@ -1943,7 +2132,7 @@ function check_connectivity_path() {
     let quic = connectivity_quic_probe();
     let user_servers = connectivity_user_servers_probe();
 
-    write_json({
+    let result = {
         available: ipv4.available || ipv6.available ? 1 : 0,
         summary: connectivity_summary(ipv4, ipv6, quic),
         target: "gstatic_generate_204",
@@ -1952,7 +2141,11 @@ function check_connectivity_path() {
         quic,
         user_servers,
         resources: connectivity_resource_result(resources_before, connectivity_resource_snapshot())
-    });
+    };
+    let history = connectivity_history_store(result);
+    result.history_saved = history.saved;
+    result.history_reason = history.reason;
+    write_json(result);
     return 0;
 }
 
@@ -2610,6 +2803,12 @@ else if (mode == "connectivity-user-server-selection-fixture")
     exit(connectivity_user_server_selection_fixture());
 else if (mode == "connectivity-user-server-classify-fixture")
     exit(connectivity_user_server_classify_fixture());
+else if (mode == "connectivity-history-entry-fixture")
+    exit(connectivity_history_entry_fixture());
+else if (mode == "connectivity-history-updated-fixture")
+    exit(connectivity_history_updated_fixture());
+else if (mode == "get-connectivity-history")
+    exit(connectivity_history_get());
 else if (mode == "global-check")
     exit(global_check(ARGV[1] || "", ARGV[2] || ""));
 else if (mode == "validate-nfqws-strategy-json")

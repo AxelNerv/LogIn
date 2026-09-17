@@ -225,6 +225,19 @@ function userServerItems(
   });
 }
 
+function historyItems(
+  data: logIn.ConnectivityPathCheckResult,
+): IDiagnosticsChecksItem[] {
+  if (data.history_saved !== 0) return [];
+  return [
+    {
+      state: 'warning',
+      key: _('Connectivity history'),
+      value: _('The diagnostic result could not be saved locally'),
+    },
+  ];
+}
+
 export async function runConnectivityPathCheck() {
   const { order, title, code } = DIAGNOSTICS_CHECKS_MAP.CONNECTIVITY;
 
@@ -282,6 +295,7 @@ export async function runConnectivityPathCheck() {
     quicItem(data.quic),
     ...userServerItems(data.user_servers),
     ...resourceItems(data.resources),
+    ...historyItems(data),
     {
       state: 'warning' as CheckState,
       key: _('Interpretation'),
@@ -299,16 +313,19 @@ export async function runConnectivityPathCheck() {
       !data.user_servers.skipped &&
       (!data.user_servers.available || data.user_servers.degraded),
   );
+  const historyFailure = data.history_saved === 0;
   const controlPathFailure = quicFailure || userServerFailure;
   const state: CheckState = data.available
-    ? controlPathFailure
+    ? controlPathFailure || historyFailure
       ? 'warning'
       : 'success'
     : 'error';
   const description = data.available
-    ? controlPathFailure
-      ? _('HTTPS works, but one control path is degraded')
-      : _('DNS, TCP handoff, TLS, and HTTP path is available')
+    ? historyFailure
+      ? _('Connectivity works, but diagnostic history was not saved')
+      : controlPathFailure
+        ? _('HTTPS works, but one control path is degraded')
+        : _('DNS, TCP handoff, TLS, and HTTP path is available')
     : stageLabel(data.ipv4?.stage ?? data.ipv6?.stage ?? 'http');
 
   updateCheckStore({ order, code, title, description, state, items });

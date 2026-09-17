@@ -126,6 +126,7 @@ function show_help() {
     print("    component_update_check_cache Get cached component update check results\n");
     print("    check_dns_available     Check DNS server availability\n");
     print("    check_connectivity_path Check DNS, HTTPS, DoQ, resource pressure, and packet-drop deltas\n");
+    print("    get_connectivity_history Export the local sanitized connectivity history\n");
     print("    global_check            Run global system check\n");
     print("    validate_nfqws_strategy_json\n");
     print("                            Validate an NFQWS strategy and print JSON result\n");
@@ -202,6 +203,7 @@ function command_spec(command) {
         component_update_check_cache: [ "components/updates.uc", "component-update-check-cache", 0 ],
         check_dns_available: [ "diagnostics/runtime.uc", "check-dns-available", 0 ],
         check_connectivity_path: [ "diagnostics/runtime.uc", "check-connectivity-path", 0 ],
+        get_connectivity_history: [ "diagnostics/runtime.uc", "get-connectivity-history", 0 ],
         global_check: [ "diagnostics/runtime.uc", "global-check", 2 ],
         validate_nfqws_strategy_json: [ "diagnostics/runtime.uc", "validate-nfqws-strategy-json", 1 ],
         validate_nfqws2_strategy_json: [ "diagnostics/runtime.uc", "validate-nfqws2-strategy-json", 1 ],

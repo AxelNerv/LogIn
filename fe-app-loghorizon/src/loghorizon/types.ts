@@ -462,6 +462,8 @@ export namespace logIn {
     target?: string;
     curl_available?: 0 | 1;
     dig_available?: 0 | 1;
+    history_saved?: 0 | 1;
+    history_reason?: string;
     ipv4?: ConnectivityProbeResult;
     ipv6?: ConnectivityProbeResult;
     quic?: ConnectivityQuicResult;

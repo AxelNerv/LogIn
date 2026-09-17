@@ -89,7 +89,25 @@ failed_server="$(printf '%s\n' '{"server":{"tag":"offline","type":"VLESS"},"prim
 assert_contains "$failed_server" '"available": 0' 'failed active server control'
 assert_contains "$failed_server" '"reason": "server_unavailable"' 'failed active server reason'
 
+history_entry="$(printf '%s\n' '{"available":1,"summary":"https_ok","target":"https://secret.example/path?token=must-not-leak","ipv4":{"available":1,"stage":"ok","reason":"server_responded","http_code":204,"tcp_ms":10,"tls_ms":20,"total_ms":30},"quic":{"supported":1,"available":1,"reason":"doq_available","targets":[{"name":"adguard","available":1,"reason":"doq_available","latency_ms":70}]},"user_servers":{"available":1,"reason":"servers_available","successful_servers":1,"server_count":1,"servers":[{"name":"vless://user:must-not-leak@example.test","type":"Hysteria2?token=must-not-leak","available":1,"reason":"primary_available","delay_ms":55}]},"resources":{"cpu_percent":12,"memory":{"total_kib":100,"available_kib":50},"load":{"one":"0.10","five":"0.20","fifteen":"0.30"},"conntrack":{"count":10,"max":100},"nfqueue":{"kernel_dropped_delta":0,"userspace_dropped_delta":0},"interfaces":[{"name":"wan-secret","rx_dropped_delta":1,"tx_dropped_delta":2,"qdisc":{"backlog_packets":3}}]}}' | ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-history-entry-fixture)"
+assert_contains "$history_entry" '"timestamp": 1700000000' 'history timestamp'
+assert_contains "$history_entry" '"type": "unknown"' 'unsafe protocol metadata is replaced'
+assert_contains "$history_entry" '"interface_rx_drops": 1' 'history stores aggregate interface counters'
+if printf '%s\n' "$history_entry" | grep -Eq 'secret\.example|must-not-leak|wan-secret|vless://'; then
+  fail 'connectivity history leaked URL, server name, token, or interface name'
+fi
+
+ring="$(printf '%s\n' '{"history":{"entries":[{"timestamp":1},{"timestamp":2}]},"result":{"available":1,"summary":"https_ok"}}' | LOGHORIZON_DIAGNOSTICS_HISTORY_MAX_ENTRIES=2 ucode -L "$LOGHORIZON_LIB" "$DIAGNOSTICS_UC" connectivity-history-updated-fixture)"
+assert_contains "$ring" '"max_entries": 2' 'history ring limit'
+assert_contains "$ring" '"timestamp": 2' 'history keeps newest old entry'
+assert_contains "$ring" '"timestamp": 1700000000' 'history appends new entry'
+if printf '%s\n' "$ring" | grep -Fq '"timestamp": 1'; then
+  fail 'history ring did not discard its oldest entry'
+fi
+
 grep -Fq 'check_connectivity_path: [ "diagnostics/runtime.uc", "check-connectivity-path", 0 ]' "$CLI" ||
   fail 'CLI must expose the bounded connectivity path diagnostic'
+grep -Fq 'get_connectivity_history: [ "diagnostics/runtime.uc", "get-connectivity-history", 0 ]' "$CLI" ||
+  fail 'CLI must expose manual connectivity history export'
 
 printf 'Connectivity diagnostics tests passed\n'

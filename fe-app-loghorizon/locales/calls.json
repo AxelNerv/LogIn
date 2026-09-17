@@ -653,7 +653,7 @@
     "key": "Cannot receive checks result",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:246",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:172",
       "src/loghorizon/tabs/diagnostic/checks/runNftCheck.ts:28",
@@ -758,7 +758,7 @@
     "places": [
       "src/loghorizon/tabs/diagnostic/initController.ts:1043",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:235",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:248",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
       "src/loghorizon/tabs/diagnostic/checks/runInboundsCheck.ts:160",
@@ -865,10 +865,10 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3931",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714",
       "src/partials/modal/renderModal.ts:263",
-      "src/loghorizon/tabs/monitoring/initController.ts:832",
-      "src/loghorizon/tabs/monitoring/initController.ts:882",
       "src/loghorizon/tabs/dashboard/initController.ts:1017",
-      "src/loghorizon/tabs/dashboard/initController.ts:1267"
+      "src/loghorizon/tabs/dashboard/initController.ts:1267",
+      "src/loghorizon/tabs/monitoring/initController.ts:832",
+      "src/loghorizon/tabs/monitoring/initController.ts:882"
     ]
   },
   {
@@ -994,10 +994,24 @@
     ]
   },
   {
+    "call": "Connectivity history",
+    "key": "Connectivity history",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:235"
+    ]
+  },
+  {
     "call": "Connectivity probe failed",
     "key": "Connectivity probe failed",
     "places": [
       "src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts:145"
+    ]
+  },
+  {
+    "call": "Connectivity works, but diagnostic history was not saved",
+    "key": "Connectivity works, but diagnostic history was not saved",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:325"
     ]
   },
   {
@@ -1172,7 +1186,7 @@
     "call": "Diagnostic tools are missing",
     "key": "Diagnostic tools are missing",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:271"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:284"
     ]
   },
   {
@@ -1477,7 +1491,7 @@
     "call": "DNS, TCP handoff, TLS, and HTTP path is available",
     "key": "DNS, TCP handoff, TLS, and HTTP path is available",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:311"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:328"
     ]
   },
   {
@@ -2056,12 +2070,12 @@
     "call": "Failed to execute",
     "key": "Failed to execute",
     "places": [
+      "src/loghorizon/methods/shell/index.ts:170",
+      "src/loghorizon/methods/shell/index.ts:177",
       "src/loghorizon/tabs/updates/initController.ts:511",
       "src/loghorizon/tabs/updates/initController.ts:512",
       "src/loghorizon/tabs/updates/initController.ts:572",
-      "src/loghorizon/tabs/updates/initController.ts:722",
-      "src/loghorizon/methods/shell/index.ts:170",
-      "src/loghorizon/methods/shell/index.ts:177"
+      "src/loghorizon/tabs/updates/initController.ts:722"
     ]
   },
   {
@@ -2428,7 +2442,7 @@
     "call": "HTTPS works, but one control path is degraded",
     "key": "HTTPS works, but one control path is degraded",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:310"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:327"
     ]
   },
   {
@@ -2564,8 +2578,8 @@
     "call": "Installed",
     "key": "Installed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:264"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:272",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:277"
     ]
   },
   {
@@ -2608,7 +2622,7 @@
     "call": "Interpretation",
     "key": "Interpretation",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:287"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:301"
     ]
   },
   {
@@ -3819,8 +3833,8 @@
       "src/loghorizon/tabs/updates/initController.ts:933",
       "src/loghorizon/tabs/updates/initController.ts:946",
       "src/loghorizon/tabs/updates/initController.ts:959",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:264"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:272",
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:277"
     ]
   },
   {
@@ -4933,9 +4947,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:598",
       "src/loghorizon/methods/shell/index.ts:378",
-      "src/loghorizon/methods/shell/index.ts:399"
+      "src/loghorizon/methods/shell/index.ts:399",
+      "src/loghorizon/tabs/diagnostic/initController.ts:598"
     ]
   },
   {
@@ -5396,7 +5410,7 @@
     "call": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "key": "TCP timing is the local transparent-proxy handoff. An upstream TCP or TLS failure may appear at the TLS stage, and one failed control request does not prove blocking.",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:288"
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:302"
     ]
   },
   {
@@ -5484,6 +5498,13 @@
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5851",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6296"
+    ]
+  },
+  {
+    "call": "The diagnostic result could not be saved locally",
+    "key": "The diagnostic result could not be saved locally",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:236"
     ]
   },
   {

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 13:46+0300\n"
-"PO-Revision-Date: 2026-09-17 13:46+0300\n"
+"POT-Creation-Date: 2026-09-17 19:05+0300\n"
+"PO-Revision-Date: 2026-09-17 19:05+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -416,8 +416,14 @@ msgstr "URL подключения"
 msgid "Connections are unavailable"
 msgstr "Подключения недоступны"
 
+msgid "Connectivity history"
+msgstr "История диагностики соединения"
+
 msgid "Connectivity probe failed"
 msgstr "Проверка соединения не прошла"
+
+msgid "Connectivity works, but diagnostic history was not saved"
+msgstr "Соединение работает, но история диагностики не сохранена"
 
 msgid "Copied"
 msgstr "Скопировано"
@@ -2275,6 +2281,9 @@ msgstr "Вся цепочка правила работает."
 
 msgid "The desync fwmark is managed by logIn for loop prevention and must not be overridden here."
 msgstr "Desync fwmark управляется logIn для защиты от циклов и не должен переопределяться здесь."
+
+msgid "The diagnostic result could not be saved locally"
+msgstr "Не удалось локально сохранить результат диагностики"
 
 msgid "The NFQUEUE number is assigned by logIn for each rule and must not be overridden here."
 msgstr "Номер NFQUEUE назначается logIn для каждого правила и не должен переопределяться здесь."
