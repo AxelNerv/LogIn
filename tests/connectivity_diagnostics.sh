@@ -101,7 +101,7 @@ ring="$(printf '%s\n' '{"history":{"entries":[{"timestamp":1},{"timestamp":2}]},
 assert_contains "$ring" '"max_entries": 2' 'history ring limit'
 assert_contains "$ring" '"timestamp": 2' 'history keeps newest old entry'
 assert_contains "$ring" '"timestamp": 1700000000' 'history appends new entry'
-if printf '%s\n' "$ring" | grep -Fq '"timestamp": 1'; then
+if printf '%s\n' "$ring" | grep -Eq '"timestamp": 1([,}])'; then
   fail 'history ring did not discard its oldest entry'
 fi
 
