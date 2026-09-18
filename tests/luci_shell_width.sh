@@ -24,7 +24,11 @@ grep -Fq 'container.classList.add("lh-page-container");' "$ENTRY_JS" ||
   fail 'the rendered shell must mark its actual LuCI host container'
 grep -Fq 'classList.add("lh-page-maincontent")' "$ENTRY_JS" ||
   fail 'the rendered shell must mark its actual LuCI main content'
+grep -Fq 'container.style.setProperty("max-width", "1720px", "important");' "$ENTRY_JS" ||
+  fail 'a late vendor max-width must be overridden inline'
+grep -Fq 'mainContent.style.setProperty("max-width", "none", "important");' "$ENTRY_JS" ||
+  fail 'the vendor main-content cap must be removed inline'
 grep -Fq 'new MutationObserver(mark)' "$ENTRY_JS" ||
-  fail 'the host marker must wait until LuCI mounts the shell'
+  fail 'the layout normalizer must retry if LuCI has not mounted its container yet'
 
 printf 'LuCI shell width checks passed\n'

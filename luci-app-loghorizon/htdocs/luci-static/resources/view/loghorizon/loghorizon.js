@@ -29,17 +29,30 @@
 
 const UCI_PACKAGE = main.LOGHORIZON_UCI_PACKAGE;
 
-function markLogHorizonPageContainer(shell) {
+function normalizeLogHorizonPageLayout() {
   let observer = null;
 
   const mark = function () {
-    if (!shell.isConnected) return false;
-
-    const container = shell.closest("#maincontent > .container, .container");
+    const mainContent = document.getElementById("maincontent");
+    const container = Array.from(mainContent?.children || []).find((child) =>
+      child.classList.contains("container"),
+    );
     if (!container) return false;
 
     container.classList.add("lh-page-container");
-    container.closest("#maincontent")?.classList.add("lh-page-maincontent");
+    mainContent.classList.add("lh-page-maincontent");
+
+    // Vendor themes may inject a late max-width declaration with !important.
+    // An inline important declaration is the only deterministic override and
+    // is safe here because this is LuCI's container for the current page only.
+    container.style.setProperty("width", "calc(100% - 32px)", "important");
+    container.style.setProperty("max-width", "1720px", "important");
+    container.style.setProperty("flex-basis", "auto", "important");
+    container.style.setProperty("box-sizing", "border-box", "important");
+    container.style.setProperty("margin-left", "auto", "important");
+    container.style.setProperty("margin-right", "auto", "important");
+    mainContent.style.setProperty("max-width", "none", "important");
+
     observer?.disconnect();
     return true;
   };
@@ -120,6 +133,7 @@ function configureGridSection(sectionRef, type, title, addTitle) {
 
 const EntryPoint = {
   async render() {
+    normalizeLogHorizonPageLayout();
     main.injectGlobalStyles();
     const uiCapabilities = {
       loaded: false,
@@ -595,10 +609,6 @@ const EntryPoint = {
       [brandHeader, rendered],
     );
 
-    // Some vendor themes constrain the LuCI content container with an
-    // !important max-width. Mark the actual host after LuCI mounts this node;
-    // relying only on :has() left older/vendor WebViews unaffected.
-    markLogHorizonPageContainer(shell);
     return shell;
   },
 };
