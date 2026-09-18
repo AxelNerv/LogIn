@@ -29,6 +29,27 @@
 
 const UCI_PACKAGE = main.LOGHORIZON_UCI_PACKAGE;
 
+function markLogHorizonPageContainer(shell) {
+  let observer = null;
+
+  const mark = function () {
+    if (!shell.isConnected) return false;
+
+    const container = shell.closest("#maincontent > .container, .container");
+    if (!container) return false;
+
+    container.classList.add("lh-page-container");
+    container.closest("#maincontent")?.classList.add("lh-page-maincontent");
+    observer?.disconnect();
+    return true;
+  };
+
+  if (mark()) return;
+
+  observer = new MutationObserver(mark);
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
 function renderSectionAdd(sectionRef, extra_class) {
   const el = form.GridSection.prototype.renderSectionAdd.apply(sectionRef, [
     extra_class,
@@ -568,11 +589,17 @@ const EntryPoint = {
       ),
     ]);
 
-    return E(
+    const shell = E(
       "div",
       { class: "lh-shell", "data-loghorizon-shell": "foundation" },
       [brandHeader, rendered],
     );
+
+    // Some vendor themes constrain the LuCI content container with an
+    // !important max-width. Mark the actual host after LuCI mounts this node;
+    // relying only on :has() left older/vendor WebViews unaffected.
+    markLogHorizonPageContainer(shell);
+    return shell;
   },
 };
 

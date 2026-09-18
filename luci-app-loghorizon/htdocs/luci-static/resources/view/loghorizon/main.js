@@ -14516,16 +14516,17 @@ ${PartialStyles}
    then leaves the whole page pinned to the left with the slack piled up on
    the right. Argon does exactly that, through a selector carrying an id, so
    the centring has to be at least as specific to survive. */
-#maincontent > .container:has(.lh-shell),
-.container:has(.lh-shell) {
+#maincontent > .lh-page-container,
+.lh-page-container {
     width: calc(100% - 32px) !important;
-    max-width: min(1720px, calc(100vw - 32px));
+    max-width: min(1720px, calc(100vw - 32px)) !important;
+    flex-basis: auto !important;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
 }
 
-#maincontent:has(.lh-shell) {
+#maincontent.lh-page-maincontent {
     max-width: min(1720px, calc(100vw - 32px));
     margin-left: auto;
     margin-right: auto;
@@ -14985,8 +14986,8 @@ ${PartialStyles}
 }
 
 @media (max-width: 700px) {
-    #maincontent > .container:has(.lh-shell),
-    .container:has(.lh-shell) {
+    #maincontent > .lh-page-container,
+    .lh-page-container {
         width: calc(100% - 16px) !important;
     }
 
