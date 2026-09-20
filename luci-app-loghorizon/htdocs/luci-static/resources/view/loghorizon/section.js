@@ -8334,7 +8334,7 @@ function createSectionContent(section) {
     legacyTextOptionName: "domain_suffix_text",
     label: _("Domains"),
     description: _(
-      "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression.",
+      "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression. exitlag.com also includes the ExitLag client domain exitlag.net; game relay IPs may still require IP rules.",
     ),
     textAnalyze: analyzeDomainSuffixText,
     loadText: loadCombinedDomainText,

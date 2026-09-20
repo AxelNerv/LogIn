@@ -360,7 +360,7 @@ cat >"$WORK_DIR/runtime-matchers-fixture.json" <<'JSON'
       "action": "connection",
       "selector_proxy_links": [ "socks5://127.0.0.1:1080" ],
       "domain": "commented.example # ignored.example\nfull:exact-comment.example // ignored-full.example\nfull:source-priority.test\nkeyword:clip",
-      "domain_suffix": [ "proxy.example.org", "сайт.рф", "full:пример.испытание", "keyword:пример", "regex:^сайт[.]рф$" ],
+      "domain_suffix": [ "proxy.example.org", "exitlag.com", "сайт.рф", "full:пример.испытание", "keyword:пример", "regex:^сайт[.]рф$" ],
       "ip_cidr": "77.111.247.0/24 #77.111.247.19\n198.51.100.0/24 //203.0.113.0/24",
       "source_ip_cidr": "10.0.0.2/32 #10.0.0.99\n2001:db8::2/128 //2001:db8::99/128",
       "ports_text": "80 # 443\n8080 // 8443",
@@ -1305,11 +1305,13 @@ assert(dns_rule(matchers, r => contains(r.domain, "xn--e1afmkfd.xn--80akhbyknj4f
 assert(dns_rule(matchers, r => contains(r.domain_keyword, "xn--e1afmkfd")).server == "fakeip-server", "IDN keyword converted for DNS rule");
 assert(dns_rule(matchers, r => contains(r.domain_regex, "^xn--80aswg[.]xn--p1ai$")).server == "fakeip-server", "IDN regex converted for DNS rule");
 assert(dns_rule(matchers, r => contains(r.domain_suffix, "commented.example")).server == "fakeip-server", "commented domain value generated");
+assert(dns_rule(matchers, r => contains(r.domain_suffix, "exitlag.com") && contains(r.domain_suffix, "exitlag.net")).server == "fakeip-server", "ExitLag companion domain generated for DNS");
 assert(dns_rule(matchers, r => contains(r.domain, "exact-comment.example")).server == "fakeip-server", "commented full domain generated");
 assert(dns_rule(matchers, r => contains(r.domain_keyword, "clip")).server == "fakeip-server", "commented keyword generated");
 assert(index(sprintf("%J", matchers), "ignored.example") < 0 && index(sprintf("%J", matchers), "ignored-full.example") < 0, "domain comments excluded from generated config");
 assert(route_rule(matchers, r => r.outbound == "bypass-out" && contains(r.domain_suffix, "example.org") && contains(r.source_ip_cidr, "10.0.0.3/32")) != null, "bypass fallback route");
 assert(route_rule(matchers, r => r.outbound == "proxy-out" && contains(r.domain_suffix, "xn--80aswg.xn--p1ai")) != null, "IDN suffix converted for route rule");
+assert(route_rule(matchers, r => r.outbound == "proxy-out" && contains(r.domain_suffix, "exitlag.com") && contains(r.domain_suffix, "exitlag.net")) != null, "ExitLag companion domain generated for route");
 assert(route_rule(matchers, r => r.outbound == "proxy-out" && contains(r.domain, "xn--e1afmkfd.xn--80akhbyknj4f")) != null, "IDN full domain converted for route rule");
 assert(route_rule(matchers, r => r.outbound == "proxy-out" && contains(r.domain_keyword, "xn--e1afmkfd")) != null, "IDN keyword converted for route rule");
 assert(route_rule(matchers, r => r.outbound == "proxy-out" && contains(r.domain_regex, "^xn--80aswg[.]xn--p1ai$")) != null, "IDN regex converted for route rule");

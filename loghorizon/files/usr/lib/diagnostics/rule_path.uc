@@ -104,6 +104,14 @@ function rule_allows_tproxy(rule) {
     return length(inbounds) == 0 || contains(inbounds, "tproxy-in") || contains(inbounds, "tproxy6-in");
 }
 
+function dns_rule_is_health_probe(rule) {
+    let inbounds = as_array(rule.inbound);
+    if (length(inbounds) == 0) return false;
+    for (let inbound in inbounds)
+        if (index(as_string(inbound), "dns-health-") != 0) return false;
+    return true;
+}
+
 function unsupported_rule_keys(rule, allowed) {
     let result = [];
     for (let key in keys(rule)) {
@@ -199,6 +207,11 @@ function find_dns_route(config, domain) {
         if (type(rule) != "object") continue;
         let action = as_string(rule.action);
         if (action != "route" && action != "reject") continue;
+        // A plain domain-path check represents an ordinary client lookup. DNS
+        // health probes and other dedicated inbounds are separate flows and
+        // must not make the result indeterminate merely because they appear
+        // before the client rule in the generated config.
+        if (dns_rule_is_health_probe(rule)) continue;
         let query_types = as_array(rule.query_type);
         if (length(query_types) > 0 && !contains(query_types, "A") && !contains(query_types, 1)) continue;
         let direct = direct_domain_match(rule, domain);

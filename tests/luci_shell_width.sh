@@ -30,5 +30,13 @@ grep -Fq 'mainContent.style.setProperty("max-width", "none", "important");' "$EN
   fail 'the vendor main-content cap must be removed inline'
 grep -Fq 'new MutationObserver(mark)' "$ENTRY_JS" ||
   fail 'the layout normalizer must retry if LuCI has not mounted its container yet'
+grep -Fq 'width: min(1180px, calc(100vw - 32px)) !important;' "$STYLES_TS" ||
+  fail 'rule editor modal must keep a readable desktop width'
+grep -Fq 'grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);' "$STYLES_TS" ||
+  fail 'rule editor fields must use the available desktop width'
+grep -Fq 'grid-template-columns: minmax(0, 1fr);' "$STYLES_TS" ||
+  fail 'rule editor fields must collapse to one mobile column'
+grep -Fq 'visibility: visible !important;' "$STYLES_TS" ||
+  fail 'mobile rule labels must override vendor theme hiding'
 
 printf 'LuCI shell width checks passed\n'

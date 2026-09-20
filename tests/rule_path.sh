@@ -178,4 +178,25 @@ grep -Fq 'cannot inspect DNS rule set missing' <<<"$output" ||
 grep -Fq '"name": "dns", "success": false' <<<"$output" ||
   fail "DNS inspection failure did not fail the DNS step"
 
+cat >"$WORK_DIR/config.json" <<JSON
+{
+  "route": {
+    "rules": [{ "action": "route", "outbound": "wanted-out", "domain": "health-shadow.example" }]
+  },
+  "dns": {
+    "rules": [
+      { "action": "route", "server": "health-server", "inbound": "dns-health-primary-in" },
+      { "action": "route", "server": "fakeip-server", "domain": "health-shadow.example" }
+    ]
+  },
+  "outbounds": [{ "type": "selector", "tag": "wanted-out" }]
+}
+JSON
+if ! output="$(run_check wanted health-shadow.example 2>&1)"; then
+  printf '%s\n' "$output" >&2
+  fail "inbound-scoped DNS health rule hid the ordinary client rule"
+fi
+grep -Fq '"server": "fakeip-server"' <<<"$output" ||
+  fail "ordinary client DNS rule was not selected after health rule"
+
 printf 'Rule path tests passed\n'

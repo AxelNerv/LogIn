@@ -2575,6 +2575,20 @@ function domain_conditions(section) {
             push(result[normalized.kind], normalized.value);
     }
 
+    // ExitLag splits its public/client endpoints between the .com and .net
+    // zones. Users naturally enter the product domain only, which otherwise
+    // routes the website but leaves the client control traffic outside the
+    // selected connection. Keep this narrow and transparent: it only expands
+    // an exact suffix entry and does not attempt to guess game relay IPs.
+    let has_exitlag_com = false;
+    let has_exitlag_net = false;
+    for (let value in result.domain_suffix) {
+        if (lc(as_string(value)) == "exitlag.com") has_exitlag_com = true;
+        if (lc(as_string(value)) == "exitlag.net") has_exitlag_net = true;
+    }
+    if (has_exitlag_com && !has_exitlag_net)
+        push(result.domain_suffix, "exitlag.net");
+
     return result;
 }
 

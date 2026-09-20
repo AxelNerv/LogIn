@@ -14985,6 +14985,50 @@ ${PartialStyles}
     color: #ff8f8f;
 }
 
+/* LuCI renders GridSection editors outside .lh-shell. Vendor themes commonly
+ * leave the label column narrow while stretching the modal to the viewport,
+ * producing a cramped form beside a large empty area. Give rule editors a
+ * stable readable measure and make every field consume the available column. */
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal {
+    width: min(1180px, calc(100vw - 32px)) !important;
+    max-width: min(1180px, calc(100vw - 32px)) !important;
+    box-sizing: border-box !important;
+}
+
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal > h4 {
+    display: block !important;
+    visibility: visible !important;
+    min-height: 1.5em;
+    margin: 0 0 12px !important;
+    color: var(--lh-ink, inherit) !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+}
+
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value {
+    display: grid !important;
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 20px;
+    box-sizing: border-box;
+}
+
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-title,
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field {
+    float: none !important;
+    width: auto !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+}
+
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field input:not([type="checkbox"]):not([type="radio"]),
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field select,
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 @media (max-width: 700px) {
     #maincontent > .lh-page-container,
     .lh-page-container {
@@ -15006,6 +15050,36 @@ ${PartialStyles}
 
     .lh-shell .cbi-tabmenu li a {
         min-height: 44px;
+    }
+
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal {
+        width: calc(100vw - 12px) !important;
+        max-width: calc(100vw - 12px) !important;
+        margin: 6px !important;
+        padding: 12px !important;
+    }
+
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 6px;
+        padding: 10px 0 !important;
+    }
+
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-title {
+        display: block !important;
+        visibility: visible !important;
+        min-height: 1.3em;
+        color: var(--lh-ink, inherit) !important;
+        opacity: 1 !important;
+        text-align: left !important;
+        white-space: normal !important;
+    }
+
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field,
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field > * {
+        min-width: 0;
+        max-width: 100%;
     }
 }
 `;
