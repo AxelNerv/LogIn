@@ -15006,7 +15006,7 @@ body.modal-overlay-active > #modal_overlay > .modal.cbi-modal > h4 {
     white-space: normal !important;
 }
 
-body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value {
+body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value:not(.hidden) {
     display: grid !important;
     grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
     align-items: start;
@@ -15059,7 +15059,7 @@ body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field t
         padding: 12px !important;
     }
 
-    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value {
+    body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value:not(.hidden) {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr);
         row-gap: 6px;

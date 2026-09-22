@@ -3863,3 +3863,11 @@ msgstr ""
 #: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:108
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7403
+msgid "Advanced"
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7402
+msgid "General"
+msgstr ""

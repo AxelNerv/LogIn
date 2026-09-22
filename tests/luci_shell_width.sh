@@ -38,5 +38,10 @@ grep -Fq 'grid-template-columns: minmax(0, 1fr);' "$STYLES_TS" ||
   fail 'rule editor fields must collapse to one mobile column'
 grep -Fq 'visibility: visible !important;' "$STYLES_TS" ||
   fail 'mobile rule labels must override vendor theme hiding'
+if grep -Eq 'cbi-modal \.cbi-value \{' "$STYLES_TS"; then
+  fail 'rule editor grid must not override LuCI .hidden on dependent fields'
+fi
+grep -Fq '.modal.cbi-modal .cbi-value:not(.hidden) {' "$STYLES_TS" ||
+  fail 'rule editor grid must apply only to visible field rows'
 
 printf 'LuCI shell width checks passed\n'

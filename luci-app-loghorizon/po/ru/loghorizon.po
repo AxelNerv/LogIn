@@ -2686,3 +2686,9 @@ msgstr "sing-box outbound для Zapret2 настроен"
 
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr "sing-box outbound для Zapret2 не настроен"
+
+msgid "Advanced"
+msgstr "Дополнительно"
+
+msgid "General"
+msgstr "Основное"

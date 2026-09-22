@@ -3580,7 +3580,7 @@ function addDashboardGroupFilterOption(
 function addDashboardServerFilterOptions(section) {
   const optionSection = {
     option: (optionType, ...args) => {
-      const option = section.taboption("settings", optionType, ...args);
+      const option = section.taboption("dashboard", optionType, ...args);
       option.modalonly = true;
       return option;
     },
@@ -7399,7 +7399,9 @@ function createSectionContent(section) {
   let o;
   const dpiStrategyOptions = {};
 
-  section.tab("settings", _("Settings"));
+  section.tab("settings", _("General"));
+  section.tab("advanced", _("Advanced"));
+  section.tab("dashboard", _("Dashboard"));
   section.tab("conditions", _("Conditions"));
 
   o = section.taboption("settings", form.Flag, "enabled", _("Enable"));
@@ -8044,7 +8046,7 @@ function createSectionContent(section) {
   sectionGroupSourceOptions.set("priority_group", o);
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "tls_fragment_enabled",
     _("Split the TLS handshake"),
@@ -8058,7 +8060,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "multiplex_enabled",
     _("Multiplex connections"),
@@ -8073,7 +8075,7 @@ function createSectionContent(section) {
   guardOptionAgainstConflicts(o, multiplexConflictReason);
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.ListValue,
     "multiplex_protocol",
     _("Multiplex protocol"),
@@ -8087,7 +8089,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "multiplex_padding",
     _("Pad multiplexed streams"),
@@ -8099,7 +8101,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "outbound_detour_enabled",
     _("Cascade connection"),
@@ -8137,7 +8139,7 @@ function createSectionContent(section) {
   };
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.ListValue,
     "outbound_detour_section",
     _("Connect through"),
@@ -8163,7 +8165,7 @@ function createSectionContent(section) {
   };
 
   o = section.taboption(
-    "settings",
+    "dashboard",
     form.Flag,
     "sort_by_latency",
     _("Sort by latency"),
@@ -8175,7 +8177,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "mixed_proxy_enabled",
     _("Enable Mixed Proxy"),
@@ -8190,7 +8192,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Value,
     "mixed_proxy_port",
     _("Mixed Proxy Port"),
@@ -8216,7 +8218,7 @@ function createSectionContent(section) {
   };
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "mixed_proxy_auth_enabled",
     _("Enable Mixed Proxy Authentication"),
@@ -8231,7 +8233,7 @@ function createSectionContent(section) {
   o.modalonly = true;
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Value,
     "mixed_proxy_username",
     _("Mixed Proxy Username"),
@@ -8267,7 +8269,7 @@ function createSectionContent(section) {
   };
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Value,
     "mixed_proxy_password",
     _("Mixed Proxy Password"),
@@ -8303,7 +8305,7 @@ function createSectionContent(section) {
   };
 
   o = section.taboption(
-    "settings",
+    "advanced",
     form.Flag,
     "resolve_real_ip_for_routing",
     _("Resolve real IP for routing"),
