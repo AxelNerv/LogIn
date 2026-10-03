@@ -546,6 +546,7 @@ ln -s "$LOGHORIZON_LIB/core" "$runtime_lib/core"
 ln -s "$LOGHORIZON_LIB/config" "$runtime_lib/config"
 ln -s "$LOGHORIZON_LIB/subscription" "$runtime_lib/subscription"
 ln -s "$LOGHORIZON_LIB/providers" "$runtime_lib/providers"
+ln -s "$LOGHORIZON_LIB/singbox" "$runtime_lib/singbox"
 touch "$WORK_DIR/ciadpi-provider"
 cat >"$WORK_DIR/bad-byedpi-runtime-state.json" <<'JSON'
 {
