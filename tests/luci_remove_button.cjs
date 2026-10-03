@@ -29,4 +29,6 @@ for (const disabled of [false, true]) {
 }
 assert.ok(source.includes('o.childLegacyOption = "subscription_urls";'));
 assert.match(source, /\.lgh-connections-dynlist > \.item > \.lgh-dynlist-remove\s*\{[^}]*pointer-events:\s*auto/);
+assert.match(source, /\.lgh-connections-dynlist > \.item > \.lgh-dynlist-remove\s*\{[^}]*background-color:\s*var\(--red, #f5365c\)/);
+assert.ok(source.includes('.lgh-dynlist-remove:focus-visible'));
 console.log('Theme-independent DynamicList remove checks passed');

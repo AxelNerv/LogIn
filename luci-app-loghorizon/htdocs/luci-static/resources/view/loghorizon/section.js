@@ -1082,6 +1082,20 @@ function ensureConnectionsDynamicListStyles() {
 
 .lgh-connections-dynlist > .item > .lgh-dynlist-remove {
   pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: var(--red, #f5365c) !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: 1px solid var(--red, #f5365c) !important;
+  box-shadow: none;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: normal;
+  line-height: 1.5rem;
+  min-height: 0;
   position: absolute;
   right: -1px;
   top: -1px;
@@ -1090,9 +1104,18 @@ function ensureConnectionsDynamicListStyles() {
   min-width: var(--lgh-dynlist-action-width);
   margin: 0;
   padding: 0;
-  border-radius: 0;
+  border-radius: 0 .25rem .25rem 0;
   cursor: pointer;
   z-index: 2;
+}
+
+.lgh-connections-dynlist > .item > .lgh-dynlist-remove:hover {
+  filter: brightness(.9);
+}
+
+.lgh-connections-dynlist > .item > .lgh-dynlist-remove:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
 }
 
 .lgh-connections-dynlist > .item > .lgh-dynlist-settings:hover,
