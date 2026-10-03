@@ -1076,6 +1076,24 @@ function ensureConnectionsDynamicListStyles() {
   z-index: 1;
 }
 
+.lgh-connections-dynlist > .item::after {
+  display: none !important;
+}
+
+.lgh-connections-dynlist > .item > .lgh-dynlist-remove {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: var(--lgh-dynlist-action-width);
+  min-width: var(--lgh-dynlist-action-width);
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
 .lgh-connections-dynlist > .item > .lgh-dynlist-settings:hover,
 .lgh-connections-dynlist > .item > .lgh-dynlist-settings:focus {
   --focus-color-rgb: 82, 168, 236;
@@ -1321,6 +1339,20 @@ const SettingsUIDynamicList = ui.DynamicList.extend({
     ui.DynamicList.prototype.addItem.call(this, dl, value, itemText, flash);
 
     const item = findDynamicListItemByValue(dl, value);
+    if (item && !item.querySelector(".lgh-dynlist-remove")) {
+      item.appendChild(E("button", {
+        type: "button",
+        class: "lgh-dynlist-remove",
+        "aria-label": _("Remove"),
+        title: _("Remove"),
+        disabled: !!this.options.disabled,
+        click: (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!this.options.disabled) this.removeItem(dl, item);
+        },
+      }, "×"));
+    }
     const hasSettings =
       typeof this.options.hasSettings === "function"
         ? this.options.hasSettings(value)
@@ -1631,6 +1663,7 @@ const SettingsDynamicList = form.DynamicList.extend({
         this.afterMaterializeChildItems(ownerId, itemIds);
       }
       uci.unset(UCI_PACKAGE, section_id, this.option);
+      if (this.childLegacyOption) uci.unset(UCI_PACKAGE, section_id, this.childLegacyOption);
       cleanupListItemSettings(ownerId, this.settingsKey, itemIds);
       if (typeof this.clearStagedChildSettings === "function") {
         this.clearStagedChildSettings(ownerId);
@@ -1652,6 +1685,7 @@ const SettingsDynamicList = form.DynamicList.extend({
         this.ownerOption,
       );
       uci.unset(UCI_PACKAGE, section_id, this.option);
+      if (this.childLegacyOption) uci.unset(UCI_PACKAGE, section_id, this.childLegacyOption);
       return;
     }
 
@@ -7866,6 +7900,7 @@ function createSectionContent(section) {
   o.rmempty = true;
   o.modalonly = true;
   o.childType = "subscription_url";
+  o.childLegacyOption = "subscription_urls";
   o.childValueOption = "url";
   o.childDefaults = defaultSubscriptionUrlSettings();
   o.renderItemSettingsModal = showSubscriptionUrlSettingsModal;

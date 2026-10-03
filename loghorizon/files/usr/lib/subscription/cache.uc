@@ -1463,6 +1463,28 @@ function get_subscription_hwid(custom_hwid) {
     return custom_hwid != "" ? custom_hwid : generate_hwid();
 }
 
+function last_http_status(headers_path) {
+    let status = 0;
+    for (let line in split(read_text(headers_path), "\n")) {
+        let matched = match(line, /^HTTP\/[0-9.]+[ \t]+([0-9]{3})([ \t\r]|$)/);
+        if (matched)
+            status = int(matched[1]);
+    }
+    return status;
+}
+
+function download_failure_reason(status) {
+    if (status >= 500 && status <= 599 || status == 429)
+        return "HTTP " + status;
+    if (status == 5 || status == 6)
+        return "DNS resolution failed";
+    if (status == 28)
+        return "request timed out";
+    if (status == 7 || status == 18 || status == 35 || status == 52 || status == 55 || status == 56 || status == 60)
+        return "transport/TLS error (curl " + status + ")";
+    return "";
+}
+
 function download_subscription(url, filepath, http_proxy_address, headers_filepath, effective_user_agent, effective_hwid) {
     let retries = 3;
     let wait_seconds = 2;
@@ -1470,17 +1492,18 @@ function download_subscription(url, filepath, http_proxy_address, headers_filepa
     let stamp = clock();
     let suffix = sprintf(".part.%d.%d", stamp[0], stamp[1]);
     let tmpfile = filepath + suffix;
-    let headers_tmpfile = headers_filepath != "" ? headers_filepath + suffix : "";
-    let resolution_failed = false;
+    let headers_tmpfile = (headers_filepath != "" ? headers_filepath : filepath + ".headers") + suffix;
 
     unlink_path(tmpfile);
     if (headers_tmpfile != "")
         unlink_path(headers_tmpfile);
 
     for (let attempt = 1; attempt <= retries; attempt++) {
+        unlink_path(headers_tmpfile);
         let args = [
             "curl", "-fL", "-sS",
             "--connect-timeout", timeout,
+            "--max-time", "20",
             "--speed-time", timeout,
             "--speed-limit", "1"
         ];
@@ -1521,16 +1544,20 @@ function download_subscription(url, filepath, http_proxy_address, headers_filepa
                     unlink_path(headers_tmpfile);
                 }
             }
+            else
+                unlink_path(headers_tmpfile);
             return 0;
         }
 
+        let http_status = last_http_status(headers_tmpfile);
+        let failure_status = status == 22 && (http_status >= 500 || http_status == 429) ? http_status : status;
         unlink_path(tmpfile);
         unlink_path(headers_tmpfile);
 
-        if (status == 5 || status == 6) {
-            resolution_failed = true;
-            break;
-        }
+        // Changing User-Agent cannot repair a timeout, TLS failure or 5xx.
+        // Release the update lock promptly so pending config applies can run.
+        if (download_failure_reason(failure_status) != "")
+            return failure_status;
 
         if (attempt < retries)
             system("sleep " + int(wait_seconds));
@@ -1538,7 +1565,7 @@ function download_subscription(url, filepath, http_proxy_address, headers_filepa
 
     unlink_path(tmpfile);
     unlink_path(headers_tmpfile);
-    return resolution_failed ? 6 : 1;
+    return 1;
 }
 
 function copy_valid_metadata_output(metadata_tmpfile, metadata_output_path) {
@@ -1609,6 +1636,7 @@ function download_subscription_into_cache(section_name_value, subscription_url, 
     let parser = subscription_parser();
 
     let attempt_index = 0;
+    let source_failure = "";
     for (let effective_user_agent in user_agent_candidates(subscription_user_agent, cached_user_agent, default_user_agent)) {
         attempt_index++;
         unlink_path(raw_tmpfile);
@@ -1621,8 +1649,9 @@ function download_subscription_into_cache(section_name_value, subscription_url, 
         if (download_status != 0) {
             if (metadata_output_path != "")
                 unlink_path(metadata_output_path);
-            if (download_status == 6) {
-                log_message("Subscription download failed for rule '" + section_name_value + "' because the subscription host could not be resolved; compatibility retries skipped", "warn");
+            source_failure = download_failure_reason(download_status);
+            if (source_failure != "") {
+                log_message("Subscription download failed for rule '" + section_name_value + "': " + source_failure + "; compatibility retries skipped", "warn");
                 break;
             }
             else if (subscription_user_agent != "")
@@ -1731,7 +1760,9 @@ function download_subscription_into_cache(section_name_value, subscription_url, 
     unlink_path(headers_tmpfile);
     unlink_path(normalized_tmpfile);
     unlink_path(metadata_tmpfile);
-    if (subscription_user_agent != "")
+    if (source_failure != "")
+        log_message("Subscription source unavailable for rule '" + section_name_value + "': " + source_failure + "; previous working cache retained", "error");
+    else if (subscription_user_agent != "")
         log_message("Configured subscription request profile for rule '" + section_name_value + "' did not produce valid proxy entries", "error");
     else
         log_message("No compatible subscription request profile produced valid proxy entries for rule '" + section_name_value + "'", "error");
@@ -2434,6 +2465,17 @@ function deferred_subscription_bootstrap_retry_worker(remaining_sections) {
 }
 
 let mode = ARGV[0] || "";
+
+if (mode == "download-check-fixture") {
+    print(download_subscription(ARGV[1], ARGV[2], "", ARGV[3] || "", "test-agent", "test-hwid"), "\n");
+    exit(0);
+}
+
+if (mode == "download-source-check-fixture") {
+    let section = { ".name": "test", ".type": "section", action: "connection", subscription_urls: [ ARGV[1] ] };
+    print(download_subscription_into_cache("test", ARGV[1], ARGV[2], ARGV[2] + ".url", "", "", "", 1, "test-subscription-1", "", [ section ]), "\n");
+    exit(0);
+}
 
 if (mode == "file-first-line") {
     file_first_line(ARGV[1]);
