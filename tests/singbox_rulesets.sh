@@ -47,4 +47,6 @@ assert_eq binary \
 
 ucode -L "$LOGHORIZON_LIB" -e 'let rulesets = require("singbox.rulesets"); if (rulesets.kind_from_reference_hint("geoip") != "subnets") exit(1);'
 
+ucode -L "$LOGHORIZON_LIB" -e 'let r = require("singbox.rulesets"); for (let ref in ["https://example.org/discord.TXT?token=x#f", "/tmp/domains.lst", "/tmp/ips.list"]) if (!r.is_plain_list(ref)) exit(1); for (let ref in ["https://example.org/a.srs", "https://example.org/a.json", "https://example.org/download"]) if (r.is_plain_list(ref)) exit(1);'
+
 printf 'singbox rulesets checks passed\n'

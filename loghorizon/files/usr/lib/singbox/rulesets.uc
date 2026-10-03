@@ -102,12 +102,18 @@ function remote_format(reference) {
     return file_extension(reference) == "json" ? "source" : "binary";
 }
 
+function is_plain_list(reference) {
+    let extension = file_extension(reference);
+    return extension == "txt" || extension == "lst" || extension == "list";
+}
+
 function module_exports() {
     return {
         is_community,
         community_url,
         hash12,
         file_extension,
+        is_plain_list,
         kind_from_reference_hint,
         remote_format
     };

@@ -7036,6 +7036,20 @@ function getOptionTextarea(option, section_id) {
     : null;
 }
 
+function setDpiStrategyValue(option, sectionId, strategy) {
+  // A TableSection modal has its own map; the original option's map may only
+  // contain the summary row, not the textarea rendered in that modal.
+  const rendered = option && document.getElementById(`widget.${option.cbid(sectionId)}`);
+  const textarea = rendered?.nodeName === "TEXTAREA"
+    ? rendered
+    : option && getOptionTextarea(option, sectionId);
+  if (!textarea) return false;
+  textarea.value = strategy;
+  textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  textarea.dispatchEvent(new Event("change", { bubbles: true }));
+  return true;
+}
+
 function rejectStrategyValidation(option, section_id, message) {
   const title = option.stripTags(option.title).trim();
   const error = message || option.getValidationError(section_id) || "";
@@ -7320,6 +7334,15 @@ function validateFileReference(value, extensions, errorMessage, options = {}) {
 }
 
 function validateCustomRulesetReference(value) {
+  if (
+    hasAllowedReferenceExtension(`${value || ""}`.trim(), [
+      ".txt",
+      ".lst",
+      ".list",
+    ])
+  ) {
+    return _("Plain-text lists belong in Domain and IP lists, not Rule sets.");
+  }
   return validateFileReference(
     value,
     [".srs", ".json"],
@@ -7331,8 +7354,8 @@ function validateCustomRulesetReference(value) {
 function validatePlainListReference(value) {
   return validateFileReference(
     value,
-    [".lst"],
-    _("List must be an HTTP(S) URL or a local .lst path"),
+    [".lst", ".txt", ".list"],
+    _("List must be an HTTP(S) URL or a local .lst / .txt / .list path"),
     { allowRemoteWithoutExtension: true },
   );
 }
@@ -7715,14 +7738,16 @@ function createSectionContent(section) {
   o.remove = function () {};
   o.onchange = async function (_event, sectionId, presetId) {
     if (!presetId) return;
-    const engine = uci.get(UCI_PACKAGE, sectionId, "action") || "";
+    const engine =
+      section.formvalue(sectionId, "action") ||
+      uci.get(UCI_PACKAGE, sectionId, "action") ||
+      "";
     const presets = await loadDpiPresetCatalog();
     const preset = presets.find(
       (item) => item.id === presetId && item.engine === engine,
     );
     const option = dpiStrategyOptions[engine];
-    const widget = option && option.getUIElement(sectionId);
-    if (!preset || !widget || typeof widget.setValue !== "function") {
+    if (!preset || !setDpiStrategyValue(option, sectionId, preset.strategy)) {
       ui.addNotification(
         null,
         E("p", {}, _("Unable to apply the selected DPI preset")),
@@ -7730,7 +7755,6 @@ function createSectionContent(section) {
       );
       return;
     }
-    widget.setValue(preset.strategy);
     if (preset.adapted_assets) {
       ui.addNotification(
         null,

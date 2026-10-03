@@ -1,0 +1,12 @@
+{
+  "settings": { ".name": "settings", ".type": "settings", "config_version": "0.5.51", "applied_migrations": ["legacy_list_options"] },
+  "rule": [{
+    ".name": "discord", ".type": "rule", "enabled": "1", "action": "block",
+    "rule_set": ["https://example.com/domains.TXT?token=1#x", "https://example.com/valid.srs", "https://example.com/download"],
+    "rule_set_with_subnets": ["/etc/ips.list", "https://example.com/subnets.json"],
+    "domain_ip_lists": ["https://example.com/domains.TXT?token=1#x"]
+  }, {
+    ".name": "plain-only", ".type": "rule", "enabled": "1", "action": "block",
+    "rule_set": ["https://example.com/all.lst"]
+  }]
+}

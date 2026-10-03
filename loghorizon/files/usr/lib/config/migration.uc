@@ -11,6 +11,7 @@ let constants_module = require("core.constants");
 let singbox_constants_module = require("singbox.constants");
 let domain_config = require("config.domain");
 let subscription_share_link = require("subscription.share_link");
+let singbox_rulesets = require("singbox.rulesets");
 
 let as_string = common.as_string;
 let read_json_file = common.read_json_file;
@@ -1379,11 +1380,51 @@ function migrate_download_via_dpi_section(ctx) {
     }
 }
 
+// Plain text is not a sing-box binary rule set. Recover misplaced references
+// without dropping their domains/subnets or depending on a remote download.
+function migrate_plain_ruleset_references(ctx) {
+    let sections = [];
+    for (let section in ctx.model.sections)
+        push(sections, section);
+    for (let section in ctx.model.rules)
+        push(sections, section);
+    for (let section in sections) {
+        let plain = [];
+        let seen = {};
+        for (let value in option_list_values(section, "domain_ip_lists"))
+            add_unique_value(plain, seen, value);
+        let moved = false;
+        for (let key in [ "rule_set", "rule_set_with_subnets" ]) {
+            let keep = [];
+            let moved_key = false;
+            for (let value in option_list_values(section, key)) {
+                if (singbox_rulesets.is_plain_list(value)) {
+                    add_unique_value(plain, seen, value);
+                    moved = true;
+                    moved_key = true;
+                }
+                else {
+                    push(keep, value);
+                }
+            }
+            if (!moved_key)
+                continue;
+            if (length(keep) > 0)
+                set_list_option(ctx, section, key, keep);
+            else if (option(section, key, null) != null)
+                delete_option(ctx, section, key);
+        }
+        if (moved)
+            set_list_option(ctx, section, "domain_ip_lists", plain);
+    }
+}
+
 const MIGRATIONS = [
     { id: "interface_sections", run: migrate_interface_sections },
     { id: "enable_component_checks", run: migrate_enable_component_checks },
     { id: "http_connection_urls", run: migrate_http_connection_urls },
     { id: "legacy_list_options", run: migrate_legacy_list_options },
+    { id: "plain_ruleset_references", run: migrate_plain_ruleset_references },
     { id: "download_via_dpi_section", run: migrate_download_via_dpi_section },
     { id: "download_via_byedpi_section", run: migrate_download_via_dpi_section }
 ];

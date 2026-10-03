@@ -2692,3 +2692,9 @@ msgstr "Дополнительно"
 
 msgid "General"
 msgstr "Основное"
+
+msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
+msgstr "Текстовые списки добавляются в поле «Списки доменов и IP», а не «Наборы правил»."
+
+msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
+msgstr "Укажите HTTP(S)-ссылку или локальный путь к файлу .lst / .txt / .list"

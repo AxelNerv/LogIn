@@ -12,6 +12,7 @@ let core_url = require("core.url");
 let core_ip = require("core.ip");
 let rule_config = require("config.rule");
 let connections = require("config.connections");
+let rulesets = require("singbox.rulesets");
 
 const CONFIG_NAME = getenv("LOGHORIZON_CONFIG_NAME") || "loghorizon";
 const DEFAULT_LATENCY_TEST_URL = "https://www.gstatic.com/generate_204";
@@ -382,6 +383,9 @@ function absolute_reference_with_extension(value, first_extension, second_extens
 function ruleset_reference_valid(reference, community_services) {
     reference = as_string(reference);
 
+    if (rulesets.is_plain_list(reference))
+        return false;
+
     return reference == "" ||
         community_service_valid(reference, community_services) ||
         remote_reference(reference) ||
@@ -393,7 +397,7 @@ function plain_domain_ip_list_reference_valid(reference) {
 
     return reference == "" ||
         remote_reference(reference) ||
-        absolute_reference_with_extension(reference, ".lst", null);
+        (string_starts_with(reference, "/") && rulesets.is_plain_list(reference));
 }
 
 function valid_outbound() {

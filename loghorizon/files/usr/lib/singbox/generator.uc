@@ -324,6 +324,8 @@ function ruleset_registered(config, tag_name) {
 }
 
 function ensure_custom_ruleset(config, reference) {
+    if (runtime_rulesets.is_plain_list(reference))
+        runtime_generate_unsupported("plain-text rule_set reference: use domain_ip_lists instead of rule_set");
     let tag_name;
     let kind = runtime_rulesets.kind_from_reference_hint(reference);
 

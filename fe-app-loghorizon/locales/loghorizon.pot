@@ -3871,3 +3871,9 @@ msgstr ""
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7402
 msgid "General"
 msgstr ""
+
+msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
+msgstr ""
+
+msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
+msgstr ""
