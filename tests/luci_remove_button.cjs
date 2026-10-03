@@ -21,9 +21,12 @@ for (const disabled of [false, true]) {
   assert.ok(button);
   assert.equal(button.tag, 'button');
   assert.equal(button.attrs.type, 'button');
-  assert.equal(button.attrs.disabled, disabled);
+  // LuCI's E() omits null attributes, but stringifies false. HTML boolean
+  // attributes disable controls whenever present, irrespective of value.
+  assert.equal(button.attrs.disabled != null, disabled);
   button.attrs.click({preventDefault(){},stopPropagation(){}});
   assert.equal(removed, disabled ? 0 : 1);
 }
 assert.ok(source.includes('o.childLegacyOption = "subscription_urls";'));
+assert.match(source, /\.lgh-connections-dynlist > \.item > \.lgh-dynlist-remove\s*\{[^}]*pointer-events:\s*auto/);
 console.log('Theme-independent DynamicList remove checks passed');

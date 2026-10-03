@@ -1761,7 +1761,7 @@ function download_subscription_into_cache(section_name_value, subscription_url, 
     unlink_path(normalized_tmpfile);
     unlink_path(metadata_tmpfile);
     if (source_failure != "")
-        log_message("Subscription source unavailable for rule '" + section_name_value + "': " + source_failure + "; previous working cache retained", "error");
+        log_message("Subscription source unavailable for rule '" + section_name_value + "': " + source_failure + "; existing cache left unchanged", "error");
     else if (subscription_user_agent != "")
         log_message("Configured subscription request profile for rule '" + section_name_value + "' did not produce valid proxy entries", "error");
     else

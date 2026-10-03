@@ -1081,6 +1081,7 @@ function ensureConnectionsDynamicListStyles() {
 }
 
 .lgh-connections-dynlist > .item > .lgh-dynlist-remove {
+  pointer-events: auto;
   position: absolute;
   right: -1px;
   top: -1px;
@@ -1345,7 +1346,9 @@ const SettingsUIDynamicList = ui.DynamicList.extend({
         class: "lgh-dynlist-remove",
         "aria-label": _("Remove"),
         title: _("Remove"),
-        disabled: !!this.options.disabled,
+        // LuCI E() sets attributes, not boolean DOM properties. Even
+        // disabled="false" disables a button; omit it for editable lists.
+        disabled: this.options.disabled ? "" : null,
         click: (event) => {
           event.preventDefault();
           event.stopPropagation();
