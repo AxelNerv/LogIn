@@ -11,12 +11,19 @@ vm.createContext(context);
 vm.runInContext(helper, context);
 // Real LuCI Textarea lacks setValue(); input/change must still reach the form
 // and the strategy annotations, without updating UCI before Save.
-for (const engine of ['zapret', 'zapret2']) {
+assert.deepEqual(catalog.presets.map(item => item.id), ['login-youtube-mgts', 'login-discord-mgts']);
+assert.ok(catalog.presets.every(item => item.engine === 'zapret'));
+const discord = catalog.presets.find(item => item.id === 'login-discord-mgts');
+const voice = discord.strategy.split(' --new ').at(-1);
+assert.ok(voice.includes('--dpi-desync-any-protocol=1'));
+assert.ok(voice.includes('--dpi-desync-cutoff=d6'));
+assert.ok(voice.includes('--dpi-desync-repeats=2'));
+assert.ok(!voice.includes('--filter-l7='));
+for (const preset of catalog.presets) {
+  const engine = preset.id;
   const events = [];
   const node = { nodeName: 'TEXTAREA', value: '', dispatchEvent: event => events.push(event.type) };
   nodes.set(`widget.${engine}`, node);
-  const preset = catalog.presets.find(item => item.engine === engine);
-  assert.ok(preset);
   assert.equal(context.setDpiStrategyValue({cbid: id => id}, engine, preset.strategy), true);
   assert.equal(node.value, preset.strategy);
   assert.deepEqual(events, ['input', 'change']);
