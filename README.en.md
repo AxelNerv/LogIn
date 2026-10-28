@@ -67,6 +67,7 @@ Open `design/logIn Operator Calm.html` in a browser. Operator Calm is the single
 
 ## Project notes
 
+- [User guide, diagnostics and common errors (Russian)](docs/TROUBLESHOOTING.md)
 - [Foundation and namespace migration](docs/FOUNDATION.md)
 - [Information architecture](docs/INFORMATION_ARCHITECTURE.md)
 - [Routing profiles and managed networks](docs/ROUTING_AND_NETWORKS.md)

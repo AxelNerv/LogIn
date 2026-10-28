@@ -62,6 +62,7 @@ cd fe-app-loghorizon && yarn locales:actualize
 
 ## Документы проекта
 
+- [Справка: работа logIn, диагностика и частые ошибки](docs/TROUBLESHOOTING.md)
 - [Фундамент и миграция пространства имён](docs/FOUNDATION.md)
 - [Информационная архитектура](docs/INFORMATION_ARCHITECTURE.md)
 - [Профили маршрутизации и управляемые сети](docs/ROUTING_AND_NETWORKS.md)
