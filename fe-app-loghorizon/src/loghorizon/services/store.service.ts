@@ -131,6 +131,7 @@ export interface IDiagnosticsChecksStoreItem {
   description: string;
   state: 'loading' | 'warning' | 'success' | 'error' | 'skipped';
   items: Array<IDiagnosticsChecksItem>;
+  checkedAt?: number;
 }
 
 export interface StoreType {
@@ -174,6 +175,8 @@ export interface StoreType {
   };
   diagnosticsRunAction: {
     loading: boolean;
+    checkCodes?: string[];
+    cancelling?: boolean;
   };
   diagnosticsChecks: Array<IDiagnosticsChecksStoreItem>;
   diagnosticsActions: {

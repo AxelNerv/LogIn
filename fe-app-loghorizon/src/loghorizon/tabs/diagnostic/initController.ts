@@ -1,21 +1,9 @@
 import { onMount, preserveScrollForPage } from '../../../helpers';
-import { runDnsCheck } from './checks/runDnsCheck';
-import { runConnectivityPathCheck } from './checks/runConnectivityPathCheck';
-import { runSingBoxCheck } from './checks/runSingBoxCheck';
-import { runInboundsCheck } from './checks/runInboundsCheck';
-import { runNftCheck } from './checks/runNftCheck';
-import { runFakeIPCheck } from './checks/runFakeIPCheck';
-import { runZapretCheck } from './checks/runZapretCheck';
-import { runZapret2Check } from './checks/runZapret2Check';
-import { runByedpiCheck } from './checks/runByedpiCheck';
-import {
-  DIAGNOSTICS_CHECKS,
-  DIAGNOSTICS_CHECKS_MAP,
-} from './checks/contstants';
+import { DIAGNOSTICS_CHECKS } from './checks/contstants';
 import {
   DiagnosticsProviderOptions,
   getDiagnosticsChecks,
-  getLoadingDiagnosticsChecks,
+  mergeDiagnosticsChecks,
 } from './diagnostic.store';
 import {
   logger,
@@ -39,7 +27,6 @@ import { normalizeCompiledVersion } from '../../../helpers/normalizeCompiledVers
 import { renderModal } from '../../../partials';
 import { LOGHORIZON_LUCI_APP_VERSION } from '../../../constants';
 import { renderWikiDisclaimer } from './partials/renderWikiDisclaimer';
-import { runSectionsCheck } from './checks/runSectionsCheck';
 import { logIn } from '../../types';
 import {
   getAvailableActionsDisabledState,
@@ -60,11 +47,10 @@ import {
   normalizeSingBoxVariantFields,
 } from '../../helpers/singBoxVariant';
 import {
-  clearPersistedDiagnosticRun,
   PersistedDiagnosticRun,
   readPersistedDiagnosticRun,
-  savePersistedDiagnosticRun,
 } from './diagnosticRunPersistence';
+import { cancelDiagnosticRun, runDiagnosticChecks } from './diagnosticRun';
 import {
   formatMaskedSingBoxConfig,
   maskGlobalCheckText,
@@ -79,17 +65,12 @@ let diagnosticLifecycleRegistered = false;
 let diagnosticControllerInitialized = false;
 let diagnosticMounted = false;
 let diagnosticMountId = 0;
-let diagnosticCompletedWhileHidden = false;
 let servicesInfoStateUnsubscribe: (() => void) | null = null;
 let servicesInfoRefreshPromise: Promise<void> | null = null;
 const followedServiceActionJobs = new Set<string>();
 const handledServiceActionJobs = new Set<string>();
 
 type ServiceRuntimeAction = 'restart' | 'start' | 'stop' | 'reset_fakeip';
-type DiagnosticRunner = {
-  code: DIAGNOSTICS_CHECKS;
-  run: () => Promise<void>;
-};
 
 function sleep(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -112,16 +93,14 @@ function getDiagnosticsProviderOptions(
   };
 }
 
-function getNotRunningDiagnosticsChecks() {
-  return getDiagnosticsChecks(
-    _('Not running'),
-    getDiagnosticsProviderOptions(),
-  );
-}
-
+// A user-requested service change invalidates results from the old runtime.
+// Merely changing tabs does not.
 function resetDiagnosticsChecks() {
   store.set({
-    diagnosticsChecks: getNotRunningDiagnosticsChecks(),
+    diagnosticsChecks: getDiagnosticsChecks(
+      _('Not running'),
+      getDiagnosticsProviderOptions(),
+    ),
   });
 }
 
@@ -345,8 +324,8 @@ async function fetchSystemInfo() {
   }
 
   store.set({
-    diagnosticsChecks: getDiagnosticsChecks(
-      _('Not running'),
+    diagnosticsChecks: mergeDiagnosticsChecks(
+      store.get().diagnosticsChecks,
       getDiagnosticsProviderOptions(systemInfo),
     ),
   });
@@ -402,8 +381,8 @@ async function fetchDiagnosticsProviderInfo({
           diagnosticsRunLoading: store.get().diagnosticsRunAction.loading,
         })
       ) {
-        nextState.diagnosticsChecks = getDiagnosticsChecks(
-          _('Not running'),
+        nextState.diagnosticsChecks = mergeDiagnosticsChecks(
+          store.get().diagnosticsChecks,
           getDiagnosticsProviderOptions(nextSystemInfo),
         );
       }
@@ -488,8 +467,8 @@ async function fetchDiagnosticsProviderInfo({
         diagnosticsRunLoading: store.get().diagnosticsRunAction.loading,
       })
     ) {
-      nextState.diagnosticsChecks = getDiagnosticsChecks(
-        _('Not running'),
+      nextState.diagnosticsChecks = mergeDiagnosticsChecks(
+        store.get().diagnosticsChecks,
         getDiagnosticsProviderOptions(nextSystemInfo),
       );
     }
@@ -520,7 +499,14 @@ function renderDiagnosticsChecks() {
   const container = document.getElementById('lgh_diagnostic-page-checks');
 
   const renderedDiagnosticsChecks = diagnosticsChecks.map((check) =>
-    renderCheckSection(check),
+    renderCheckSection({
+      ...check,
+      onRun: () => {
+        void runChecks({ code: check.code as DIAGNOSTICS_CHECKS });
+      },
+      disabled:
+        store.get().diagnosticsRunAction.loading || isDiagnosticRunDisabled(),
+    }),
   );
 
   return preserveScrollForPage(() => {
@@ -528,24 +514,32 @@ function renderDiagnosticsChecks() {
   });
 }
 
-function renderDiagnosticRunActionWidget() {
-  logger.debug('[DIAGNOSTIC]', 'renderDiagnosticRunActionWidget');
-
-  const { loading } = store.get().diagnosticsRunAction;
+function isDiagnosticRunDisabled() {
   const providerInfoLoaded =
     store.get().diagnosticsSystemInfo.providerInfoLoaded;
   const servicesInfoWidget = store.get().servicesInfoWidget;
   const loghorizonRunning = Boolean(servicesInfoWidget.data.loghorizonRunning);
-  const container = document.getElementById('lgh_diagnostic-page-run-check');
-
-  const renderedAction = renderRunAction({
-    loading,
-    disabled: shouldDisableDiagnosticRunAction({
+  return (
+    servicesInfoWidget.failed ||
+    hasComponentActionLoading(store.get().updatesActions) ||
+    shouldDisableDiagnosticRunAction({
       providerInfoLoaded,
-      servicesInfoLoading: servicesInfoWidget.loading,
+      servicesInfoLoading: servicesInfoWidget.loading && !loghorizonRunning,
       loghorizonRunning,
       mutatingServiceActionLoading: isMutatingServiceActionLoading(),
-    }),
+    })
+  );
+}
+
+function renderDiagnosticRunActionWidget() {
+  const action = store.get().diagnosticsRunAction;
+  const container = document.getElementById('lgh_diagnostic-page-run-check');
+  const renderedAction = renderRunAction({
+    loading: action.loading && action.checkCodes?.length !== 1,
+    running: action.loading,
+    cancelling: action.cancelling,
+    cancel: cancelDiagnosticRun,
+    disabled: action.loading || isDiagnosticRunDisabled(),
     click: () => runChecks(),
   });
 
@@ -835,7 +829,9 @@ function renderDiagnosticAvailableActionsWidget() {
   const { serviceControlsDisabled, utilityActionsDisabled, viewLogsDisabled } =
     getAvailableActionsDisabledState({
       servicesInfoLoading: servicesInfoWidget.loading,
-      mutatingServiceActionLoading: atLeastOneMutatingActionLoading,
+      mutatingServiceActionLoading:
+        atLeastOneMutatingActionLoading ||
+        store.get().diagnosticsRunAction.loading,
       componentActionLoading,
     });
   const startVisible = shouldShowStartAction({
@@ -994,6 +990,8 @@ async function onStoreUpdate(
 
   if (diff.diagnosticsRunAction) {
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
+    renderDiagnosticAvailableActionsWidget();
   }
 
   if (
@@ -1004,147 +1002,34 @@ async function onStoreUpdate(
     renderDiagnosticAvailableActionsWidget();
   }
 
-  if (diff.diagnosticsActions || diff.servicesInfoWidget) {
+  if (
+    diff.diagnosticsActions ||
+    diff.servicesInfoWidget ||
+    diff.updatesActions
+  ) {
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
   }
 
   if (diff.diagnosticsSystemInfo) {
     renderDiagnosticSystemInfoWidget();
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
   }
 }
 
-function persistDiagnosticRunProgress({
-  providerOptions,
-  nextRunnerIndex,
-}: {
-  providerOptions: DiagnosticsProviderOptions;
-  nextRunnerIndex: number;
-}) {
-  savePersistedDiagnosticRun({
-    providerOptions,
-    nextRunnerIndex,
-    diagnosticsChecks: store.get().diagnosticsChecks,
+async function runChecks({
+  code,
+  resume,
+}: { code?: DIAGNOSTICS_CHECKS; resume?: PersistedDiagnosticRun } = {}) {
+  return runDiagnosticChecks({
+    code,
+    resume,
+    refreshProviders: () =>
+      fetchDiagnosticsProviderInfo({ resetChecks: false }),
+    getProviderOptions: getDiagnosticsProviderOptions,
+    canRun: () => !isDiagnosticRunDisabled(),
   });
-}
-
-function setDiagnosticCheckLoading(code: DIAGNOSTICS_CHECKS) {
-  const meta = DIAGNOSTICS_CHECKS_MAP[code];
-  const diagnosticsChecks = store.get().diagnosticsChecks;
-  const other = diagnosticsChecks.filter((item) => item.code !== code);
-
-  store.set({
-    diagnosticsChecks: [
-      ...other,
-      {
-        order: meta.order,
-        code: meta.code,
-        title: meta.title,
-        description: _('Checking, please wait'),
-        state: 'loading',
-        items: [],
-      },
-    ],
-  });
-}
-
-function getDiagnosticRunners(
-  providerOptions: DiagnosticsProviderOptions,
-): DiagnosticRunner[] {
-  return [
-    { code: DIAGNOSTICS_CHECKS.DNS, run: runDnsCheck },
-    { code: DIAGNOSTICS_CHECKS.CONNECTIVITY, run: runConnectivityPathCheck },
-    { code: DIAGNOSTICS_CHECKS.SINGBOX, run: runSingBoxCheck },
-    ...(providerOptions.includeInbounds
-      ? [{ code: DIAGNOSTICS_CHECKS.INBOUNDS, run: runInboundsCheck }]
-      : []),
-    { code: DIAGNOSTICS_CHECKS.NFT, run: runNftCheck },
-    ...(providerOptions.includeZapret
-      ? [{ code: DIAGNOSTICS_CHECKS.ZAPRET, run: runZapretCheck }]
-      : []),
-    ...(providerOptions.includeZapret2
-      ? [{ code: DIAGNOSTICS_CHECKS.ZAPRET2, run: runZapret2Check }]
-      : []),
-    ...(providerOptions.includeByedpi
-      ? [{ code: DIAGNOSTICS_CHECKS.BYEDPI, run: runByedpiCheck }]
-      : []),
-    { code: DIAGNOSTICS_CHECKS.OUTBOUNDS, run: runSectionsCheck },
-    { code: DIAGNOSTICS_CHECKS.FAKEIP, run: runFakeIPCheck },
-  ];
-}
-
-async function runChecks({ resume }: { resume?: PersistedDiagnosticRun } = {}) {
-  if (store.get().diagnosticsRunAction.loading && !resume) {
-    return;
-  }
-
-  let providerOptions =
-    resume?.providerOptions ?? getDiagnosticsProviderOptions();
-  let nextRunnerIndex = resume?.nextRunnerIndex ?? 0;
-
-  store.set({
-    diagnosticsRunAction: { loading: true },
-    diagnosticsChecks:
-      resume?.diagnosticsChecks ??
-      getLoadingDiagnosticsChecks(providerOptions).diagnosticsChecks,
-  });
-  persistDiagnosticRunProgress({
-    providerOptions,
-    nextRunnerIndex,
-  });
-
-  try {
-    if (!resume) {
-      await fetchDiagnosticsProviderInfo({ resetChecks: false });
-
-      providerOptions = getDiagnosticsProviderOptions();
-      nextRunnerIndex = 0;
-
-      store.set({
-        diagnosticsChecks:
-          getLoadingDiagnosticsChecks(providerOptions).diagnosticsChecks,
-      });
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex,
-      });
-    }
-
-    const runners = getDiagnosticRunners(providerOptions);
-
-    for (let index = nextRunnerIndex; index < runners.length; index += 1) {
-      const runner = runners[index];
-
-      setDiagnosticCheckLoading(runner.code);
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex: index,
-      });
-
-      try {
-        await runner.run();
-      } catch (e) {
-        logger.error(
-          '[DIAGNOSTIC]',
-          `runChecks - ${runner.run.name} failed`,
-          e,
-        );
-      }
-
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex: index + 1,
-      });
-    }
-  } catch (e) {
-    logger.error('[DIAGNOSTIC]', 'runChecks - e', e);
-  } finally {
-    clearPersistedDiagnosticRun();
-    store.set({ diagnosticsRunAction: { loading: false } });
-    if (!diagnosticMounted) {
-      diagnosticCompletedWhileHidden = true;
-    }
-  }
 }
 
 async function loadInitialDiagnosticData() {
@@ -1161,28 +1046,20 @@ async function loadInitialDiagnosticData() {
 }
 
 function restorePersistedDiagnosticRun() {
+  if (store.get().diagnosticsRunAction.loading) return false;
   const persistedRun = readPersistedDiagnosticRun();
 
   if (!persistedRun) {
     return false;
   }
 
-  store.set({
-    diagnosticsRunAction: { loading: true },
-    diagnosticsChecks: persistedRun.diagnosticsChecks,
-  });
   void runChecks({ resume: persistedRun });
   return true;
 }
 
 async function onPageMount() {
-  const preserveHiddenResult = diagnosticCompletedWhileHidden;
-
   // Cleanup before mount
-  onPageUnmount({
-    preserveCompletedResult: preserveHiddenResult,
-    preservePersistedRun: true,
-  });
+  onPageUnmount();
 
   diagnosticMounted = true;
   diagnosticMountId += 1;
@@ -1201,18 +1078,7 @@ async function onPageMount() {
     }
   }
 
-  const restoredPersistedRun =
-    !preserveHiddenResult && restorePersistedDiagnosticRun();
-
-  if (preserveHiddenResult) {
-    diagnosticCompletedWhileHidden = false;
-  } else if (
-    !restoredPersistedRun &&
-    !store.get().diagnosticsRunAction.loading
-  ) {
-    store.reset(['diagnosticsRunAction']);
-    resetDiagnosticsChecks();
-  }
+  const restoredPersistedRun = restorePersistedDiagnosticRun();
 
   // Add new listener
   store.subscribe(onStoreUpdate);
@@ -1236,18 +1102,12 @@ async function onPageMount() {
   if (hasRuntimeSnapshot) {
     void refreshRuntimeUiState({ force: true });
   }
-  if (!preserveHiddenResult && !restoredPersistedRun) {
+  if (!restoredPersistedRun && !store.get().diagnosticsRunAction.loading) {
     void loadInitialDiagnosticData();
   }
 }
 
-function onPageUnmount({
-  preserveCompletedResult = false,
-  preservePersistedRun = false,
-}: {
-  preserveCompletedResult?: boolean;
-  preservePersistedRun?: boolean;
-} = {}) {
+function onPageUnmount() {
   diagnosticMounted = false;
   diagnosticMountId += 1;
   stopServiceActionStateWatcher();
@@ -1256,14 +1116,7 @@ function onPageUnmount({
   // Remove old listener
   store.unsubscribe(onStoreUpdate);
 
-  if (!preserveCompletedResult && !store.get().diagnosticsRunAction.loading) {
-    if (!preservePersistedRun) {
-      clearPersistedDiagnosticRun();
-    }
-    store.reset(['diagnosticsRunAction']);
-    resetDiagnosticsChecks();
-    diagnosticCompletedWhileHidden = false;
-  }
+  // Keep completed results, timestamps and any active queue across tab changes.
 }
 
 function registerLifecycleListeners() {

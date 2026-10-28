@@ -58,7 +58,9 @@ export function mountNotifications(): HTMLElement {
       });
       notificationObserver.observe(mainContent, { childList: true });
       observedMainContent = mainContent;
-      window.addEventListener('pagehide', disconnectNotifications, { once: true });
+      window.addEventListener('pagehide', disconnectNotifications, {
+        once: true,
+      });
     }
   }
 

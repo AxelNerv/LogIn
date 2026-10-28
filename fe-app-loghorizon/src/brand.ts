@@ -11,5 +11,5 @@ export const LOGIN_BRAND = Object.freeze({
   wordmark: Object.freeze({ prefix: 'log', accent: 'In' }),
   internalName: 'loghorizon',
   edition: 'Foundation',
-  uiVersion: '0.5.58',
+  uiVersion: '0.5.59',
 });

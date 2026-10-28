@@ -13,14 +13,15 @@ export const styles = `
 
 .lgh_diagnostic-page {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     grid-column-gap: 10px;
     align-items: start;
+    min-width: 0;
 }
 
 @media (max-width: 800px) {
     .lgh_diagnostic-page {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -120,10 +121,52 @@ export const styles = `
     grid-row-gap: 10px;
 }
 
-.lgh_diagnostic-page__run_check_wrapper {}
+.lgh_diagnostic-page__left-bar,
+.lgh_diagnostic-page__right-bar,
+.lgh_diagnostic-page__checks,
+.lgh_diagnostic_alert__content,
+.lgh_diagnostic_alert__actions,
+.lgh_diagnostic_alert__summary,
+.lgh_diagnostic_alert__summary__item > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 
-.lgh_diagnostic-page__run_check_wrapper button {
-    width: 100%;
+.lgh_diagnostic-page__run_check_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button:first-child {
+    flex: 1 1 220px;
+}
+
+.lgh_diagnostic-page__cancel-hint {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 0;
+    color: var(--text-color-medium, #888);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button,
+.lgh_diagnostic_alert__actions > button {
+    min-width: 0;
+    max-width: 100%;
+    min-height: 44px;
+    width: auto;
+    margin: 0;
+    box-sizing: border-box;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button > span,
+.lgh_diagnostic_alert__actions > button > span {
+    min-width: 0;
 }
 
 .lgh_diagnostic-page__checks {
@@ -137,10 +180,13 @@ export const styles = `
     border-radius: 4px;
 
     display: grid;
-    grid-template-columns: 24px 1fr;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
     grid-column-gap: 10px;
-    align-items: center;
+    grid-row-gap: 10px;
+    align-items: start;
     padding: 10px;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .lgh_diagnostic_alert--loading {
@@ -174,14 +220,30 @@ export const styles = `
 
 .lgh_diagnostic_alert__description {}
 
+.lgh_diagnostic_alert__last-checked {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-color-medium, #888);
+}
+
+.lgh_diagnostic_alert__last-checked time {
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
 .lgh_diagnostic_alert__summary {
-    margin-top: 10px;
+    grid-column: 2 / -1;
 }
 
 .lgh_diagnostic_alert__summary__item {
     display: grid;
-    grid-template-columns: 16px auto 1fr;
+    grid-template-columns: 16px minmax(0, 1fr) minmax(0, 2fr);
     grid-column-gap: 10px;
+    min-width: 0;
 }
 
 .lgh_diagnostic_alert__summary__item--error {
@@ -199,5 +261,28 @@ export const styles = `
 .lgh_diagnostic_alert__summary__item__icon {
     width: 16px;
     height: 16px;
+}
+
+@media (max-width: 560px) {
+    .lgh_diagnostic_alert {
+        grid-template-columns: 24px minmax(0, 1fr);
+    }
+
+    .lgh_diagnostic_alert__actions {
+        grid-column: 2 / -1;
+    }
+
+    .lgh_diagnostic_alert__summary__item {
+        grid-template-columns: 16px minmax(0, 1fr);
+        gap: 4px 10px;
+    }
+
+    .lgh_diagnostic_alert__summary__item > div {
+        grid-column: 2;
+    }
+
+    .lgh_diagnostic-page__run_check_wrapper > button {
+        flex: 1 1 100%;
+    }
 }
 `;

@@ -2434,7 +2434,9 @@ function mountNotifications() {
       });
       notificationObserver.observe(mainContent, { childList: true });
       observedMainContent = mainContent;
-      window.addEventListener("pagehide", disconnectNotifications, { once: true });
+      window.addEventListener("pagehide", disconnectNotifications, {
+        once: true
+      });
     }
   }
   if (mainContent) {
@@ -4305,18 +4307,18 @@ function getCheckTitle(name) {
 }
 
 // src/loghorizon/tabs/diagnostic/checks/contstants.ts
-var DIAGNOSTICS_CHECKS = /* @__PURE__ */ ((DIAGNOSTICS_CHECKS2) => {
-  DIAGNOSTICS_CHECKS2["DNS"] = "DNS";
-  DIAGNOSTICS_CHECKS2["CONNECTIVITY"] = "CONNECTIVITY";
-  DIAGNOSTICS_CHECKS2["SINGBOX"] = "SINGBOX";
-  DIAGNOSTICS_CHECKS2["NFT"] = "NFT";
-  DIAGNOSTICS_CHECKS2["ZAPRET"] = "ZAPRET";
-  DIAGNOSTICS_CHECKS2["ZAPRET2"] = "ZAPRET2";
-  DIAGNOSTICS_CHECKS2["BYEDPI"] = "BYEDPI";
-  DIAGNOSTICS_CHECKS2["FAKEIP"] = "FAKEIP";
-  DIAGNOSTICS_CHECKS2["OUTBOUNDS"] = "OUTBOUNDS";
-  DIAGNOSTICS_CHECKS2["INBOUNDS"] = "INBOUNDS";
-  return DIAGNOSTICS_CHECKS2;
+var DIAGNOSTICS_CHECKS = /* @__PURE__ */ ((DIAGNOSTICS_CHECKS3) => {
+  DIAGNOSTICS_CHECKS3["DNS"] = "DNS";
+  DIAGNOSTICS_CHECKS3["CONNECTIVITY"] = "CONNECTIVITY";
+  DIAGNOSTICS_CHECKS3["SINGBOX"] = "SINGBOX";
+  DIAGNOSTICS_CHECKS3["NFT"] = "NFT";
+  DIAGNOSTICS_CHECKS3["ZAPRET"] = "ZAPRET";
+  DIAGNOSTICS_CHECKS3["ZAPRET2"] = "ZAPRET2";
+  DIAGNOSTICS_CHECKS3["BYEDPI"] = "BYEDPI";
+  DIAGNOSTICS_CHECKS3["FAKEIP"] = "FAKEIP";
+  DIAGNOSTICS_CHECKS3["OUTBOUNDS"] = "OUTBOUNDS";
+  DIAGNOSTICS_CHECKS3["INBOUNDS"] = "INBOUNDS";
+  return DIAGNOSTICS_CHECKS3;
 })(DIAGNOSTICS_CHECKS || {});
 var DIAGNOSTICS_CHECKS_MAP = {
   ["DNS" /* DNS */]: {
@@ -4405,10 +4407,10 @@ function getDiagnosticsChecks(description, options = {}) {
   checks.push("OUTBOUNDS" /* OUTBOUNDS */, "FAKEIP" /* FAKEIP */);
   return checks.map((code) => createDiagnosticCheck(code, description));
 }
-function getLoadingDiagnosticsChecks(options = {}) {
-  return {
-    diagnosticsChecks: getDiagnosticsChecks(_("Pending"), options)
-  };
+function mergeDiagnosticsChecks(existing, options) {
+  return getDiagnosticsChecks(_("Not running"), options).map(
+    (check) => existing.find((item) => item.code === check.code) ?? check
+  );
 }
 var initialDiagnosticStore = {
   diagnosticsSystemInfo: {
@@ -7732,6 +7734,988 @@ function render2() {
   ]);
 }
 
+// src/loghorizon/services/systemInfo.service.ts
+var UNKNOWN_SYSTEM_INFO = {
+  loading: false,
+  loaded: false,
+  providerInfoLoaded: false,
+  loghorizon_version: _("unknown"),
+  loghorizon_latest_version: _("unknown"),
+  luci_app_version: _("unknown"),
+  sing_box_version: _("unknown"),
+  sing_box_extended: 0,
+  sing_box_tiny: 0,
+  sing_box_compressed: 0,
+  sing_box_tailscale: 1,
+  zapret_version: _("unknown"),
+  zapret_installed: 0,
+  zapret2_version: _("unknown"),
+  zapret2_installed: 0,
+  byedpi_version: _("unknown"),
+  byedpi_installed: 0,
+  server_inbounds_enabled_count: -1,
+  openwrt_version: _("unknown"),
+  device_model: _("unknown")
+};
+var systemInfoPromise = null;
+var latestSystemInfoRequestId = 0;
+function hasLoadedSystemInfo() {
+  const systemInfo = store.get().diagnosticsSystemInfo;
+  return Boolean(systemInfo.loaded) && !systemInfo.loading;
+}
+async function ensureSystemInfo({
+  force = false,
+  silent = false
+} = {}) {
+  if (!force && hasLoadedSystemInfo()) {
+    return store.get().diagnosticsSystemInfo;
+  }
+  if (systemInfoPromise && !force) {
+    return systemInfoPromise;
+  }
+  const requestId = ++latestSystemInfoRequestId;
+  const currentSystemInfo = store.get().diagnosticsSystemInfo;
+  if (!silent) {
+    store.set({
+      diagnosticsSystemInfo: {
+        ...currentSystemInfo,
+        loading: true
+      }
+    });
+  }
+  const promise = (async () => {
+    try {
+      const systemInfo = await LogHorizonShellMethods.getSystemInfo();
+      if (requestId !== latestSystemInfoRequestId) {
+        return store.get().diagnosticsSystemInfo;
+      }
+      if (systemInfo.success) {
+        const nextSystemInfo = normalizeSingBoxVariantFields({
+          ...UNKNOWN_SYSTEM_INFO,
+          loading: false,
+          loaded: true,
+          providerInfoLoaded: true,
+          server_inbounds_enabled_count: currentSystemInfo.server_inbounds_enabled_count,
+          ...systemInfo.data
+        });
+        store.set({
+          diagnosticsSystemInfo: nextSystemInfo
+        });
+        return nextSystemInfo;
+      }
+    } catch (error) {
+      logger.error("[SYSTEM_INFO]", "ensureSystemInfo failed", error);
+    }
+    if (requestId === latestSystemInfoRequestId && !silent) {
+      const latestSystemInfo = store.get().diagnosticsSystemInfo;
+      const nextSystemInfo = {
+        ...UNKNOWN_SYSTEM_INFO,
+        loading: false,
+        loaded: false,
+        providerInfoLoaded: latestSystemInfo.providerInfoLoaded,
+        zapret_installed: latestSystemInfo.zapret_installed,
+        zapret2_installed: latestSystemInfo.zapret2_installed,
+        byedpi_installed: latestSystemInfo.byedpi_installed,
+        server_inbounds_enabled_count: latestSystemInfo.server_inbounds_enabled_count
+      };
+      store.set({
+        diagnosticsSystemInfo: nextSystemInfo
+      });
+      return nextSystemInfo;
+    }
+    return store.get().diagnosticsSystemInfo;
+  })();
+  systemInfoPromise = promise;
+  try {
+    return await promise;
+  } finally {
+    if (systemInfoPromise === promise) {
+      systemInfoPromise = null;
+    }
+  }
+}
+
+// src/partials/button/styles.ts
+var styles2 = `
+.lgh-partial-button {
+    text-align: center;
+}
+
+.lgh-partial-button--with-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.lgh-partial-button--loading {
+}
+
+.lgh-partial-button--disabled {
+}
+
+.lgh-partial-button__icon {
+    flex: 0 0 auto;
+}
+
+.lgh-partial-button__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lgh-partial-button__icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex: 0 0 auto;
+}
+`;
+
+// src/partials/modal/styles.ts
+var styles3 = `
+
+.lgh-partial-modal__body {}
+
+.lgh-partial-modal__content {
+    max-height: 70vh;
+    overflow: scroll;
+    border-radius: 4px;
+}
+
+.lgh-partial-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lgh-partial-modal__footer button {
+    margin-left: 0;
+}
+
+.lgh-partial-modal__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+    cursor: pointer;
+    user-select: none;
+}
+
+.lgh-partial-modal__checkbox-text {
+    line-height: 1.2;
+}
+`;
+
+// src/partials/button/renderButton.ts
+function renderButton({
+  classNames = [],
+  disabled,
+  loading: loading2,
+  onClick,
+  text,
+  icon
+}) {
+  const hasIcon = !!loading2 || !!icon;
+  function getWrappedIcon() {
+    const iconWrap = E("span", {
+      class: "lgh-partial-button__icon"
+    });
+    if (loading2) {
+      iconWrap.appendChild(renderLoaderCircleIcon24());
+      return iconWrap;
+    }
+    if (icon) {
+      iconWrap.appendChild(icon());
+      return iconWrap;
+    }
+    return iconWrap;
+  }
+  function getClass() {
+    return [
+      "btn",
+      "lgh-partial-button",
+      ...insertIf(Boolean(disabled), ["lgh-partial-button--disabled"]),
+      ...insertIf(Boolean(loading2), ["lgh-partial-button--loading"]),
+      ...insertIf(Boolean(hasIcon), ["lgh-partial-button--with-icon"]),
+      ...classNames
+    ].filter(Boolean).join(" ");
+  }
+  function getDisabled() {
+    if (loading2 || disabled) {
+      return true;
+    }
+    return void 0;
+  }
+  return E(
+    "button",
+    {
+      type: "button",
+      class: getClass(),
+      disabled: getDisabled(),
+      click: onClick
+    },
+    [...insertIf(hasIcon, [getWrappedIcon()]), E("span", {}, text)]
+  );
+}
+
+// src/partials/modal/renderModal.ts
+function renderModal(text, name, options) {
+  let rawText = text ?? "";
+  let currentText = "";
+  let refreshInFlight = false;
+  let pendingRefresh = false;
+  let pendingForcedRefresh = false;
+  let refreshSessionId = 0;
+  let timer;
+  let observer;
+  let autoRefreshEnabled = options?.initialAutoRefresh ?? Boolean(options?.getText);
+  let maskValuesEnabled = options?.initialMaskValues ?? true;
+  let shouldScrollToBottomOnMount = Boolean(options?.startAtEnd);
+  let autoRefreshInput;
+  let maskValuesInput;
+  const getDisplayText = (value) => {
+    if (maskValuesEnabled && options?.maskText) {
+      return options.maskText(value);
+    }
+    return value;
+  };
+  const codeEl = E("code", {}, "");
+  const contentEl = E(
+    "pre",
+    { class: "lgh-partial-modal__content" },
+    codeEl
+  );
+  const stopRefreshTimer = () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = void 0;
+    }
+  };
+  const destroyLiveRefresh = () => {
+    refreshSessionId += 1;
+    pendingRefresh = false;
+    pendingForcedRefresh = false;
+    stopRefreshTimer();
+    observer?.disconnect();
+    observer = void 0;
+  };
+  const scrollToBottom = () => {
+    contentEl.scrollTop = contentEl.scrollHeight;
+  };
+  const scheduleInitialScrollToBottom = () => {
+    if (!shouldScrollToBottomOnMount || !body.isConnected) {
+      return;
+    }
+    shouldScrollToBottomOnMount = false;
+    requestAnimationFrame(() => {
+      scrollToBottom();
+    });
+  };
+  const updateText = (nextText) => {
+    const normalizedText = nextText ?? "";
+    const shouldStickToBottom = shouldScrollToBottomOnMount || contentEl.scrollTop + contentEl.clientHeight >= contentEl.scrollHeight - 16;
+    if (normalizedText === currentText) {
+      if (shouldStickToBottom) {
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
+      }
+      return;
+    }
+    currentText = normalizedText;
+    codeEl.textContent = currentText;
+    if (shouldStickToBottom) {
+      requestAnimationFrame(() => {
+        scrollToBottom();
+      });
+    }
+  };
+  const updateDisplayedTextFromRaw = () => {
+    updateText(getDisplayText(rawText));
+  };
+  const refreshText = async (force = false) => {
+    if (!options?.getText || !force && !autoRefreshEnabled || refreshInFlight) {
+      return;
+    }
+    if (!body.isConnected) {
+      return;
+    }
+    refreshInFlight = true;
+    const sessionId = refreshSessionId;
+    try {
+      const nextText = await options.getText({
+        maskValues: options.maskText ? false : maskValuesEnabled
+      });
+      if (!body.isConnected || !force && !autoRefreshEnabled) {
+        return;
+      }
+      if (sessionId !== refreshSessionId) {
+        return;
+      }
+      const normalizedText = nextText ?? "";
+      rawText = normalizedText;
+      updateText(getDisplayText(normalizedText));
+    } catch (error) {
+      console.warn("[renderModal] failed to refresh modal content", error);
+    } finally {
+      refreshInFlight = false;
+      if (pendingRefresh) {
+        const shouldForceRefresh = pendingForcedRefresh;
+        pendingRefresh = false;
+        pendingForcedRefresh = false;
+        if ((shouldForceRefresh || autoRefreshEnabled) && body.isConnected) {
+          void refreshText(shouldForceRefresh);
+        }
+      }
+    }
+  };
+  const requestRefresh = () => {
+    if (!options?.getText || !autoRefreshEnabled) {
+      return;
+    }
+    if (refreshInFlight) {
+      pendingRefresh = true;
+      return;
+    }
+    void refreshText();
+  };
+  const requestForcedRefresh = () => {
+    if (!options?.getText) {
+      return;
+    }
+    if (refreshInFlight) {
+      pendingRefresh = true;
+      pendingForcedRefresh = true;
+      return;
+    }
+    void refreshText(true);
+  };
+  const startRefreshTimer = () => {
+    if (!options?.getText || !autoRefreshEnabled || timer || typeof document === "undefined") {
+      return;
+    }
+    timer = setInterval(() => {
+      requestRefresh();
+    }, options.refreshMs ?? 3e3);
+  };
+  const setAutoRefreshEnabled = (nextValue) => {
+    autoRefreshEnabled = nextValue;
+    refreshSessionId += 1;
+    pendingRefresh = false;
+    pendingForcedRefresh = false;
+    if (autoRefreshInput) {
+      autoRefreshInput.checked = nextValue;
+    }
+    if (nextValue) {
+      startRefreshTimer();
+      requestRefresh();
+      return;
+    }
+    stopRefreshTimer();
+  };
+  const setMaskValuesEnabled = (nextValue) => {
+    maskValuesEnabled = nextValue;
+    refreshSessionId += 1;
+    pendingRefresh = false;
+    pendingForcedRefresh = false;
+    if (maskValuesInput) {
+      maskValuesInput.checked = nextValue;
+    }
+    if (options?.maskText) {
+      updateDisplayedTextFromRaw();
+      return;
+    }
+    requestForcedRefresh();
+  };
+  const footerChildren = [
+    renderButton({
+      classNames: ["cbi-button-apply"],
+      text: _("Download"),
+      onClick: () => downloadAsTxt(currentText, name)
+    }),
+    renderButton({
+      classNames: ["cbi-button-apply"],
+      text: _("Copy"),
+      onClick: () => copyToClipboard(`\`\`\`${name}
+${currentText}
+\`\`\``)
+    }),
+    renderButton({
+      classNames: ["cbi-button-remove"],
+      text: _("Close"),
+      onClick: () => {
+        destroyLiveRefresh();
+        ui.hideModal();
+      }
+    })
+  ];
+  if (options?.getText && options?.showAutoRefreshToggle) {
+    autoRefreshInput = document.createElement("input");
+    autoRefreshInput.type = "checkbox";
+    autoRefreshInput.className = "cbi-input-checkbox";
+    autoRefreshInput.checked = autoRefreshEnabled;
+    autoRefreshInput.addEventListener("change", () => {
+      setAutoRefreshEnabled(autoRefreshInput.checked);
+    });
+    footerChildren.unshift(
+      E("label", { class: "lgh-partial-modal__checkbox" }, [
+        autoRefreshInput,
+        E(
+          "span",
+          { class: "lgh-partial-modal__checkbox-text" },
+          options.autoRefreshLabel ?? _("Auto refresh")
+        )
+      ])
+    );
+  }
+  if ((options?.getText || options?.maskText) && options?.showMaskValuesToggle) {
+    maskValuesInput = document.createElement("input");
+    maskValuesInput.type = "checkbox";
+    maskValuesInput.className = "cbi-input-checkbox";
+    maskValuesInput.checked = maskValuesEnabled;
+    maskValuesInput.addEventListener("change", () => {
+      setMaskValuesEnabled(maskValuesInput.checked);
+    });
+    footerChildren.unshift(
+      E("label", { class: "lgh-partial-modal__checkbox" }, [
+        maskValuesInput,
+        E(
+          "span",
+          { class: "lgh-partial-modal__checkbox-text" },
+          options.maskValuesLabel ?? _("Hide values")
+        )
+      ])
+    );
+  }
+  const body = E("div", { class: "lgh-partial-modal__body" }, [
+    E("div", {}, [
+      contentEl,
+      E("div", { class: "lgh-partial-modal__footer" }, footerChildren)
+    ])
+  ]);
+  if ((options?.getText || options?.startAtEnd) && typeof document !== "undefined") {
+    observer = new MutationObserver(() => {
+      if (!body.isConnected) {
+        destroyLiveRefresh();
+        return;
+      }
+      scheduleInitialScrollToBottom();
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    scheduleInitialScrollToBottom();
+  }
+  if (options?.getText && typeof document !== "undefined") {
+    startRefreshTimer();
+    requestRefresh();
+  }
+  updateDisplayedTextFromRaw();
+  return body;
+}
+
+// src/partials/index.ts
+var PartialStyles = `
+${styles2}
+${styles3}
+`;
+
+// src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts
+function renderAvailableActions({
+  restart,
+  start,
+  stop,
+  enable,
+  disable,
+  resetFakeip,
+  globalCheck,
+  viewLogs,
+  showSingBoxConfig
+}) {
+  return E("div", { class: "lgh_diagnostic-page__right-bar__actions" }, [
+    E("b", {}, _("Available actions")),
+    ...insertIf(restart.visible, [
+      renderButton({
+        classNames: ["cbi-button-apply"],
+        onClick: restart.onClick,
+        icon: renderRotateCcwIcon24,
+        text: _("Restart logIn"),
+        loading: restart.loading,
+        disabled: restart.disabled
+      })
+    ]),
+    ...insertIf(stop.visible, [
+      renderButton({
+        classNames: ["cbi-button-remove"],
+        onClick: stop.onClick,
+        icon: renderCircleStopIcon24,
+        text: _("Stop logIn"),
+        loading: stop.loading,
+        disabled: stop.disabled
+      })
+    ]),
+    ...insertIf(start.visible, [
+      renderButton({
+        classNames: ["cbi-button-save"],
+        onClick: start.onClick,
+        icon: renderCirclePlayIcon24,
+        text: _("Start logIn"),
+        loading: start.loading,
+        disabled: start.disabled
+      })
+    ]),
+    ...insertIf(resetFakeip.visible, [
+      renderButton({
+        onClick: resetFakeip.onClick,
+        icon: renderRotateCcwIcon24,
+        text: _("Clear the FakeIP cache"),
+        loading: resetFakeip.loading,
+        disabled: resetFakeip.disabled
+      })
+    ]),
+    ...insertIf(disable.visible, [
+      renderButton({
+        classNames: ["cbi-button-remove"],
+        onClick: disable.onClick,
+        icon: renderPauseIcon24,
+        text: _("Disable autostart"),
+        loading: disable.loading,
+        disabled: disable.disabled
+      })
+    ]),
+    ...insertIf(enable.visible, [
+      renderButton({
+        classNames: ["cbi-button-save"],
+        onClick: enable.onClick,
+        icon: renderPlayIcon24,
+        text: _("Enable autostart"),
+        loading: enable.loading,
+        disabled: enable.disabled
+      })
+    ]),
+    ...insertIf(globalCheck.visible, [
+      renderButton({
+        onClick: globalCheck.onClick,
+        icon: renderCircleCheckBigIcon24,
+        text: _("Get global check"),
+        loading: globalCheck.loading,
+        disabled: globalCheck.disabled
+      })
+    ]),
+    ...insertIf(viewLogs.visible, [
+      renderButton({
+        onClick: viewLogs.onClick,
+        icon: renderSquareChartGanttIcon24,
+        text: _("View logs"),
+        loading: viewLogs.loading,
+        disabled: viewLogs.disabled
+      })
+    ]),
+    ...insertIf(showSingBoxConfig.visible, [
+      renderButton({
+        onClick: showSingBoxConfig.onClick,
+        icon: renderCogIcon24,
+        text: _("Show sing-box config"),
+        loading: showSingBoxConfig.loading,
+        disabled: showSingBoxConfig.disabled
+      })
+    ])
+  ]);
+}
+
+// src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts
+var stateIcons = {
+  loading: renderLoaderCircleIcon24,
+  warning: renderCircleAlertIcon24,
+  error: renderCircleXIcon24,
+  success: renderCircleCheckIcon24,
+  skipped: renderCircleSlashIcon24
+};
+function renderCheckSummary(items) {
+  const renderedItems = items.map((item) => {
+    function getIcon() {
+      const iconWrap = E("span", {
+        class: "lgh_diagnostic_alert__summary__item__icon"
+      });
+      iconWrap.setAttribute("aria-hidden", "true");
+      if (item.state === "success") {
+        iconWrap.appendChild(renderCheckIcon24());
+      }
+      if (item.state === "warning") {
+        iconWrap.appendChild(renderTriangleAlertIcon24());
+      }
+      if (item.state === "error") {
+        iconWrap.appendChild(renderXIcon24());
+      }
+      return iconWrap;
+    }
+    return E(
+      "div",
+      {
+        class: `lgh_diagnostic_alert__summary__item lgh_diagnostic_alert__summary__item--${item.state}`
+      },
+      [getIcon(), E("b", {}, item.key), E("div", {}, item.value)]
+    );
+  });
+  return E("div", { class: "lgh_diagnostic_alert__summary" }, renderedItems);
+}
+function renderCheckSection(props) {
+  const renderStateIcon = stateIcons[props.state];
+  if (!renderStateIcon) return E("div", {}, _("Not implement yet"));
+  const loading2 = props.state === "loading";
+  const iconWrap = E("span", {
+    class: "lgh_diagnostic_alert__icon"
+  });
+  iconWrap.setAttribute("aria-hidden", "true");
+  iconWrap.appendChild(renderStateIcon());
+  const content = E("div", { class: "lgh_diagnostic_alert__content" }, [
+    E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
+    E("div", { class: "lgh_diagnostic_alert__description" }, props.description)
+  ]);
+  const checkedAt = props.checkedAt;
+  if (typeof checkedAt === "number" && Number.isFinite(checkedAt)) {
+    const checkedDate = new Date(checkedAt);
+    if (!Number.isNaN(checkedDate.getTime())) {
+      content.appendChild(
+        E("div", { class: "lgh_diagnostic_alert__last-checked" }, [
+          E("span", {}, _("Last checked")),
+          E(
+            "time",
+            { dateTime: checkedDate.toISOString() },
+            checkedDate.toLocaleString()
+          )
+        ])
+      );
+    }
+  }
+  const runButton = renderButton({
+    text: _("Check"),
+    icon: renderSearchIcon24,
+    loading: loading2,
+    disabled: props.disabled || !props.onRun,
+    onClick: () => {
+      if (!props.disabled && !loading2) props.onRun?.();
+    }
+  });
+  runButton.setAttribute("aria-label", `${_("Check")}: ${props.title}`);
+  runButton.setAttribute("aria-busy", String(loading2));
+  const children = [
+    iconWrap,
+    content,
+    E("div", { class: "lgh_diagnostic_alert__actions" }, [runButton])
+  ];
+  if (props.items.length) children.push(renderCheckSummary(props.items));
+  return E(
+    "div",
+    { class: `lgh_diagnostic_alert lgh_diagnostic_alert--${props.state}` },
+    children
+  );
+}
+
+// src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts
+function renderRunAction({
+  loading: loading2,
+  disabled,
+  click,
+  running,
+  cancelling,
+  cancel
+}) {
+  const runButton = renderButton({
+    text: _("Run all checks"),
+    onClick: click,
+    icon: renderSearchIcon24,
+    loading: loading2,
+    disabled: disabled || running || cancelling,
+    classNames: ["cbi-button-apply"]
+  });
+  runButton.setAttribute("aria-label", _("Run all checks"));
+  runButton.setAttribute("aria-busy", String(loading2));
+  const buttons = [runButton];
+  if (running) {
+    const cancelText = cancelling ? _("Cancelling") : _("Cancel");
+    const cancelButton = renderButton({
+      text: cancelText,
+      onClick: () => {
+        if (!cancelling) cancel?.();
+      },
+      disabled: cancelling || !cancel
+    });
+    cancelButton.setAttribute("aria-label", cancelText);
+    cancelButton.setAttribute("aria-busy", String(Boolean(cancelling)));
+    buttons.push(cancelButton);
+  }
+  const wrapper = E(
+    "div",
+    { class: "lgh_diagnostic-page__run_check_wrapper" },
+    buttons
+  );
+  if (cancelling) {
+    const hint = E(
+      "p",
+      { class: "lgh_diagnostic-page__cancel-hint" },
+      _(
+        "The current request will finish before the remaining checks are cancelled."
+      )
+    );
+    hint.setAttribute("role", "status");
+    hint.setAttribute("aria-live", "polite");
+    wrapper.appendChild(hint);
+  }
+  return wrapper;
+}
+
+// src/loghorizon/tabs/diagnostic/partials/renderSystemInfo.ts
+function renderSystemInfo({ items }) {
+  return E("div", { class: "lgh_diagnostic-page__right-bar__system-info" }, [
+    E(
+      "b",
+      { class: "lgh_diagnostic-page__right-bar__system-info__title" },
+      _("System information")
+    ),
+    ...items.map((item) => {
+      const tagClass = [
+        "lgh_diagnostic-page__right-bar__system-info__row__tag",
+        ...insertIf(item.tag?.kind === "neutral", [
+          "lgh_diagnostic-page__right-bar__system-info__row__tag--neutral"
+        ]),
+        ...insertIf(item.tag?.kind === "warning", [
+          "lgh_diagnostic-page__right-bar__system-info__row__tag--warning"
+        ]),
+        ...insertIf(item.tag?.kind === "success", [
+          "lgh_diagnostic-page__right-bar__system-info__row__tag--success"
+        ])
+      ].filter(Boolean).join(" ");
+      return E(
+        "div",
+        { class: "lgh_diagnostic-page__right-bar__system-info__row" },
+        [
+          E("b", {}, item.key),
+          E("div", {}, [
+            E("span", {}, item.value),
+            E("span", { class: tagClass }, item?.tag?.label)
+          ])
+        ]
+      );
+    })
+  ]);
+}
+
+// src/helpers/normalizeCompiledVersion.ts
+function normalizeCompiledVersion(version) {
+  if (version.includes("COMPILED")) {
+    return "dev";
+  }
+  return version;
+}
+
+// src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts
+function renderWikiDisclaimer(kind) {
+  const iconWrap = E("span", {
+    class: "lgh_diagnostic-page__right-bar__wiki__icon"
+  });
+  iconWrap.appendChild(renderBookOpenTextIcon24());
+  const className = [
+    "lgh_diagnostic-page__right-bar__wiki",
+    ...insertIf(kind === "error", [
+      "lgh_diagnostic-page__right-bar__wiki--error"
+    ]),
+    ...insertIf(kind === "warning", [
+      "lgh_diagnostic-page__right-bar__wiki--warning"
+    ])
+  ].join(" ");
+  return E("div", { class: className }, [
+    E("div", { class: "lgh_diagnostic-page__right-bar__wiki__content" }, [
+      iconWrap,
+      E("div", { class: "lgh_diagnostic-page__right-bar__wiki__texts" }, [
+        E("b", {}, _("Troubleshooting")),
+        E(
+          "div",
+          {},
+          _(
+            "Start with the failed check. The guide explains routing and solutions to common errors."
+          )
+        )
+      ])
+    ]),
+    renderButton({
+      classNames: ["cbi-button-save"],
+      text: _("Open Project Page"),
+      onClick: () => window.open(
+        "https://github.com/AxelNerv/LogIn/blob/main/docs/TROUBLESHOOTING.md",
+        "_blank",
+        "noopener,noreferrer"
+      )
+    })
+  ]);
+}
+
+// src/loghorizon/tabs/diagnostic/serviceTransition.ts
+function isServiceTransitionStatus(status) {
+  return ["starting", "stopping", "restarting", "reloading"].includes(status);
+}
+function getServiceTransition(status) {
+  return {
+    starting: status === "starting",
+    stopping: status === "stopping",
+    restarting: status === "restarting" || status === "reloading"
+  };
+}
+function hasLocalMutatingServiceActionLoading(actions) {
+  return actions.restart.loading || actions.start.loading || actions.stop.loading || actions.enable.loading || actions.disable.loading;
+}
+function shouldSkipServicesInfoAutoRefresh({
+  force,
+  localMutatingActionLoading
+}) {
+  return !force && localMutatingActionLoading;
+}
+function shouldResetDiagnosticsChecks({
+  resetChecks,
+  diagnosticsRunLoading
+}) {
+  return resetChecks && !diagnosticsRunLoading;
+}
+function shouldDisableDiagnosticRunAction({
+  providerInfoLoaded,
+  servicesInfoLoading,
+  loghorizonRunning,
+  mutatingServiceActionLoading
+}) {
+  return !providerInfoLoaded || servicesInfoLoading || !loghorizonRunning || mutatingServiceActionLoading;
+}
+function hasComponentActionLoading(actions) {
+  return Object.values(actions).some((action) => action.loading);
+}
+function getAvailableActionsDisabledState({
+  servicesInfoLoading,
+  mutatingServiceActionLoading,
+  componentActionLoading
+}) {
+  return {
+    serviceControlsDisabled: servicesInfoLoading || mutatingServiceActionLoading || componentActionLoading,
+    utilityActionsDisabled: mutatingServiceActionLoading || componentActionLoading,
+    viewLogsDisabled: false
+  };
+}
+function shouldShowRestartAction({
+  loghorizonRunning,
+  restartLoading,
+  startLoading,
+  stopLoading
+}) {
+  return restartLoading || loghorizonRunning && !startLoading && !stopLoading;
+}
+function shouldShowStartAction({
+  loghorizonRunning,
+  restartLoading,
+  startLoading,
+  stopLoading
+}) {
+  return startLoading || !restartLoading && !loghorizonRunning && !stopLoading;
+}
+function shouldShowStopAction({
+  loghorizonRunning,
+  restartLoading,
+  startLoading,
+  stopLoading
+}) {
+  return stopLoading || restartLoading || loghorizonRunning && !startLoading;
+}
+
+// src/loghorizon/tabs/diagnostic/diagnosticRunPersistence.ts
+var DIAGNOSTIC_RUN_STORAGE_KEY = "loghorizon:diagnostic-run:v1";
+var DIAGNOSTIC_RUN_TTL_MS = 30 * 60 * 1e3;
+var CHECK_STATES = ["loading", "warning", "success", "error", "skipped"];
+var CHECK_ITEM_STATES = ["error", "warning", "success"];
+function getSessionStorage3() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+function isRecord(value) {
+  return Boolean(value) && typeof value === "object";
+}
+function isOptionalBoolean(value) {
+  return value === void 0 || typeof value === "boolean";
+}
+function isDiagnosticsProviderOptions(value) {
+  if (!isRecord(value)) {
+    return false;
+  }
+  return isOptionalBoolean(value.includeZapret) && isOptionalBoolean(value.includeZapret2) && isOptionalBoolean(value.includeByedpi) && isOptionalBoolean(value.includeInbounds);
+}
+function isDiagnosticCheckItem(value) {
+  return isRecord(value) && CHECK_ITEM_STATES.includes(String(value.state)) && typeof value.key === "string" && typeof value.value === "string";
+}
+function isDiagnosticCheck(value) {
+  return isRecord(value) && Number.isFinite(value.order) && Object.values(DIAGNOSTICS_CHECKS).includes(
+    value.code
+  ) && typeof value.title === "string" && typeof value.description === "string" && CHECK_STATES.includes(String(value.state)) && Array.isArray(value.items) && value.items.every(isDiagnosticCheckItem) && (value.checkedAt === void 0 || typeof value.checkedAt === "number" && Number.isFinite(value.checkedAt) && value.checkedAt > 0 && value.checkedAt <= 864e13);
+}
+function isPersistedDiagnosticRun(value) {
+  if (!isRecord(value)) {
+    return false;
+  }
+  return typeof value.nextRunnerIndex === "number" && Number.isInteger(value.nextRunnerIndex) && value.nextRunnerIndex >= 0 && value.nextRunnerIndex <= Object.values(DIAGNOSTICS_CHECKS).length && (value.checkCodes === void 0 || Array.isArray(value.checkCodes) && value.checkCodes.length > 0 && value.checkCodes.length <= Object.values(DIAGNOSTICS_CHECKS).length && new Set(value.checkCodes).size === value.checkCodes.length && value.checkCodes.every(
+    (code) => Object.values(DIAGNOSTICS_CHECKS).includes(code)
+  ) && value.nextRunnerIndex <= value.checkCodes.length) && isOptionalBoolean(value.cancelRequested) && isDiagnosticsProviderOptions(value.providerOptions) && Array.isArray(value.diagnosticsChecks) && value.diagnosticsChecks.every(isDiagnosticCheck) && Number.isFinite(value.updatedAt);
+}
+function isExpired(run, now = Date.now()) {
+  return now - run.updatedAt > DIAGNOSTIC_RUN_TTL_MS;
+}
+function readPersistedDiagnosticRun(storage = getSessionStorage3()) {
+  if (!storage) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(
+      storage.getItem(DIAGNOSTIC_RUN_STORAGE_KEY) || "null"
+    );
+    if (!isPersistedDiagnosticRun(parsed) || isExpired(parsed)) {
+      storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
+    return null;
+  }
+}
+function savePersistedDiagnosticRun(run, storage = getSessionStorage3()) {
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.setItem(
+      DIAGNOSTIC_RUN_STORAGE_KEY,
+      JSON.stringify({
+        ...run,
+        updatedAt: Date.now()
+      })
+    );
+  } catch {
+  }
+}
+function clearPersistedDiagnosticRun(storage = getSessionStorage3()) {
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
+  } catch {
+  }
+}
+
 // src/loghorizon/tabs/diagnostic/checks/updateCheckStore.ts
 function updateCheckStore(check, minified) {
   const diagnosticsChecks = store.get().diagnosticsChecks;
@@ -8812,857 +9796,6 @@ async function runByedpiCheck() {
   });
 }
 
-// src/loghorizon/services/systemInfo.service.ts
-var UNKNOWN_SYSTEM_INFO = {
-  loading: false,
-  loaded: false,
-  providerInfoLoaded: false,
-  loghorizon_version: _("unknown"),
-  loghorizon_latest_version: _("unknown"),
-  luci_app_version: _("unknown"),
-  sing_box_version: _("unknown"),
-  sing_box_extended: 0,
-  sing_box_tiny: 0,
-  sing_box_compressed: 0,
-  sing_box_tailscale: 1,
-  zapret_version: _("unknown"),
-  zapret_installed: 0,
-  zapret2_version: _("unknown"),
-  zapret2_installed: 0,
-  byedpi_version: _("unknown"),
-  byedpi_installed: 0,
-  server_inbounds_enabled_count: -1,
-  openwrt_version: _("unknown"),
-  device_model: _("unknown")
-};
-var systemInfoPromise = null;
-var latestSystemInfoRequestId = 0;
-function hasLoadedSystemInfo() {
-  const systemInfo = store.get().diagnosticsSystemInfo;
-  return Boolean(systemInfo.loaded) && !systemInfo.loading;
-}
-async function ensureSystemInfo({
-  force = false,
-  silent = false
-} = {}) {
-  if (!force && hasLoadedSystemInfo()) {
-    return store.get().diagnosticsSystemInfo;
-  }
-  if (systemInfoPromise && !force) {
-    return systemInfoPromise;
-  }
-  const requestId = ++latestSystemInfoRequestId;
-  const currentSystemInfo = store.get().diagnosticsSystemInfo;
-  if (!silent) {
-    store.set({
-      diagnosticsSystemInfo: {
-        ...currentSystemInfo,
-        loading: true
-      }
-    });
-  }
-  const promise = (async () => {
-    try {
-      const systemInfo = await LogHorizonShellMethods.getSystemInfo();
-      if (requestId !== latestSystemInfoRequestId) {
-        return store.get().diagnosticsSystemInfo;
-      }
-      if (systemInfo.success) {
-        const nextSystemInfo = normalizeSingBoxVariantFields({
-          ...UNKNOWN_SYSTEM_INFO,
-          loading: false,
-          loaded: true,
-          providerInfoLoaded: true,
-          server_inbounds_enabled_count: currentSystemInfo.server_inbounds_enabled_count,
-          ...systemInfo.data
-        });
-        store.set({
-          diagnosticsSystemInfo: nextSystemInfo
-        });
-        return nextSystemInfo;
-      }
-    } catch (error) {
-      logger.error("[SYSTEM_INFO]", "ensureSystemInfo failed", error);
-    }
-    if (requestId === latestSystemInfoRequestId && !silent) {
-      const latestSystemInfo = store.get().diagnosticsSystemInfo;
-      const nextSystemInfo = {
-        ...UNKNOWN_SYSTEM_INFO,
-        loading: false,
-        loaded: false,
-        providerInfoLoaded: latestSystemInfo.providerInfoLoaded,
-        zapret_installed: latestSystemInfo.zapret_installed,
-        zapret2_installed: latestSystemInfo.zapret2_installed,
-        byedpi_installed: latestSystemInfo.byedpi_installed,
-        server_inbounds_enabled_count: latestSystemInfo.server_inbounds_enabled_count
-      };
-      store.set({
-        diagnosticsSystemInfo: nextSystemInfo
-      });
-      return nextSystemInfo;
-    }
-    return store.get().diagnosticsSystemInfo;
-  })();
-  systemInfoPromise = promise;
-  try {
-    return await promise;
-  } finally {
-    if (systemInfoPromise === promise) {
-      systemInfoPromise = null;
-    }
-  }
-}
-
-// src/partials/button/styles.ts
-var styles2 = `
-.lgh-partial-button {
-    text-align: center;
-}
-
-.lgh-partial-button--with-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.lgh-partial-button--loading {
-}
-
-.lgh-partial-button--disabled {
-}
-
-.lgh-partial-button__icon {
-    flex: 0 0 auto;
-}
-
-.lgh-partial-button__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.lgh-partial-button__icon svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    flex: 0 0 auto;
-}
-`;
-
-// src/partials/modal/styles.ts
-var styles3 = `
-
-.lgh-partial-modal__body {}
-
-.lgh-partial-modal__content {
-    max-height: 70vh;
-    overflow: scroll;
-    border-radius: 4px;
-}
-
-.lgh-partial-modal__footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.lgh-partial-modal__footer button {
-    margin-left: 0;
-}
-
-.lgh-partial-modal__checkbox {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-right: auto;
-    cursor: pointer;
-    user-select: none;
-}
-
-.lgh-partial-modal__checkbox-text {
-    line-height: 1.2;
-}
-`;
-
-// src/partials/button/renderButton.ts
-function renderButton({
-  classNames = [],
-  disabled,
-  loading: loading2,
-  onClick,
-  text,
-  icon
-}) {
-  const hasIcon = !!loading2 || !!icon;
-  function getWrappedIcon() {
-    const iconWrap = E("span", {
-      class: "lgh-partial-button__icon"
-    });
-    if (loading2) {
-      iconWrap.appendChild(renderLoaderCircleIcon24());
-      return iconWrap;
-    }
-    if (icon) {
-      iconWrap.appendChild(icon());
-      return iconWrap;
-    }
-    return iconWrap;
-  }
-  function getClass() {
-    return [
-      "btn",
-      "lgh-partial-button",
-      ...insertIf(Boolean(disabled), ["lgh-partial-button--disabled"]),
-      ...insertIf(Boolean(loading2), ["lgh-partial-button--loading"]),
-      ...insertIf(Boolean(hasIcon), ["lgh-partial-button--with-icon"]),
-      ...classNames
-    ].filter(Boolean).join(" ");
-  }
-  function getDisabled() {
-    if (loading2 || disabled) {
-      return true;
-    }
-    return void 0;
-  }
-  return E(
-    "button",
-    {
-      type: "button",
-      class: getClass(),
-      disabled: getDisabled(),
-      click: onClick
-    },
-    [...insertIf(hasIcon, [getWrappedIcon()]), E("span", {}, text)]
-  );
-}
-
-// src/partials/modal/renderModal.ts
-function renderModal(text, name, options) {
-  let rawText = text ?? "";
-  let currentText = "";
-  let refreshInFlight = false;
-  let pendingRefresh = false;
-  let pendingForcedRefresh = false;
-  let refreshSessionId = 0;
-  let timer;
-  let observer;
-  let autoRefreshEnabled = options?.initialAutoRefresh ?? Boolean(options?.getText);
-  let maskValuesEnabled = options?.initialMaskValues ?? true;
-  let shouldScrollToBottomOnMount = Boolean(options?.startAtEnd);
-  let autoRefreshInput;
-  let maskValuesInput;
-  const getDisplayText = (value) => {
-    if (maskValuesEnabled && options?.maskText) {
-      return options.maskText(value);
-    }
-    return value;
-  };
-  const codeEl = E("code", {}, "");
-  const contentEl = E(
-    "pre",
-    { class: "lgh-partial-modal__content" },
-    codeEl
-  );
-  const stopRefreshTimer = () => {
-    if (timer) {
-      clearInterval(timer);
-      timer = void 0;
-    }
-  };
-  const destroyLiveRefresh = () => {
-    refreshSessionId += 1;
-    pendingRefresh = false;
-    pendingForcedRefresh = false;
-    stopRefreshTimer();
-    observer?.disconnect();
-    observer = void 0;
-  };
-  const scrollToBottom = () => {
-    contentEl.scrollTop = contentEl.scrollHeight;
-  };
-  const scheduleInitialScrollToBottom = () => {
-    if (!shouldScrollToBottomOnMount || !body.isConnected) {
-      return;
-    }
-    shouldScrollToBottomOnMount = false;
-    requestAnimationFrame(() => {
-      scrollToBottom();
-    });
-  };
-  const updateText = (nextText) => {
-    const normalizedText = nextText ?? "";
-    const shouldStickToBottom = shouldScrollToBottomOnMount || contentEl.scrollTop + contentEl.clientHeight >= contentEl.scrollHeight - 16;
-    if (normalizedText === currentText) {
-      if (shouldStickToBottom) {
-        requestAnimationFrame(() => {
-          scrollToBottom();
-        });
-      }
-      return;
-    }
-    currentText = normalizedText;
-    codeEl.textContent = currentText;
-    if (shouldStickToBottom) {
-      requestAnimationFrame(() => {
-        scrollToBottom();
-      });
-    }
-  };
-  const updateDisplayedTextFromRaw = () => {
-    updateText(getDisplayText(rawText));
-  };
-  const refreshText = async (force = false) => {
-    if (!options?.getText || !force && !autoRefreshEnabled || refreshInFlight) {
-      return;
-    }
-    if (!body.isConnected) {
-      return;
-    }
-    refreshInFlight = true;
-    const sessionId = refreshSessionId;
-    try {
-      const nextText = await options.getText({
-        maskValues: options.maskText ? false : maskValuesEnabled
-      });
-      if (!body.isConnected || !force && !autoRefreshEnabled) {
-        return;
-      }
-      if (sessionId !== refreshSessionId) {
-        return;
-      }
-      const normalizedText = nextText ?? "";
-      rawText = normalizedText;
-      updateText(getDisplayText(normalizedText));
-    } catch (error) {
-      console.warn("[renderModal] failed to refresh modal content", error);
-    } finally {
-      refreshInFlight = false;
-      if (pendingRefresh) {
-        const shouldForceRefresh = pendingForcedRefresh;
-        pendingRefresh = false;
-        pendingForcedRefresh = false;
-        if ((shouldForceRefresh || autoRefreshEnabled) && body.isConnected) {
-          void refreshText(shouldForceRefresh);
-        }
-      }
-    }
-  };
-  const requestRefresh = () => {
-    if (!options?.getText || !autoRefreshEnabled) {
-      return;
-    }
-    if (refreshInFlight) {
-      pendingRefresh = true;
-      return;
-    }
-    void refreshText();
-  };
-  const requestForcedRefresh = () => {
-    if (!options?.getText) {
-      return;
-    }
-    if (refreshInFlight) {
-      pendingRefresh = true;
-      pendingForcedRefresh = true;
-      return;
-    }
-    void refreshText(true);
-  };
-  const startRefreshTimer = () => {
-    if (!options?.getText || !autoRefreshEnabled || timer || typeof document === "undefined") {
-      return;
-    }
-    timer = setInterval(() => {
-      requestRefresh();
-    }, options.refreshMs ?? 3e3);
-  };
-  const setAutoRefreshEnabled = (nextValue) => {
-    autoRefreshEnabled = nextValue;
-    refreshSessionId += 1;
-    pendingRefresh = false;
-    pendingForcedRefresh = false;
-    if (autoRefreshInput) {
-      autoRefreshInput.checked = nextValue;
-    }
-    if (nextValue) {
-      startRefreshTimer();
-      requestRefresh();
-      return;
-    }
-    stopRefreshTimer();
-  };
-  const setMaskValuesEnabled = (nextValue) => {
-    maskValuesEnabled = nextValue;
-    refreshSessionId += 1;
-    pendingRefresh = false;
-    pendingForcedRefresh = false;
-    if (maskValuesInput) {
-      maskValuesInput.checked = nextValue;
-    }
-    if (options?.maskText) {
-      updateDisplayedTextFromRaw();
-      return;
-    }
-    requestForcedRefresh();
-  };
-  const footerChildren = [
-    renderButton({
-      classNames: ["cbi-button-apply"],
-      text: _("Download"),
-      onClick: () => downloadAsTxt(currentText, name)
-    }),
-    renderButton({
-      classNames: ["cbi-button-apply"],
-      text: _("Copy"),
-      onClick: () => copyToClipboard(`\`\`\`${name}
-${currentText}
-\`\`\``)
-    }),
-    renderButton({
-      classNames: ["cbi-button-remove"],
-      text: _("Close"),
-      onClick: () => {
-        destroyLiveRefresh();
-        ui.hideModal();
-      }
-    })
-  ];
-  if (options?.getText && options?.showAutoRefreshToggle) {
-    autoRefreshInput = document.createElement("input");
-    autoRefreshInput.type = "checkbox";
-    autoRefreshInput.className = "cbi-input-checkbox";
-    autoRefreshInput.checked = autoRefreshEnabled;
-    autoRefreshInput.addEventListener("change", () => {
-      setAutoRefreshEnabled(autoRefreshInput.checked);
-    });
-    footerChildren.unshift(
-      E("label", { class: "lgh-partial-modal__checkbox" }, [
-        autoRefreshInput,
-        E(
-          "span",
-          { class: "lgh-partial-modal__checkbox-text" },
-          options.autoRefreshLabel ?? _("Auto refresh")
-        )
-      ])
-    );
-  }
-  if ((options?.getText || options?.maskText) && options?.showMaskValuesToggle) {
-    maskValuesInput = document.createElement("input");
-    maskValuesInput.type = "checkbox";
-    maskValuesInput.className = "cbi-input-checkbox";
-    maskValuesInput.checked = maskValuesEnabled;
-    maskValuesInput.addEventListener("change", () => {
-      setMaskValuesEnabled(maskValuesInput.checked);
-    });
-    footerChildren.unshift(
-      E("label", { class: "lgh-partial-modal__checkbox" }, [
-        maskValuesInput,
-        E(
-          "span",
-          { class: "lgh-partial-modal__checkbox-text" },
-          options.maskValuesLabel ?? _("Hide values")
-        )
-      ])
-    );
-  }
-  const body = E("div", { class: "lgh-partial-modal__body" }, [
-    E("div", {}, [
-      contentEl,
-      E("div", { class: "lgh-partial-modal__footer" }, footerChildren)
-    ])
-  ]);
-  if ((options?.getText || options?.startAtEnd) && typeof document !== "undefined") {
-    observer = new MutationObserver(() => {
-      if (!body.isConnected) {
-        destroyLiveRefresh();
-        return;
-      }
-      scheduleInitialScrollToBottom();
-    });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-    scheduleInitialScrollToBottom();
-  }
-  if (options?.getText && typeof document !== "undefined") {
-    startRefreshTimer();
-    requestRefresh();
-  }
-  updateDisplayedTextFromRaw();
-  return body;
-}
-
-// src/partials/index.ts
-var PartialStyles = `
-${styles2}
-${styles3}
-`;
-
-// src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts
-function renderAvailableActions({
-  restart,
-  start,
-  stop,
-  enable,
-  disable,
-  resetFakeip,
-  globalCheck,
-  viewLogs,
-  showSingBoxConfig
-}) {
-  return E("div", { class: "lgh_diagnostic-page__right-bar__actions" }, [
-    E("b", {}, _("Available actions")),
-    ...insertIf(restart.visible, [
-      renderButton({
-        classNames: ["cbi-button-apply"],
-        onClick: restart.onClick,
-        icon: renderRotateCcwIcon24,
-        text: _("Restart logIn"),
-        loading: restart.loading,
-        disabled: restart.disabled
-      })
-    ]),
-    ...insertIf(stop.visible, [
-      renderButton({
-        classNames: ["cbi-button-remove"],
-        onClick: stop.onClick,
-        icon: renderCircleStopIcon24,
-        text: _("Stop logIn"),
-        loading: stop.loading,
-        disabled: stop.disabled
-      })
-    ]),
-    ...insertIf(start.visible, [
-      renderButton({
-        classNames: ["cbi-button-save"],
-        onClick: start.onClick,
-        icon: renderCirclePlayIcon24,
-        text: _("Start logIn"),
-        loading: start.loading,
-        disabled: start.disabled
-      })
-    ]),
-    ...insertIf(resetFakeip.visible, [
-      renderButton({
-        onClick: resetFakeip.onClick,
-        icon: renderRotateCcwIcon24,
-        text: _("Clear the FakeIP cache"),
-        loading: resetFakeip.loading,
-        disabled: resetFakeip.disabled
-      })
-    ]),
-    ...insertIf(disable.visible, [
-      renderButton({
-        classNames: ["cbi-button-remove"],
-        onClick: disable.onClick,
-        icon: renderPauseIcon24,
-        text: _("Disable autostart"),
-        loading: disable.loading,
-        disabled: disable.disabled
-      })
-    ]),
-    ...insertIf(enable.visible, [
-      renderButton({
-        classNames: ["cbi-button-save"],
-        onClick: enable.onClick,
-        icon: renderPlayIcon24,
-        text: _("Enable autostart"),
-        loading: enable.loading,
-        disabled: enable.disabled
-      })
-    ]),
-    ...insertIf(globalCheck.visible, [
-      renderButton({
-        onClick: globalCheck.onClick,
-        icon: renderCircleCheckBigIcon24,
-        text: _("Get global check"),
-        loading: globalCheck.loading,
-        disabled: globalCheck.disabled
-      })
-    ]),
-    ...insertIf(viewLogs.visible, [
-      renderButton({
-        onClick: viewLogs.onClick,
-        icon: renderSquareChartGanttIcon24,
-        text: _("View logs"),
-        loading: viewLogs.loading,
-        disabled: viewLogs.disabled
-      })
-    ]),
-    ...insertIf(showSingBoxConfig.visible, [
-      renderButton({
-        onClick: showSingBoxConfig.onClick,
-        icon: renderCogIcon24,
-        text: _("Show sing-box config"),
-        loading: showSingBoxConfig.loading,
-        disabled: showSingBoxConfig.disabled
-      })
-    ])
-  ]);
-}
-
-// src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts
-function renderCheckSummary(items) {
-  if (!items.length) {
-    return E("div", {}, "");
-  }
-  const renderedItems = items.map((item) => {
-    function getIcon() {
-      const iconWrap = E("span", {
-        class: "lgh_diagnostic_alert__summary__item__icon"
-      });
-      if (item.state === "success") {
-        iconWrap.appendChild(renderCheckIcon24());
-      }
-      if (item.state === "warning") {
-        iconWrap.appendChild(renderTriangleAlertIcon24());
-      }
-      if (item.state === "error") {
-        iconWrap.appendChild(renderXIcon24());
-      }
-      return iconWrap;
-    }
-    return E(
-      "div",
-      {
-        class: `lgh_diagnostic_alert__summary__item lgh_diagnostic_alert__summary__item--${item.state}`
-      },
-      [getIcon(), E("b", {}, item.key), E("div", {}, item.value)]
-    );
-  });
-  return E("div", { class: "lgh_diagnostic_alert__summary" }, renderedItems);
-}
-function renderLoadingState3(props) {
-  const iconWrap = E("span", { class: "lgh_diagnostic_alert__icon" });
-  iconWrap.appendChild(renderLoaderCircleIcon24());
-  return E(
-    "div",
-    { class: "lgh_diagnostic_alert lgh_diagnostic_alert--loading" },
-    [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic_alert__content" }, [
-        E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
-        E(
-          "div",
-          { class: "lgh_diagnostic_alert__description" },
-          props.description
-        )
-      ]),
-      E("div", {}, ""),
-      renderCheckSummary(props.items)
-    ]
-  );
-}
-function renderWarningState(props) {
-  const iconWrap = E("span", { class: "lgh_diagnostic_alert__icon" });
-  iconWrap.appendChild(renderCircleAlertIcon24());
-  return E(
-    "div",
-    { class: "lgh_diagnostic_alert lgh_diagnostic_alert--warning" },
-    [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic_alert__content" }, [
-        E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
-        E(
-          "div",
-          { class: "lgh_diagnostic_alert__description" },
-          props.description
-        )
-      ]),
-      E("div", {}, ""),
-      renderCheckSummary(props.items)
-    ]
-  );
-}
-function renderErrorState(props) {
-  const iconWrap = E("span", { class: "lgh_diagnostic_alert__icon" });
-  iconWrap.appendChild(renderCircleXIcon24());
-  return E(
-    "div",
-    { class: "lgh_diagnostic_alert lgh_diagnostic_alert--error" },
-    [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic_alert__content" }, [
-        E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
-        E(
-          "div",
-          { class: "lgh_diagnostic_alert__description" },
-          props.description
-        )
-      ]),
-      E("div", {}, ""),
-      renderCheckSummary(props.items)
-    ]
-  );
-}
-function renderSuccessState(props) {
-  const iconWrap = E("span", { class: "lgh_diagnostic_alert__icon" });
-  iconWrap.appendChild(renderCircleCheckIcon24());
-  return E(
-    "div",
-    { class: "lgh_diagnostic_alert lgh_diagnostic_alert--success" },
-    [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic_alert__content" }, [
-        E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
-        E(
-          "div",
-          { class: "lgh_diagnostic_alert__description" },
-          props.description
-        )
-      ]),
-      E("div", {}, ""),
-      renderCheckSummary(props.items)
-    ]
-  );
-}
-function renderSkippedState(props) {
-  const iconWrap = E("span", { class: "lgh_diagnostic_alert__icon" });
-  iconWrap.appendChild(renderCircleSlashIcon24());
-  return E(
-    "div",
-    { class: "lgh_diagnostic_alert lgh_diagnostic_alert--skipped" },
-    [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic_alert__content" }, [
-        E("b", { class: "lgh_diagnostic_alert__title" }, props.title),
-        E(
-          "div",
-          { class: "lgh_diagnostic_alert__description" },
-          props.description
-        )
-      ]),
-      E("div", {}, ""),
-      renderCheckSummary(props.items)
-    ]
-  );
-}
-function renderCheckSection(props) {
-  if (props.state === "loading") {
-    return renderLoadingState3(props);
-  }
-  if (props.state === "warning") {
-    return renderWarningState(props);
-  }
-  if (props.state === "error") {
-    return renderErrorState(props);
-  }
-  if (props.state === "success") {
-    return renderSuccessState(props);
-  }
-  if (props.state === "skipped") {
-    return renderSkippedState(props);
-  }
-  return E("div", {}, _("Not implement yet"));
-}
-
-// src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts
-function renderRunAction({
-  loading: loading2,
-  disabled,
-  click
-}) {
-  return E("div", { class: "lgh_diagnostic-page__run_check_wrapper" }, [
-    renderButton({
-      text: _("Run Diagnostic"),
-      onClick: click,
-      icon: renderSearchIcon24,
-      loading: loading2,
-      disabled,
-      classNames: ["cbi-button-apply"]
-    })
-  ]);
-}
-
-// src/loghorizon/tabs/diagnostic/partials/renderSystemInfo.ts
-function renderSystemInfo({ items }) {
-  return E("div", { class: "lgh_diagnostic-page__right-bar__system-info" }, [
-    E(
-      "b",
-      { class: "lgh_diagnostic-page__right-bar__system-info__title" },
-      _("System information")
-    ),
-    ...items.map((item) => {
-      const tagClass = [
-        "lgh_diagnostic-page__right-bar__system-info__row__tag",
-        ...insertIf(item.tag?.kind === "neutral", [
-          "lgh_diagnostic-page__right-bar__system-info__row__tag--neutral"
-        ]),
-        ...insertIf(item.tag?.kind === "warning", [
-          "lgh_diagnostic-page__right-bar__system-info__row__tag--warning"
-        ]),
-        ...insertIf(item.tag?.kind === "success", [
-          "lgh_diagnostic-page__right-bar__system-info__row__tag--success"
-        ])
-      ].filter(Boolean).join(" ");
-      return E(
-        "div",
-        { class: "lgh_diagnostic-page__right-bar__system-info__row" },
-        [
-          E("b", {}, item.key),
-          E("div", {}, [
-            E("span", {}, item.value),
-            E("span", { class: tagClass }, item?.tag?.label)
-          ])
-        ]
-      );
-    })
-  ]);
-}
-
-// src/helpers/normalizeCompiledVersion.ts
-function normalizeCompiledVersion(version) {
-  if (version.includes("COMPILED")) {
-    return "dev";
-  }
-  return version;
-}
-
-// src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts
-function renderWikiDisclaimer(kind) {
-  const iconWrap = E("span", {
-    class: "lgh_diagnostic-page__right-bar__wiki__icon"
-  });
-  iconWrap.appendChild(renderBookOpenTextIcon24());
-  const className = [
-    "lgh_diagnostic-page__right-bar__wiki",
-    ...insertIf(kind === "error", [
-      "lgh_diagnostic-page__right-bar__wiki--error"
-    ]),
-    ...insertIf(kind === "warning", [
-      "lgh_diagnostic-page__right-bar__wiki--warning"
-    ])
-  ].join(" ");
-  return E("div", { class: className }, [
-    E("div", { class: "lgh_diagnostic-page__right-bar__wiki__content" }, [
-      iconWrap,
-      E("div", { class: "lgh_diagnostic-page__right-bar__wiki__texts" }, [
-        E("b", {}, _("Troubleshooting")),
-        E(
-          "div",
-          {},
-          _(
-            "Start with the failed check. The guide explains routing and solutions to common errors."
-          )
-        )
-      ])
-    ]),
-    renderButton({
-      classNames: ["cbi-button-save"],
-      text: _("Open Project Page"),
-      onClick: () => window.open(
-        "https://github.com/AxelNerv/LogIn/blob/main/docs/TROUBLESHOOTING.md",
-        "_blank",
-        "noopener,noreferrer"
-      )
-    })
-  ]);
-}
-
 // src/loghorizon/tabs/diagnostic/checks/runSectionsCheck.ts
 function getSubscriptionLatencyState(latencyValues) {
   const hasAvailableLatency = latencyValues.some((item) => Boolean(item));
@@ -9792,164 +9925,192 @@ async function runSectionsCheck() {
   }
 }
 
-// src/loghorizon/tabs/diagnostic/serviceTransition.ts
-function isServiceTransitionStatus(status) {
-  return ["starting", "stopping", "restarting", "reloading"].includes(status);
-}
-function getServiceTransition(status) {
-  return {
-    starting: status === "starting",
-    stopping: status === "stopping",
-    restarting: status === "restarting" || status === "reloading"
-  };
-}
-function hasLocalMutatingServiceActionLoading(actions) {
-  return actions.restart.loading || actions.start.loading || actions.stop.loading || actions.enable.loading || actions.disable.loading;
-}
-function shouldSkipServicesInfoAutoRefresh({
-  force,
-  localMutatingActionLoading
-}) {
-  return !force && localMutatingActionLoading;
-}
-function shouldResetDiagnosticsChecks({
-  resetChecks,
-  diagnosticsRunLoading
-}) {
-  return resetChecks && !diagnosticsRunLoading;
-}
-function shouldDisableDiagnosticRunAction({
-  providerInfoLoaded,
-  servicesInfoLoading,
-  loghorizonRunning,
-  mutatingServiceActionLoading
-}) {
-  return !providerInfoLoaded || servicesInfoLoading || !loghorizonRunning || mutatingServiceActionLoading;
-}
-function hasComponentActionLoading(actions) {
-  return Object.values(actions).some((action) => action.loading);
-}
-function getAvailableActionsDisabledState({
-  servicesInfoLoading,
-  mutatingServiceActionLoading,
-  componentActionLoading
-}) {
-  return {
-    serviceControlsDisabled: servicesInfoLoading || mutatingServiceActionLoading || componentActionLoading,
-    utilityActionsDisabled: mutatingServiceActionLoading || componentActionLoading,
-    viewLogsDisabled: false
-  };
-}
-function shouldShowRestartAction({
-  loghorizonRunning,
-  restartLoading,
-  startLoading,
-  stopLoading
-}) {
-  return restartLoading || loghorizonRunning && !startLoading && !stopLoading;
-}
-function shouldShowStartAction({
-  loghorizonRunning,
-  restartLoading,
-  startLoading,
-  stopLoading
-}) {
-  return startLoading || !restartLoading && !loghorizonRunning && !stopLoading;
-}
-function shouldShowStopAction({
-  loghorizonRunning,
-  restartLoading,
-  startLoading,
-  stopLoading
-}) {
-  return stopLoading || restartLoading || loghorizonRunning && !startLoading;
+// src/loghorizon/tabs/diagnostic/diagnosticRunners.ts
+function getDiagnosticRunners(options) {
+  return [
+    { code: "DNS" /* DNS */, run: runDnsCheck },
+    { code: "CONNECTIVITY" /* CONNECTIVITY */, run: runConnectivityPathCheck },
+    { code: "SINGBOX" /* SINGBOX */, run: runSingBoxCheck },
+    ...options.includeInbounds ? [{ code: "INBOUNDS" /* INBOUNDS */, run: runInboundsCheck }] : [],
+    { code: "NFT" /* NFT */, run: runNftCheck },
+    ...options.includeZapret ? [{ code: "ZAPRET" /* ZAPRET */, run: runZapretCheck }] : [],
+    ...options.includeZapret2 ? [{ code: "ZAPRET2" /* ZAPRET2 */, run: runZapret2Check }] : [],
+    ...options.includeByedpi ? [{ code: "BYEDPI" /* BYEDPI */, run: runByedpiCheck }] : [],
+    { code: "OUTBOUNDS" /* OUTBOUNDS */, run: runSectionsCheck },
+    { code: "FAKEIP" /* FAKEIP */, run: runFakeIPCheck }
+  ];
 }
 
-// src/loghorizon/tabs/diagnostic/diagnosticRunPersistence.ts
-var DIAGNOSTIC_RUN_STORAGE_KEY = "loghorizon:diagnostic-run:v1";
-var DIAGNOSTIC_RUN_TTL_MS = 30 * 60 * 1e3;
-var CHECK_STATES = ["loading", "warning", "success", "error", "skipped"];
-var CHECK_ITEM_STATES = ["error", "warning", "success"];
-function getSessionStorage3() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  try {
-    return window.sessionStorage;
-  } catch {
-    return null;
-  }
+// src/loghorizon/tabs/diagnostic/diagnosticRun.ts
+var activeRun = null;
+function patchCheck(code, patch) {
+  const checks = store.get().diagnosticsChecks;
+  const previous = checks.find((item) => item.code === code);
+  store.set({
+    diagnosticsChecks: [
+      ...checks.filter((item) => item.code !== code),
+      {
+        ...DIAGNOSTICS_CHECKS_MAP[code],
+        description: _("Not running"),
+        state: "skipped",
+        items: [],
+        ...previous,
+        ...patch
+      }
+    ]
+  });
 }
-function isRecord(value) {
-  return Boolean(value) && typeof value === "object";
+function persist(run) {
+  savePersistedDiagnosticRun({
+    checkCodes: run.codes,
+    nextRunnerIndex: run.nextRunnerIndex,
+    providerOptions: run.providerOptions,
+    cancelRequested: run.cancelRequested,
+    diagnosticsChecks: store.get().diagnosticsChecks
+  });
 }
-function isOptionalBoolean(value) {
-  return value === void 0 || typeof value === "boolean";
-}
-function isDiagnosticsProviderOptions(value) {
-  if (!isRecord(value)) {
-    return false;
-  }
-  return isOptionalBoolean(value.includeZapret) && isOptionalBoolean(value.includeZapret2) && isOptionalBoolean(value.includeByedpi) && isOptionalBoolean(value.includeInbounds);
-}
-function isDiagnosticCheckItem(value) {
-  return isRecord(value) && CHECK_ITEM_STATES.includes(String(value.state)) && typeof value.key === "string" && typeof value.value === "string";
-}
-function isDiagnosticCheck(value) {
-  return isRecord(value) && Number.isFinite(value.order) && Object.values(DIAGNOSTICS_CHECKS).includes(
-    value.code
-  ) && typeof value.title === "string" && typeof value.description === "string" && CHECK_STATES.includes(String(value.state)) && Array.isArray(value.items) && value.items.every(isDiagnosticCheckItem);
-}
-function isPersistedDiagnosticRun(value) {
-  if (!isRecord(value)) {
-    return false;
-  }
-  return typeof value.nextRunnerIndex === "number" && Number.isInteger(value.nextRunnerIndex) && value.nextRunnerIndex >= 0 && isDiagnosticsProviderOptions(value.providerOptions) && Array.isArray(value.diagnosticsChecks) && value.diagnosticsChecks.every(isDiagnosticCheck) && Number.isFinite(value.updatedAt);
-}
-function isExpired(run, now = Date.now()) {
-  return now - run.updatedAt > DIAGNOSTIC_RUN_TTL_MS;
-}
-function readPersistedDiagnosticRun(storage = getSessionStorage3()) {
-  if (!storage) {
-    return null;
-  }
-  try {
-    const parsed = JSON.parse(
-      storage.getItem(DIAGNOSTIC_RUN_STORAGE_KEY) || "null"
-    );
-    if (!isPersistedDiagnosticRun(parsed) || isExpired(parsed)) {
-      storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
-      return null;
+function cancelDiagnosticRun() {
+  if (!activeRun || activeRun.cancelRequested) return;
+  activeRun.cancelRequested = true;
+  store.set({
+    diagnosticsRunAction: {
+      ...store.get().diagnosticsRunAction,
+      cancelling: true
     }
-    return parsed;
-  } catch {
-    storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
-    return null;
-  }
+  });
+  persist(activeRun);
 }
-function savePersistedDiagnosticRun(run, storage = getSessionStorage3()) {
-  if (!storage) {
-    return;
-  }
+async function runDiagnosticChecks(options) {
+  if (activeRun || !options.resume && (store.get().diagnosticsRunAction.loading || !options.canRun()))
+    return false;
+  const providerOptions = options.resume?.providerOptions ?? options.getProviderOptions();
+  const run = {
+    codes: options.resume?.checkCodes ?? (options.code ? [options.code] : getDiagnosticRunners(providerOptions).map((r) => r.code)),
+    nextRunnerIndex: options.resume?.nextRunnerIndex ?? 0,
+    providerOptions,
+    cancelRequested: options.resume?.cancelRequested ?? false
+  };
+  activeRun = run;
+  if (options.resume)
+    store.set({ diagnosticsChecks: options.resume.diagnosticsChecks });
+  store.set({
+    diagnosticsRunAction: {
+      loading: true,
+      checkCodes: run.codes,
+      cancelling: run.cancelRequested
+    }
+  });
+  const preparePending = () => {
+    for (const code of run.codes.slice(run.nextRunnerIndex))
+      patchCheck(code, {
+        state: "skipped",
+        description: _("Pending"),
+        items: []
+      });
+  };
+  preparePending();
+  persist(run);
   try {
-    storage.setItem(
-      DIAGNOSTIC_RUN_STORAGE_KEY,
-      JSON.stringify({
-        ...run,
-        updatedAt: Date.now()
-      })
-    );
-  } catch {
+    if (!run.cancelRequested) {
+      await options.refreshProviders();
+      run.providerOptions = options.getProviderOptions();
+      if (!options.resume && !options.code)
+        run.codes = getDiagnosticRunners(run.providerOptions).map(
+          (r) => r.code
+        );
+      store.set({
+        diagnosticsChecks: mergeDiagnosticsChecks(
+          store.get().diagnosticsChecks,
+          run.providerOptions
+        ),
+        diagnosticsRunAction: {
+          loading: true,
+          checkCodes: run.codes,
+          cancelling: run.cancelRequested
+        }
+      });
+      preparePending();
+      persist(run);
+    }
+    const runners = getDiagnosticRunners(run.providerOptions);
+    for (let index = run.nextRunnerIndex; index < run.codes.length; index++) {
+      run.nextRunnerIndex = index;
+      if (run.cancelRequested) break;
+      const code = run.codes[run.nextRunnerIndex];
+      const runner = runners.find((item) => item.code === code);
+      if (!runner) {
+        patchCheck(code, {
+          state: "skipped",
+          description: _("Check is unavailable for the current configuration"),
+          checkedAt: void 0,
+          items: []
+        });
+        run.nextRunnerIndex = index + 1;
+        persist(run);
+        continue;
+      }
+      if (!options.canRun())
+        throw new Error(
+          "Diagnostics are unavailable during a service transition"
+        );
+      patchCheck(code, {
+        state: "loading",
+        description: _("Checking, please wait"),
+        items: []
+      });
+      persist(run);
+      let failed2 = false;
+      try {
+        await runner.run();
+      } catch (error) {
+        failed2 = true;
+        logger.error("[DIAGNOSTIC]", `Check ${code} failed`, error);
+      }
+      const result = store.get().diagnosticsChecks.find((item) => item.code === code);
+      if (run.cancelRequested) {
+        patchCheck(code, {
+          state: "skipped",
+          description: _("Cancelled"),
+          checkedAt: void 0,
+          items: []
+        });
+      } else if (failed2 || !result || result.state === "loading") {
+        patchCheck(code, {
+          state: "error",
+          description: result?.state === "error" ? result.description : _("Cannot receive checks result"),
+          checkedAt: Date.now()
+        });
+      } else {
+        patchCheck(code, { checkedAt: Date.now() });
+      }
+      run.nextRunnerIndex = index + 1;
+      persist(run);
+    }
+  } catch (error) {
+    logger.error("[DIAGNOSTIC]", "Diagnostic run failed", error);
+    if (!run.cancelRequested)
+      for (const code of run.codes.slice(run.nextRunnerIndex))
+        patchCheck(code, {
+          state: "error",
+          description: _("Cannot receive checks result"),
+          items: [],
+          checkedAt: Date.now()
+        });
+  } finally {
+    if (run.cancelRequested)
+      for (const code of run.codes.slice(run.nextRunnerIndex))
+        patchCheck(code, {
+          state: "skipped",
+          description: _("Cancelled"),
+          items: [],
+          checkedAt: void 0
+        });
+    clearPersistedDiagnosticRun();
+    activeRun = null;
+    store.set({ diagnosticsRunAction: { loading: false } });
+    options.onFinished?.();
   }
-}
-function clearPersistedDiagnosticRun(storage = getSessionStorage3()) {
-  if (!storage) {
-    return;
-  }
-  try {
-    storage.removeItem(DIAGNOSTIC_RUN_STORAGE_KEY);
-  } catch {
-  }
+  return true;
 }
 
 // src/loghorizon/tabs/diagnostic/helpers/maskDiagnostics.ts
@@ -10150,7 +10311,6 @@ var diagnosticLifecycleRegistered = false;
 var diagnosticControllerInitialized = false;
 var diagnosticMounted = false;
 var diagnosticMountId = 0;
-var diagnosticCompletedWhileHidden = false;
 var servicesInfoStateUnsubscribe = null;
 var servicesInfoRefreshPromise = null;
 var followedServiceActionJobs = /* @__PURE__ */ new Set();
@@ -10166,15 +10326,12 @@ function getDiagnosticsProviderOptions(systemInfo = store.get().diagnosticsSyste
     includeInbounds: systemInfo.server_inbounds_enabled_count > 0
   };
 }
-function getNotRunningDiagnosticsChecks() {
-  return getDiagnosticsChecks(
-    _("Not running"),
-    getDiagnosticsProviderOptions()
-  );
-}
 function resetDiagnosticsChecks() {
   store.set({
-    diagnosticsChecks: getNotRunningDiagnosticsChecks()
+    diagnosticsChecks: getDiagnosticsChecks(
+      _("Not running"),
+      getDiagnosticsProviderOptions()
+    )
   });
 }
 function setDiagnosticActionLoading(action, loading2, local = false) {
@@ -10338,8 +10495,8 @@ async function fetchSystemInfo() {
     return;
   }
   store.set({
-    diagnosticsChecks: getDiagnosticsChecks(
-      _("Not running"),
+    diagnosticsChecks: mergeDiagnosticsChecks(
+      store.get().diagnosticsChecks,
       getDiagnosticsProviderOptions(systemInfo)
     )
   });
@@ -10383,8 +10540,8 @@ async function fetchDiagnosticsProviderInfo({
         resetChecks,
         diagnosticsRunLoading: store.get().diagnosticsRunAction.loading
       })) {
-        nextState2.diagnosticsChecks = getDiagnosticsChecks(
-          _("Not running"),
+        nextState2.diagnosticsChecks = mergeDiagnosticsChecks(
+          store.get().diagnosticsChecks,
           getDiagnosticsProviderOptions(nextSystemInfo2)
         );
       }
@@ -10445,8 +10602,8 @@ async function fetchDiagnosticsProviderInfo({
       resetChecks,
       diagnosticsRunLoading: store.get().diagnosticsRunAction.loading
     })) {
-      nextState.diagnosticsChecks = getDiagnosticsChecks(
-        _("Not running"),
+      nextState.diagnosticsChecks = mergeDiagnosticsChecks(
+        store.get().diagnosticsChecks,
         getDiagnosticsProviderOptions(nextSystemInfo)
       );
     }
@@ -10472,27 +10629,38 @@ function renderDiagnosticsChecks() {
   );
   const container = document.getElementById("lgh_diagnostic-page-checks");
   const renderedDiagnosticsChecks = diagnosticsChecks.map(
-    (check) => renderCheckSection(check)
+    (check) => renderCheckSection({
+      ...check,
+      onRun: () => {
+        void runChecks({ code: check.code });
+      },
+      disabled: store.get().diagnosticsRunAction.loading || isDiagnosticRunDisabled()
+    })
   );
   return preserveScrollForPage(() => {
     container.replaceChildren(...renderedDiagnosticsChecks);
   });
 }
-function renderDiagnosticRunActionWidget() {
-  logger.debug("[DIAGNOSTIC]", "renderDiagnosticRunActionWidget");
-  const { loading: loading2 } = store.get().diagnosticsRunAction;
+function isDiagnosticRunDisabled() {
   const providerInfoLoaded = store.get().diagnosticsSystemInfo.providerInfoLoaded;
   const servicesInfoWidget = store.get().servicesInfoWidget;
   const loghorizonRunning = Boolean(servicesInfoWidget.data.loghorizonRunning);
+  return servicesInfoWidget.failed || hasComponentActionLoading(store.get().updatesActions) || shouldDisableDiagnosticRunAction({
+    providerInfoLoaded,
+    servicesInfoLoading: servicesInfoWidget.loading && !loghorizonRunning,
+    loghorizonRunning,
+    mutatingServiceActionLoading: isMutatingServiceActionLoading()
+  });
+}
+function renderDiagnosticRunActionWidget() {
+  const action = store.get().diagnosticsRunAction;
   const container = document.getElementById("lgh_diagnostic-page-run-check");
   const renderedAction = renderRunAction({
-    loading: loading2,
-    disabled: shouldDisableDiagnosticRunAction({
-      providerInfoLoaded,
-      servicesInfoLoading: servicesInfoWidget.loading,
-      loghorizonRunning,
-      mutatingServiceActionLoading: isMutatingServiceActionLoading()
-    }),
+    loading: action.loading && action.checkCodes?.length !== 1,
+    running: action.loading,
+    cancelling: action.cancelling,
+    cancel: cancelDiagnosticRun,
+    disabled: action.loading || isDiagnosticRunDisabled(),
     click: () => runChecks()
   });
   return preserveScrollForPage(() => {
@@ -10723,7 +10891,7 @@ function renderDiagnosticAvailableActionsWidget() {
   const componentActionLoading = hasComponentActionLoading(updatesActions);
   const { serviceControlsDisabled, utilityActionsDisabled, viewLogsDisabled } = getAvailableActionsDisabledState({
     servicesInfoLoading: servicesInfoWidget.loading,
-    mutatingServiceActionLoading: atLeastOneMutatingActionLoading,
+    mutatingServiceActionLoading: atLeastOneMutatingActionLoading || store.get().diagnosticsRunAction.loading,
     componentActionLoading
   });
   const startVisible = shouldShowStartAction({
@@ -10864,118 +11032,33 @@ async function onStoreUpdate2(_next, _prev, diff) {
   }
   if (diff.diagnosticsRunAction) {
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
+    renderDiagnosticAvailableActionsWidget();
   }
   if (diff.diagnosticsActions || diff.servicesInfoWidget || diff.updatesActions) {
     renderDiagnosticAvailableActionsWidget();
   }
-  if (diff.diagnosticsActions || diff.servicesInfoWidget) {
+  if (diff.diagnosticsActions || diff.servicesInfoWidget || diff.updatesActions) {
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
   }
   if (diff.diagnosticsSystemInfo) {
     renderDiagnosticSystemInfoWidget();
     renderDiagnosticRunActionWidget();
+    renderDiagnosticsChecks();
   }
 }
-function persistDiagnosticRunProgress({
-  providerOptions,
-  nextRunnerIndex
-}) {
-  savePersistedDiagnosticRun({
-    providerOptions,
-    nextRunnerIndex,
-    diagnosticsChecks: store.get().diagnosticsChecks
+async function runChecks({
+  code,
+  resume
+} = {}) {
+  return runDiagnosticChecks({
+    code,
+    resume,
+    refreshProviders: () => fetchDiagnosticsProviderInfo({ resetChecks: false }),
+    getProviderOptions: getDiagnosticsProviderOptions,
+    canRun: () => !isDiagnosticRunDisabled()
   });
-}
-function setDiagnosticCheckLoading(code) {
-  const meta = DIAGNOSTICS_CHECKS_MAP[code];
-  const diagnosticsChecks = store.get().diagnosticsChecks;
-  const other = diagnosticsChecks.filter((item) => item.code !== code);
-  store.set({
-    diagnosticsChecks: [
-      ...other,
-      {
-        order: meta.order,
-        code: meta.code,
-        title: meta.title,
-        description: _("Checking, please wait"),
-        state: "loading",
-        items: []
-      }
-    ]
-  });
-}
-function getDiagnosticRunners(providerOptions) {
-  return [
-    { code: "DNS" /* DNS */, run: runDnsCheck },
-    { code: "CONNECTIVITY" /* CONNECTIVITY */, run: runConnectivityPathCheck },
-    { code: "SINGBOX" /* SINGBOX */, run: runSingBoxCheck },
-    ...providerOptions.includeInbounds ? [{ code: "INBOUNDS" /* INBOUNDS */, run: runInboundsCheck }] : [],
-    { code: "NFT" /* NFT */, run: runNftCheck },
-    ...providerOptions.includeZapret ? [{ code: "ZAPRET" /* ZAPRET */, run: runZapretCheck }] : [],
-    ...providerOptions.includeZapret2 ? [{ code: "ZAPRET2" /* ZAPRET2 */, run: runZapret2Check }] : [],
-    ...providerOptions.includeByedpi ? [{ code: "BYEDPI" /* BYEDPI */, run: runByedpiCheck }] : [],
-    { code: "OUTBOUNDS" /* OUTBOUNDS */, run: runSectionsCheck },
-    { code: "FAKEIP" /* FAKEIP */, run: runFakeIPCheck }
-  ];
-}
-async function runChecks({ resume } = {}) {
-  if (store.get().diagnosticsRunAction.loading && !resume) {
-    return;
-  }
-  let providerOptions = resume?.providerOptions ?? getDiagnosticsProviderOptions();
-  let nextRunnerIndex = resume?.nextRunnerIndex ?? 0;
-  store.set({
-    diagnosticsRunAction: { loading: true },
-    diagnosticsChecks: resume?.diagnosticsChecks ?? getLoadingDiagnosticsChecks(providerOptions).diagnosticsChecks
-  });
-  persistDiagnosticRunProgress({
-    providerOptions,
-    nextRunnerIndex
-  });
-  try {
-    if (!resume) {
-      await fetchDiagnosticsProviderInfo({ resetChecks: false });
-      providerOptions = getDiagnosticsProviderOptions();
-      nextRunnerIndex = 0;
-      store.set({
-        diagnosticsChecks: getLoadingDiagnosticsChecks(providerOptions).diagnosticsChecks
-      });
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex
-      });
-    }
-    const runners = getDiagnosticRunners(providerOptions);
-    for (let index = nextRunnerIndex; index < runners.length; index += 1) {
-      const runner = runners[index];
-      setDiagnosticCheckLoading(runner.code);
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex: index
-      });
-      try {
-        await runner.run();
-      } catch (e) {
-        logger.error(
-          "[DIAGNOSTIC]",
-          `runChecks - ${runner.run.name} failed`,
-          e
-        );
-      }
-      persistDiagnosticRunProgress({
-        providerOptions,
-        nextRunnerIndex: index + 1
-      });
-    }
-  } catch (e) {
-    logger.error("[DIAGNOSTIC]", "runChecks - e", e);
-  } finally {
-    clearPersistedDiagnosticRun();
-    store.set({ diagnosticsRunAction: { loading: false } });
-    if (!diagnosticMounted) {
-      diagnosticCompletedWhileHidden = true;
-    }
-  }
 }
 async function loadInitialDiagnosticData() {
   const diagnosticStatus = document.getElementById("diagnostic-status");
@@ -10988,23 +11071,16 @@ async function loadInitialDiagnosticData() {
   }
 }
 function restorePersistedDiagnosticRun() {
+  if (store.get().diagnosticsRunAction.loading) return false;
   const persistedRun = readPersistedDiagnosticRun();
   if (!persistedRun) {
     return false;
   }
-  store.set({
-    diagnosticsRunAction: { loading: true },
-    diagnosticsChecks: persistedRun.diagnosticsChecks
-  });
   void runChecks({ resume: persistedRun });
   return true;
 }
 async function onPageMount2() {
-  const preserveHiddenResult = diagnosticCompletedWhileHidden;
-  onPageUnmount2({
-    preserveCompletedResult: preserveHiddenResult,
-    preservePersistedRun: true
-  });
+  onPageUnmount2();
   diagnosticMounted = true;
   diagnosticMountId += 1;
   const mountId = diagnosticMountId;
@@ -11018,13 +11094,7 @@ async function onPageMount2() {
       void refreshDiagnosticServicesInfo({ force: true });
     }
   }
-  const restoredPersistedRun = !preserveHiddenResult && restorePersistedDiagnosticRun();
-  if (preserveHiddenResult) {
-    diagnosticCompletedWhileHidden = false;
-  } else if (!restoredPersistedRun && !store.get().diagnosticsRunAction.loading) {
-    store.reset(["diagnosticsRunAction"]);
-    resetDiagnosticsChecks();
-  }
+  const restoredPersistedRun = restorePersistedDiagnosticRun();
   store.subscribe(onStoreUpdate2);
   startServiceActionStateWatcher();
   renderDiagnosticsChecks();
@@ -11035,27 +11105,16 @@ async function onPageMount2() {
   if (hasRuntimeSnapshot) {
     void refreshRuntimeUiState({ force: true });
   }
-  if (!preserveHiddenResult && !restoredPersistedRun) {
+  if (!restoredPersistedRun && !store.get().diagnosticsRunAction.loading) {
     void loadInitialDiagnosticData();
   }
 }
-function onPageUnmount2({
-  preserveCompletedResult = false,
-  preservePersistedRun = false
-} = {}) {
+function onPageUnmount2() {
   diagnosticMounted = false;
   diagnosticMountId += 1;
   stopServiceActionStateWatcher();
   servicesInfoRefreshPromise = null;
   store.unsubscribe(onStoreUpdate2);
-  if (!preserveCompletedResult && !store.get().diagnosticsRunAction.loading) {
-    if (!preservePersistedRun) {
-      clearPersistedDiagnosticRun();
-    }
-    store.reset(["diagnosticsRunAction"]);
-    resetDiagnosticsChecks();
-    diagnosticCompletedWhileHidden = false;
-  }
 }
 function registerLifecycleListeners2() {
   if (diagnosticLifecycleRegistered) {
@@ -11116,14 +11175,15 @@ var styles4 = `
 
 .lgh_diagnostic-page {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     grid-column-gap: 10px;
     align-items: start;
+    min-width: 0;
 }
 
 @media (max-width: 800px) {
     .lgh_diagnostic-page {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -11223,10 +11283,52 @@ var styles4 = `
     grid-row-gap: 10px;
 }
 
-.lgh_diagnostic-page__run_check_wrapper {}
+.lgh_diagnostic-page__left-bar,
+.lgh_diagnostic-page__right-bar,
+.lgh_diagnostic-page__checks,
+.lgh_diagnostic_alert__content,
+.lgh_diagnostic_alert__actions,
+.lgh_diagnostic_alert__summary,
+.lgh_diagnostic_alert__summary__item > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 
-.lgh_diagnostic-page__run_check_wrapper button {
-    width: 100%;
+.lgh_diagnostic-page__run_check_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button:first-child {
+    flex: 1 1 220px;
+}
+
+.lgh_diagnostic-page__cancel-hint {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 0;
+    color: var(--text-color-medium, #888);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button,
+.lgh_diagnostic_alert__actions > button {
+    min-width: 0;
+    max-width: 100%;
+    min-height: 44px;
+    width: auto;
+    margin: 0;
+    box-sizing: border-box;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.lgh_diagnostic-page__run_check_wrapper > button > span,
+.lgh_diagnostic_alert__actions > button > span {
+    min-width: 0;
 }
 
 .lgh_diagnostic-page__checks {
@@ -11240,10 +11342,13 @@ var styles4 = `
     border-radius: 4px;
 
     display: grid;
-    grid-template-columns: 24px 1fr;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
     grid-column-gap: 10px;
-    align-items: center;
+    grid-row-gap: 10px;
+    align-items: start;
     padding: 10px;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .lgh_diagnostic_alert--loading {
@@ -11277,14 +11382,30 @@ var styles4 = `
 
 .lgh_diagnostic_alert__description {}
 
+.lgh_diagnostic_alert__last-checked {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-color-medium, #888);
+}
+
+.lgh_diagnostic_alert__last-checked time {
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
 .lgh_diagnostic_alert__summary {
-    margin-top: 10px;
+    grid-column: 2 / -1;
 }
 
 .lgh_diagnostic_alert__summary__item {
     display: grid;
-    grid-template-columns: 16px auto 1fr;
+    grid-template-columns: 16px minmax(0, 1fr) minmax(0, 2fr);
     grid-column-gap: 10px;
+    min-width: 0;
 }
 
 .lgh_diagnostic_alert__summary__item--error {
@@ -11302,6 +11423,29 @@ var styles4 = `
 .lgh_diagnostic_alert__summary__item__icon {
     width: 16px;
     height: 16px;
+}
+
+@media (max-width: 560px) {
+    .lgh_diagnostic_alert {
+        grid-template-columns: 24px minmax(0, 1fr);
+    }
+
+    .lgh_diagnostic_alert__actions {
+        grid-column: 2 / -1;
+    }
+
+    .lgh_diagnostic_alert__summary__item {
+        grid-template-columns: 16px minmax(0, 1fr);
+        gap: 4px 10px;
+    }
+
+    .lgh_diagnostic_alert__summary__item > div {
+        grid-column: 2;
+    }
+
+    .lgh_diagnostic-page__run_check_wrapper > button {
+        flex: 1 1 100%;
+    }
 }
 `;
 
@@ -15328,7 +15472,7 @@ var LOGIN_BRAND = Object.freeze({
   wordmark: Object.freeze({ prefix: "log", accent: "In" }),
   internalName: "loghorizon",
   edition: "Foundation",
-  uiVersion: "0.5.58"
+  uiVersion: "0.5.59"
 });
 
 // src/main.ts

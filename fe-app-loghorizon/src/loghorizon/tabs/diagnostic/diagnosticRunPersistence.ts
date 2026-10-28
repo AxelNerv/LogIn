@@ -12,6 +12,8 @@ export interface PersistedDiagnosticRun {
   providerOptions: DiagnosticsProviderOptions;
   diagnosticsChecks: StoreType['diagnosticsChecks'];
   updatedAt: number;
+  checkCodes?: DIAGNOSTICS_CHECKS[];
+  cancelRequested?: boolean;
 }
 
 function getSessionStorage(): Storage | null {
@@ -69,7 +71,12 @@ function isDiagnosticCheck(value: unknown) {
     typeof value.description === 'string' &&
     CHECK_STATES.includes(String(value.state)) &&
     Array.isArray(value.items) &&
-    value.items.every(isDiagnosticCheckItem)
+    value.items.every(isDiagnosticCheckItem) &&
+    (value.checkedAt === undefined ||
+      (typeof value.checkedAt === 'number' &&
+        Number.isFinite(value.checkedAt) &&
+        value.checkedAt > 0 &&
+        value.checkedAt <= 8640000000000000))
   );
 }
 
@@ -84,6 +91,17 @@ function isPersistedDiagnosticRun(
     typeof value.nextRunnerIndex === 'number' &&
     Number.isInteger(value.nextRunnerIndex) &&
     value.nextRunnerIndex >= 0 &&
+    value.nextRunnerIndex <= Object.values(DIAGNOSTICS_CHECKS).length &&
+    (value.checkCodes === undefined ||
+      (Array.isArray(value.checkCodes) &&
+        value.checkCodes.length > 0 &&
+        value.checkCodes.length <= Object.values(DIAGNOSTICS_CHECKS).length &&
+        new Set(value.checkCodes).size === value.checkCodes.length &&
+        value.checkCodes.every((code) =>
+          Object.values(DIAGNOSTICS_CHECKS).includes(code),
+        ) &&
+        value.nextRunnerIndex <= value.checkCodes.length)) &&
+    isOptionalBoolean(value.cancelRequested) &&
     isDiagnosticsProviderOptions(value.providerOptions) &&
     Array.isArray(value.diagnosticsChecks) &&
     value.diagnosticsChecks.every(isDiagnosticCheck) &&

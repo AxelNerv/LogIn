@@ -168,7 +168,9 @@ describe('notification mounting', () => {
     expect(observers[0].disconnect).toHaveBeenCalledOnce();
     expect(mountNotifications()).toBe(stack);
     expect(observers).toHaveLength(2);
-    expect(body.children.filter((child) => child.id === stack.id)).toHaveLength(1);
+    expect(body.children.filter((child) => child.id === stack.id)).toHaveLength(
+      1,
+    );
   });
 
   it('shares the unique stack with accessible toasts and preserves their timers', () => {

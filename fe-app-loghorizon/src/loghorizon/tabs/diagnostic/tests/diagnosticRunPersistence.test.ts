@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { DIAGNOSTICS_CHECKS as C } from '../checks/contstants';
 
 import {
   clearPersistedDiagnosticRun,
@@ -35,6 +36,71 @@ class MemoryStorage implements Storage {
 }
 
 describe('diagnostic run persistence', () => {
+  it('restores the exact selected queue, cancellation and completed timestamps', () => {
+    const storage = new MemoryStorage();
+    savePersistedDiagnosticRun(
+      {
+        nextRunnerIndex: 0,
+        providerOptions: {},
+        checkCodes: [C.NFT],
+        cancelRequested: true,
+        diagnosticsChecks: [
+          {
+            order: 1,
+            code: C.DNS,
+            title: 'DNS',
+            description: 'done',
+            state: 'success',
+            checkedAt: 1000,
+            items: [],
+          },
+        ],
+      },
+      storage,
+    );
+    expect(readPersistedDiagnosticRun(storage)).toMatchObject({
+      checkCodes: [C.NFT],
+      cancelRequested: true,
+      diagnosticsChecks: [{ code: C.DNS, checkedAt: 1000 }],
+    });
+  });
+
+  it.each([
+    { checkCodes: [] },
+    { checkCodes: [C.DNS, C.DNS] },
+    { checkCodes: ['UNKNOWN'] },
+    { checkCodes: [C.DNS], nextRunnerIndex: 2 },
+    { cancelRequested: 'yes' },
+    { nextRunnerIndex: 999 },
+    {
+      diagnosticsChecks: [
+        {
+          order: 1,
+          code: C.DNS,
+          title: 'DNS',
+          description: 'done',
+          state: 'success',
+          checkedAt: -1,
+          items: [],
+        },
+      ],
+    },
+  ])('rejects malformed queues and timestamps: %j', (invalid) => {
+    const storage = new MemoryStorage();
+    storage.setItem(
+      'loghorizon:diagnostic-run:v1',
+      JSON.stringify({
+        nextRunnerIndex: 0,
+        providerOptions: {},
+        diagnosticsChecks: [],
+        updatedAt: Date.now(),
+        ...invalid,
+      }),
+    );
+    expect(readPersistedDiagnosticRun(storage)).toBeNull();
+    expect(storage.length).toBe(0);
+  });
+
   it('stores and restores a running diagnostic snapshot', () => {
     const storage = new MemoryStorage();
 

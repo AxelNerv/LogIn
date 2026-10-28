@@ -68,6 +68,15 @@ export function getLoadingDiagnosticsChecks(
   };
 }
 
+export function mergeDiagnosticsChecks(
+  existing: IDiagnosticsChecksStoreItem[],
+  options: DiagnosticsProviderOptions,
+) {
+  return getDiagnosticsChecks(_('Not running'), options).map(
+    (check) => existing.find((item) => item.code === check.code) ?? check,
+  );
+}
+
 export const initialDiagnosticStore: Pick<
   StoreType,
   | 'diagnosticsChecks'

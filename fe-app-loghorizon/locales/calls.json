@@ -652,13 +652,31 @@
     "call": "Cancel",
     "key": "Cancel",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:391"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:391",
+      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:34"
+    ]
+  },
+  {
+    "call": "Cancelled",
+    "key": "Cancelled",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:183",
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:218"
+    ]
+  },
+  {
+    "call": "Cancelling",
+    "key": "Cancelling",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:34"
     ]
   },
   {
     "call": "Cannot receive checks result",
     "key": "Cannot receive checks result",
     "places": [
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:193",
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:209",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26",
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27",
@@ -716,7 +734,9 @@
     "call": "Check",
     "key": "Check",
     "places": [
-      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:410"
+      "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:410",
+      "src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:96",
+      "src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:104"
     ]
   },
   {
@@ -726,6 +746,13 @@
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2923",
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3386",
       "src/loghorizon/tabs/dashboard/initController.ts:1126"
+    ]
+  },
+  {
+    "call": "Check is unavailable for the current configuration",
+    "key": "Check is unavailable for the current configuration",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:152"
     ]
   },
   {
@@ -763,7 +790,7 @@
     "call": "Checking, please wait",
     "key": "Checking, please wait",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:1043",
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:166",
       "src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14",
       "src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:248",
       "src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15",
@@ -787,17 +814,17 @@
     "call": "Checks failed",
     "key": "Checks failed",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10"
     ]
   },
   {
     "call": "Checks passed",
     "key": "Checks passed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13",
       "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23",
-      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13"
+      "src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43"
     ]
   },
   {
@@ -2245,7 +2272,7 @@
     "call": "Global check",
     "key": "Global check",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:696"
+      "src/loghorizon/tabs/diagnostic/initController.ts:690"
     ]
   },
   {
@@ -3060,8 +3087,8 @@
     "call": "Issues detected",
     "key": "Issues detected",
     "places": [
-      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17",
-      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20"
+      "src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20",
+      "src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17"
     ]
   },
   {
@@ -3149,6 +3176,13 @@
     "key": "Keyword must not contain spaces or commas",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4953"
+    ]
+  },
+  {
+    "call": "Last checked",
+    "key": "Last checked",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:84"
     ]
   },
   {
@@ -3829,7 +3863,7 @@
     "call": "Not implement yet",
     "key": "Not implement yet",
     "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:189"
+      "src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:65"
     ]
   },
   {
@@ -3873,11 +3907,10 @@
     "call": "Not running",
     "key": "Not running",
     "places": [
-      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:132",
-      "src/loghorizon/tabs/diagnostic/initController.ts:117",
-      "src/loghorizon/tabs/diagnostic/initController.ts:349",
-      "src/loghorizon/tabs/diagnostic/initController.ts:406",
-      "src/loghorizon/tabs/diagnostic/initController.ts:492"
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:75",
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:141",
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:46",
+      "src/loghorizon/tabs/diagnostic/initController.ts:101"
     ]
   },
   {
@@ -4109,7 +4142,8 @@
     "call": "Pending",
     "key": "Pending",
     "places": [
-      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:67"
+      "src/loghorizon/tabs/diagnostic/diagnostic.store.ts:67",
+      "src/loghorizon/tabs/diagnostic/diagnosticRun.ts:115"
     ]
   },
   {
@@ -4612,6 +4646,14 @@
     ]
   },
   {
+    "call": "Run all checks",
+    "key": "Run all checks",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:22",
+      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:29"
+    ]
+  },
+  {
     "call": "Run BlockCheck",
     "key": "Run BlockCheck",
     "places": [
@@ -4623,13 +4665,6 @@
     "key": "Run check",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7886"
-    ]
-  },
-  {
-    "call": "Run Diagnostic",
-    "key": "Run Diagnostic",
-    "places": [
-      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:17"
     ]
   },
   {
@@ -4964,9 +4999,9 @@
     "call": "Service action failed",
     "key": "Service action failed",
     "places": [
+      "src/loghorizon/tabs/diagnostic/initController.ts:592",
       "src/loghorizon/methods/shell/index.ts:378",
-      "src/loghorizon/methods/shell/index.ts:399",
-      "src/loghorizon/tabs/diagnostic/initController.ts:598"
+      "src/loghorizon/methods/shell/index.ts:399"
     ]
   },
   {
@@ -5058,7 +5093,7 @@
     "call": "Show sing-box config",
     "key": "Show sing-box config",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:766",
+      "src/loghorizon/tabs/diagnostic/initController.ts:760",
       "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127"
     ]
   },
@@ -5513,6 +5548,13 @@
     "key": "The complete rule path works.",
     "places": [
       "../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:333"
+    ]
+  },
+  {
+    "call": "The current request will finish before the remaining checks are cancelled.",
+    "key": "The current request will finish before the remaining checks are cancelled.",
+    "places": [
+      "src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:52"
     ]
   },
   {
@@ -6354,7 +6396,7 @@
     "call": "View logs",
     "key": "View logs",
     "places": [
-      "src/loghorizon/tabs/diagnostic/initController.ts:731",
+      "src/loghorizon/tabs/diagnostic/initController.ts:725",
       "src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118"
     ]
   },

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:33+0300\n"
-"PO-Revision-Date: 2026-10-28 11:33+0300\n"
+"POT-Creation-Date: 2026-10-28 12:24+0300\n"
+"PO-Revision-Date: 2026-10-28 12:24+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -399,9 +399,21 @@ msgid "Cache file path cannot be empty"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:391
+#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:34
 msgid "Cancel"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:183
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:218
+msgid "Cancelled"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:34
+msgid "Cancelling"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:193
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:209
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:26
 #: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:259
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:27
@@ -439,6 +451,8 @@ msgid "Certificate pin is unavailable. Apply or restart the server to generate t
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:410
+#: src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:96
+#: src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:104
 msgid "Check"
 msgstr ""
 
@@ -446,6 +460,10 @@ msgstr ""
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3386
 #: src/loghorizon/tabs/dashboard/initController.ts:1126
 msgid "Check interval"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:152
+msgid "Check is unavailable for the current configuration"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:381
@@ -467,7 +485,7 @@ msgstr ""
 msgid "Check URL"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:1043
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:166
 #: src/loghorizon/tabs/diagnostic/checks/runByedpiCheck.ts:14
 #: src/loghorizon/tabs/diagnostic/checks/runConnectivityPathCheck.ts:248
 #: src/loghorizon/tabs/diagnostic/checks/runDnsCheck.ts:15
@@ -485,14 +503,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
 msgid "Checks failed"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -1346,7 +1364,7 @@ msgstr ""
 msgid "Get global check"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:696
+#: src/loghorizon/tabs/diagnostic/initController.ts:690
 msgid "Global check"
 msgstr ""
 
@@ -1822,8 +1840,8 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 #: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
+#: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
 msgid "Issues detected"
 msgstr ""
 
@@ -1876,6 +1894,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4953
 msgid "Keyword must not contain spaces or commas"
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:84
+msgid "Last checked"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3500
@@ -2273,7 +2295,7 @@ msgstr ""
 msgid "Not detected"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:189
+#: src/loghorizon/tabs/diagnostic/partials/renderCheckSection.ts:65
 msgid "Not implement yet"
 msgstr ""
 
@@ -2302,11 +2324,10 @@ msgstr ""
 msgid "Not responding"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:132
-#: src/loghorizon/tabs/diagnostic/initController.ts:117
-#: src/loghorizon/tabs/diagnostic/initController.ts:349
-#: src/loghorizon/tabs/diagnostic/initController.ts:406
-#: src/loghorizon/tabs/diagnostic/initController.ts:492
+#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:75
+#: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:141
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:46
+#: src/loghorizon/tabs/diagnostic/initController.ts:101
 msgid "Not running"
 msgstr ""
 
@@ -2443,6 +2464,7 @@ msgid "Pause updates"
 msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/diagnostic.store.ts:67
+#: src/loghorizon/tabs/diagnostic/diagnosticRun.ts:115
 msgid "Pending"
 msgstr ""
 
@@ -2738,16 +2760,17 @@ msgstr ""
 msgid "Rules proxy exist"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:22
+#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:29
+msgid "Run all checks"
+msgstr ""
+
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7847
 msgid "Run BlockCheck"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7886
 msgid "Run check"
-msgstr ""
-
-#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:17
-msgid "Run Diagnostic"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7838
@@ -2940,9 +2963,9 @@ msgstr ""
 msgid "Servers on dashboard"
 msgstr ""
 
+#: src/loghorizon/tabs/diagnostic/initController.ts:592
 #: src/loghorizon/methods/shell/index.ts:378
 #: src/loghorizon/methods/shell/index.ts:399
-#: src/loghorizon/tabs/diagnostic/initController.ts:598
 msgid "Service action failed"
 msgstr ""
 
@@ -2995,7 +3018,7 @@ msgstr ""
 msgid "Show servers whose names match the expression."
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:766
+#: src/loghorizon/tabs/diagnostic/initController.ts:760
 #: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:127
 msgid "Show sing-box config"
 msgstr ""
@@ -3259,6 +3282,10 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:333
 msgid "The complete rule path works."
+msgstr ""
+
+#: src/loghorizon/tabs/diagnostic/partials/renderRunAction.ts:52
+msgid "The current request will finish before the remaining checks are cancelled."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5911
@@ -3769,7 +3796,7 @@ msgstr ""
 msgid "Via country.is"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/initController.ts:731
+#: src/loghorizon/tabs/diagnostic/initController.ts:725
 #: src/loghorizon/tabs/diagnostic/partials/renderAvailableActions.ts:118
 msgid "View logs"
 msgstr ""
