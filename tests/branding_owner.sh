@@ -92,7 +92,9 @@ extract_shell_css() {
   ' "$1"
 }
 
-source_css="$(extract_shell_css "$STYLES_TS")"
+# esbuild resolves the TypeScript import alias to its exported symbol name.
+# Compare the same selectors while keeping every CSS declaration unchanged.
+source_css="$(extract_shell_css "$STYLES_TS" | sed 's/LOGHORIZON_CBI_PREFIX/LOGHORIZON_UCI_PACKAGE/g')"
 bundle_css="$(extract_shell_css "$BUNDLE_JS")"
 
 [ -n "$source_css" ] ||

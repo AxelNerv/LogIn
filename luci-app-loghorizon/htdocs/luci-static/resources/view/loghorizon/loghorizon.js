@@ -34,24 +34,59 @@ function normalizeLogHorizonPageLayout() {
 
   const mark = function () {
     const mainContent = document.getElementById("maincontent");
-    const container = Array.from(mainContent?.children || []).find((child) =>
-      child.classList.contains("container"),
-    );
-    if (!container) return false;
+    const pageView = document.getElementById("view");
+    if (!mainContent || !pageView || !mainContent.contains(pageView))
+      return false;
+
+    // Theme versions put .container either on #maincontent or around #view.
+    // Follow this view's ancestors, rather than an unrelated first container.
+    const ancestor = pageView.closest(".container");
+    const container =
+      ancestor && mainContent.contains(ancestor) ? ancestor : mainContent;
 
     container.classList.add("lh-page-container");
     mainContent.classList.add("lh-page-maincontent");
+    pageView.classList.add("lh-page-view");
+    mainContent.closest(".main-right")?.classList.add("lh-page-host");
 
     // Vendor themes may inject a late max-width declaration with !important.
     // An inline important declaration is the only deterministic override and
     // is safe here because this is LuCI's container for the current page only.
-    container.style.setProperty("width", "calc(100% - 32px)", "important");
+    container.style.setProperty(
+      "width",
+      "calc(100% - var(--lh-page-gutter, 32px))",
+      "important",
+    );
     container.style.setProperty("max-width", "1720px", "important");
+    container.style.setProperty("min-width", "0", "important");
     container.style.setProperty("flex-basis", "auto", "important");
     container.style.setProperty("box-sizing", "border-box", "important");
     container.style.setProperty("margin-left", "auto", "important");
     container.style.setProperty("margin-right", "auto", "important");
-    mainContent.style.setProperty("max-width", "none", "important");
+    if (container !== mainContent) {
+      // Auto margins disable cross-axis stretch in Argon's flex column.
+      // Resolve the outer width before the inner container's percentage width.
+      mainContent.style.setProperty("width", "100%", "important");
+      mainContent.style.setProperty("max-width", "none", "important");
+      mainContent.style.setProperty("min-width", "0", "important");
+      mainContent.style.setProperty("margin", "0", "important");
+      mainContent.style.setProperty("box-sizing", "border-box", "important");
+      mainContent.style.setProperty("align-self", "stretch", "important");
+
+      // Some themes add another wrapper before the actual page container.
+      for (
+        let wrapper = container.parentElement;
+        wrapper && wrapper !== mainContent;
+        wrapper = wrapper.parentElement
+      ) {
+        wrapper.classList.add("lh-page-wrapper");
+        wrapper.style.setProperty("width", "100%", "important");
+        wrapper.style.setProperty("max-width", "none", "important");
+        wrapper.style.setProperty("min-width", "0", "important");
+        wrapper.style.setProperty("margin", "0", "important");
+        wrapper.style.setProperty("box-sizing", "border-box", "important");
+      }
+    }
 
     observer?.disconnect();
     return true;
@@ -135,6 +170,7 @@ const EntryPoint = {
   async render() {
     normalizeLogHorizonPageLayout();
     main.injectGlobalStyles();
+    main.mountNotifications();
     const uiCapabilities = {
       loaded: false,
       singBoxExtended: false,
@@ -605,7 +641,11 @@ const EntryPoint = {
 
     const shell = E(
       "div",
-      { class: "lh-shell", "data-loghorizon-shell": "foundation" },
+      {
+        class: "lh-shell",
+        "data-loghorizon-shell": "foundation",
+        "data-loghorizon-ui-version": main.LOGIN_BRAND.uiVersion,
+      },
       [brandHeader, rendered],
     );
 

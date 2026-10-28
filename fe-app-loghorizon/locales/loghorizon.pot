@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 16:05+0300\n"
-"PO-Revision-Date: 2026-09-17 16:05+0300\n"
+"POT-Creation-Date: 2026-10-28 11:33+0300\n"
+"PO-Revision-Date: 2026-10-28 11:33+0300\n"
 "Last-Translator: logIn <locales@loghorizon.invalid>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2348
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2707
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3045
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3060
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3258
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3273
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3562
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3714
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3724
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2408
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2767
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3105
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3120
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3318
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3333
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3622
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3774
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3784
 msgid "-- Select --"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7931
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8018
 msgid "+ Add JSON outbound"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3478
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3538
 msgid "+ Add level"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8017
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8104
 msgid "+ Add priority"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7958
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8045
 msgid "+ Add URLTest"
 msgstr ""
 
@@ -54,7 +54,7 @@ msgstr ""
 msgid "✘ Stopped"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:442
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:513
 msgid "Accept external proxy connections and route them with sing-box."
 msgstr ""
 
@@ -62,8 +62,8 @@ msgstr ""
 msgid "Accept routes"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7415
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7444
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7500
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7529
 msgid "Action"
 msgstr ""
 
@@ -94,11 +94,11 @@ msgstr ""
 msgid "adapted files"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:431
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:502
 msgid "Add a section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:448
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:519
 msgid "Add a server inbound"
 msgstr ""
 
@@ -106,27 +106,27 @@ msgstr ""
 msgid "Add at least one DNS server"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2756
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2816
 msgid "Add prefix to nodes"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8449
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8536
 msgid "Add URLs or local paths to .lst lists containing domains and subnets."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8470
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8557
 msgid "Add URLs or local paths to .lst lists containing domains. IP entries are ignored."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8424
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8511
 msgid "Add URLs or local paths to .srs / .json lists. Only domain rules are supported."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8395
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8482
 msgid "Add URLs or local paths to .srs / .json lists. Subnets are ignored by default."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3736
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3796
 msgid "Add URLTest / Priority group"
 msgstr ""
 
@@ -134,21 +134,21 @@ msgstr ""
 msgid "Additional marking rules found"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2975
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3185
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3035
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3245
 msgid "Additionally exclude servers by protocol, transport, and security. Exclude only servers matching the specified parameters."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2958
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3167
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3018
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3227
 msgid "Additionally filter servers by protocol, transport, and security. Add only servers matching the specified parameters."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3636
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3696
 msgid "Additionally hide servers by protocol, transport, and security. Hide servers matching the specified parameters."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3616
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3676
 msgid "Additionally show servers by protocol, transport, and security. Add only servers matching the specified parameters."
 msgstr ""
 
@@ -156,8 +156,12 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8094
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8181
 msgid "Adds filler so the size of the traffic gives less away."
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7486
+msgid "Advanced"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3112
@@ -173,31 +177,31 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2245
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2305
 msgid "All except selected"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2255
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2315
 msgid "All remaining except selected"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2253
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2313
 msgid "All remaining servers"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3141
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3201
 msgid "All remaining servers means every server not already assigned to a higher-priority level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2244
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2304
 msgid "All servers"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8502
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8589
 msgid "All traffic from these IP addresses will be routed through the section unconditionally, ignoring all other conditions."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5529
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5589
 msgid "Allowed domain prefixes are full:, keyword:, and regex:"
 msgstr ""
 
@@ -205,7 +209,7 @@ msgstr ""
 msgid "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2935
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2995
 msgid "Allows limiting the list of servers for URLTest"
 msgstr ""
 
@@ -217,15 +221,15 @@ msgstr ""
 msgid "Alter ID"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8493
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8580
 msgid "Apply section rules only to the specified local IP addresses"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5560
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5620
 msgid "At least one valid domain must be specified."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5642
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5702
 msgid "At least one valid IP or subnet must be specified."
 msgstr ""
 
@@ -237,7 +241,7 @@ msgstr ""
 msgid "Auto update"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2723
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2783
 msgid "Auto-generate HWID"
 msgstr ""
 
@@ -245,11 +249,11 @@ msgstr ""
 msgid "Automatic component update checks"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2692
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2752
 msgid "Automatic User-Agent selection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2757
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2817
 msgid "Automatically add text to the name of each server from this subscription for convenient filtering."
 msgstr ""
 
@@ -257,7 +261,7 @@ msgstr ""
 msgid "Automatically check installed components for new versions"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3375
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3435
 #: src/loghorizon/tabs/dashboard/initController.ts:1139
 msgid "Automatically select the fastest node in the current level"
 msgstr ""
@@ -284,9 +288,9 @@ msgstr ""
 msgid "Available through %s of %s independent targets"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5775
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6220
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6632
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5835
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6280
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6692
 msgid "Backend validation failed: %s"
 msgstr ""
 
@@ -327,30 +331,30 @@ msgstr ""
 msgid "Browser is using FakeIP correctly"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8374
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8461
 msgid "Built-in rule sets"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2262
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2322
 msgid "By flag emoji from name"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6701
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6761
 msgid "ByeDPI listen address and port are assigned by logIn and must not be set in the strategy."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6878
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6938
 msgid "ByeDPI option does not accept a compact value: %s"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6807
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6867
 msgid "ByeDPI option does not accept a value: %s"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6799
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6825
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6859
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6868
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6885
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6919
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6928
 msgid "ByeDPI option requires a value: %s"
 msgstr ""
 
@@ -378,11 +382,11 @@ msgstr ""
 msgid "ByeDPI sing-box outbound is not configured"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7648
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7733
 msgid "ByeDPI Strategy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6904
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6964
 msgid "ByeDPI strategy cannot be empty"
 msgstr ""
 
@@ -414,15 +418,15 @@ msgstr ""
 msgid "Cannot save server"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3864
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3924
 msgid "Cannot save settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8065
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8152
 msgid "Carries several streams over one connection and pads them. Hides the shape of the traffic and cuts the number of connections. Unavailable for connections that already multiplex, and for those using an XTLS flow, which multiplexing would strip."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8105
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8192
 msgid "Cascade connection"
 msgstr ""
 
@@ -438,18 +442,18 @@ msgstr ""
 msgid "Check"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2863
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3326
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2923
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3386
 #: src/loghorizon/tabs/dashboard/initController.ts:1126
 msgid "Check interval"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:381
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7783
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7869
 msgid "Check rule path"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3339
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3399
 msgid "Check timeout after which the server is considered dead"
 msgstr ""
 
@@ -457,8 +461,8 @@ msgstr ""
 msgid "Check update"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2889
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3313
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2949
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3373
 #: src/loghorizon/tabs/dashboard/initController.ts:1124
 msgid "Check URL"
 msgstr ""
@@ -481,14 +485,14 @@ msgstr ""
 msgid "checks"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:10
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:26
 msgid "Checks failed"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:23
 #: src/loghorizon/tabs/diagnostic/checks/runFakeIPCheck.ts:43
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:13
 msgid "Checks passed"
 msgstr ""
 
@@ -530,7 +534,7 @@ msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:250
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:346
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3931
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3991
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1714
 #: src/partials/modal/renderModal.ts:263
 #: src/loghorizon/tabs/dashboard/initController.ts:1017
@@ -550,7 +554,7 @@ msgstr ""
 msgid "Close connection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3454
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3514
 msgid "Close existing connections when Priority switches server. Keep disabled to preserve healthy calls and downloads; connections on a failed route must reconnect."
 msgstr ""
 
@@ -567,7 +571,7 @@ msgstr ""
 msgid "Component update check interval"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:507
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:578
 msgid "Components"
 msgstr ""
 
@@ -579,7 +583,7 @@ msgstr ""
 msgid "Concurrency"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7403
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7488
 msgid "Conditions"
 msgstr ""
 
@@ -587,11 +591,11 @@ msgstr ""
 msgid "Config File Path"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4954
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5014
 msgid "Configure User-Agent in the item settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8143
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8230
 msgid "Connect through"
 msgstr ""
 
@@ -603,7 +607,7 @@ msgstr ""
 msgid "Connection tracking table"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7810
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7896
 msgid "Connection URL"
 msgstr ""
 
@@ -644,7 +648,7 @@ msgstr ""
 msgid "Could not compare FakeIP and control public IPs"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:526
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:597
 msgid "Could not read the logIn service state. Installed components and DPI providers may be shown incorrectly. Check that the service is running."
 msgstr ""
 
@@ -652,11 +656,11 @@ msgstr ""
 msgid "CPU"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8160
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8247
 msgid "Current section cannot be used as its own transit section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2684
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2744
 msgid "Current section cannot download its own subscription"
 msgstr ""
 
@@ -664,15 +668,16 @@ msgstr ""
 msgid "Currently unavailable"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7926
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8013
 msgid "Custom outbound configurations in JSON format"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7703
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7788
 msgid "Custom strategy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:483
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:554
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7487
 msgid "Dashboard"
 msgstr ""
 
@@ -696,9 +701,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2945
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3154
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3603
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3005
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3214
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3663
 msgid "Detect server country"
 msgstr ""
 
@@ -706,11 +711,11 @@ msgstr ""
 msgid "detour must be a non-empty string"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8492
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8579
 msgid "Device filter"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7170
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7244
 msgid "Device or IP"
 msgstr ""
 
@@ -726,7 +731,7 @@ msgstr ""
 msgid "Diagnostic tools are missing"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:471
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:542
 msgid "Diagnostics"
 msgstr ""
 
@@ -734,11 +739,11 @@ msgstr ""
 msgid "Direct"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3131
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3191
 msgid "Direct connection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7465
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7550
 msgid "Direct route: no additional encryption"
 msgstr ""
 
@@ -762,7 +767,7 @@ msgstr ""
 msgid "Disabled, but protected by a public-key pin"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6302
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6362
 msgid "Disabling interception is incompatible with action=zapret2 because logIn sends matched traffic through NFQUEUE."
 msgstr ""
 
@@ -770,8 +775,8 @@ msgstr ""
 msgid "Discord test: %s"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2845
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3302
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2905
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3362
 msgid "Display name"
 msgstr ""
 
@@ -803,28 +808,28 @@ msgstr ""
 msgid "DNS on router"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2129
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2189
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:191
 msgid "DNS over HTTP/3 (DoH3)"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2128
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2188
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:190
 msgid "DNS over HTTPS (DoH)"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2130
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2190
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:192
 msgid "DNS over QUIC (DoQ)"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2131
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2191
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:193
 msgid "DNS over TLS (DoT)"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2812
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7495
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2872
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7580
 msgid "DNS protocol"
 msgstr ""
 
@@ -832,12 +837,12 @@ msgstr ""
 msgid "DNS Protocol Type"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2813
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7496
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2873
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7581
 msgid "DNS protocol used by the resolver"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7539
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7624
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:366
 msgid "DNS requests through section"
 msgstr ""
@@ -854,18 +859,18 @@ msgstr ""
 msgid "DNS Rewrite TTL"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2822
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7508
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2882
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7593
 msgid "DNS server"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7517
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7602
 #: src/validators/validateDns.ts:8
 msgid "DNS server address cannot be empty"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2823
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7509
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2883
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7594
 msgid "DNS server used by the resolver"
 msgstr ""
 
@@ -889,7 +894,7 @@ msgstr ""
 msgid "DNS through proxy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7527
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7612
 msgid "DNS through section"
 msgstr ""
 
@@ -905,35 +910,31 @@ msgstr ""
 msgid "DNS, TCP handoff, TLS, and HTTP path is available"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts:26
-msgid "Do not panic, everything can be fixed, just..."
-msgstr ""
-
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3441
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3501
 msgid "Do not switch within the same priority level unless the new route is faster by more than this many milliseconds."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3018
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3078
 msgid "Do not test servers from these countries."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3034
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3094
 msgid "Do not test servers whose names match the expression."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2979
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3039
 msgid "Do not test servers with one of the selected protocols."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2985
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3045
 msgid "Do not test servers with one of the selected security types."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2982
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3042
 msgid "Do not test servers with one of the selected transports."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3026
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3086
 msgid "Do not test specified servers."
 msgstr ""
 
@@ -941,19 +942,19 @@ msgstr ""
 msgid "Does not resolve"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8448
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8535
 msgid "Domain and IP lists"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8469
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8556
 msgid "Domain lists"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2803
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2863
 msgid "Domain Resolver"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8335
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8422
 msgid "Domains"
 msgstr ""
 
@@ -994,15 +995,15 @@ msgstr ""
 msgid "Download remote lists and rule sets via the selected section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2658
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2718
 msgid "Download subscription through a section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2659
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2719
 msgid "Download subscriptions via the selected section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2667
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2727
 msgid "Download through"
 msgstr ""
 
@@ -1011,7 +1012,7 @@ msgstr ""
 msgid "Downloaded"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7475
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7560
 msgid "DPI bypass: not a VPN or encryption layer"
 msgstr ""
 
@@ -1019,11 +1020,11 @@ msgstr ""
 msgid "DPI preset catalog is invalid"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7771
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7857
 msgid "DPI strategy cannot be empty"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7687
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7772
 msgid "DPI strategy preset"
 msgstr ""
 
@@ -1031,7 +1032,7 @@ msgstr ""
 msgid "DPI traffic may bypass NFQUEUE entirely"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:425
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:496
 msgid "Drag rows to change priority. The rule at the top is checked first."
 msgstr ""
 
@@ -1039,7 +1040,7 @@ msgstr ""
 msgid "Duplicate JSON outbound tag"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5000
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5060
 msgid "Duplicate value"
 msgstr ""
 
@@ -1047,12 +1048,12 @@ msgstr ""
 msgid "ECH needs a DNS server given by name, but %s is an address. Use the resolver's hostname, such as dns.google."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:67
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:136
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1734
 msgid "Edit rule action"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7405
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7490
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2476
 msgid "Enable"
 msgstr ""
@@ -1069,7 +1070,7 @@ msgstr ""
 msgid "Enable autostart"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2804
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2864
 msgid "Enable built-in DNS resolver for domains handled by this section"
 msgstr ""
 
@@ -1077,11 +1078,11 @@ msgstr ""
 msgid "Enable list updates"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8181
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8268
 msgid "Enable Mixed Proxy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8222
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8309
 msgid "Enable Mixed Proxy Authentication"
 msgstr ""
 
@@ -1109,14 +1110,14 @@ msgstr ""
 msgid "Enter a complete sing-box inbound object"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4265
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4325
 msgid "Enter a complete sing-box outbound object"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2857
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3307
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4220
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4236
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2917
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3367
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4280
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4296
 msgid "Enter a display name"
 msgstr ""
 
@@ -1124,12 +1125,12 @@ msgstr ""
 msgid "Enter a domain to verify its list, route, DNS answer, outbound, and API response."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3104
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3125
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3164
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3185
 msgid "Enter a level name"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7520
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7605
 msgid "Enter a valid DNS server address"
 msgstr ""
 
@@ -1137,15 +1138,15 @@ msgstr ""
 msgid "Enter a valid domain"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2741
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2801
 msgid "Enter HWID"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2733
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2793
 msgid "Enter the HWID sent with subscription requests"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7837
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7923
 msgid "Enter the subscription URL"
 msgstr ""
 
@@ -1153,21 +1154,21 @@ msgstr ""
 msgid "Established flows may bypass packet inspection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2974
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3184
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3635
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3034
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3244
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3695
 msgid "Exclude by proxy parameters"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3033
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3246
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3695
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3093
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3306
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3755
 msgid "Exclude by regular expression"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3017
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3230
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3679
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3077
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3290
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3739
 msgid "Exclude countries"
 msgstr ""
 
@@ -1179,29 +1180,29 @@ msgstr ""
 msgid "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3025
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3238
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3687
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3085
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3298
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3747
 msgid "Exclude servers"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3192
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3252
 msgid "Exclude servers with one of the selected protocols from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3198
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3258
 msgid "Exclude servers with one of the selected security types from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3195
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3255
 msgid "Exclude servers with one of the selected transports from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3750
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3810
 msgid "Exclude URLTest / Priority group"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:53
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:122
 msgid "Expecting: %s"
 msgstr ""
 
@@ -1209,15 +1210,15 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8182
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8269
 msgid "Expose this section as a local HTTP+SOCKS proxy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5836
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5896
 msgid "External nfqws config files bypass logIn queue management and explicit validation."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6281
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6341
 msgid "External nfqws2 config files bypass logIn queue management and explicit validation."
 msgstr ""
 
@@ -1259,7 +1260,7 @@ msgstr ""
 msgid "Failed to update subscriptions"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3402
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3462
 msgid "Failures before switching"
 msgstr ""
 
@@ -1283,7 +1284,7 @@ msgstr ""
 msgid "Fallback on unknown DC"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3386
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3446
 #: src/loghorizon/tabs/dashboard/initController.ts:1145
 msgid "Faster server search interval"
 msgstr ""
@@ -1292,7 +1293,7 @@ msgstr ""
 msgid "Fastest"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3592
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3652
 msgid "Filter the servers that will be displayed on the dashboard."
 msgstr ""
 
@@ -1300,12 +1301,12 @@ msgstr ""
 msgid "Firewall WAN port"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3865
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3925
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2238
 msgid "Fix the highlighted fields and save again."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8501
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8588
 msgid "Forced device routing"
 msgstr ""
 
@@ -1321,11 +1322,15 @@ msgstr ""
 msgid "Fronting proxy protocol"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6299
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6359
 msgid "Fuzzing is not supported here because logIn needs deterministic runtime validation."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2724
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7485
+msgid "General"
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2784
 msgid "Generate HWID from router hardware information for this subscription"
 msgstr ""
 
@@ -1361,47 +1366,47 @@ msgstr ""
 msgid "Hardware flow offloading is enabled"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2792
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2852
 msgid "Hide cascade connection nodes"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2781
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2841
 msgid "Hide individual nodes that are already included in imported subscription URLTest groups"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2793
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2853
 msgid "Hide intermediate nodes used as detours by other subscription nodes"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3688
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3748
 msgid "Hide selected servers."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3751
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3811
 msgid "Hide servers from selected groups without repeating their filtering criteria."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3680
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3740
 msgid "Hide servers from the specified countries."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3696
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3756
 msgid "Hide servers whose names match the expression."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3643
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3703
 msgid "Hide servers with one of the selected protocols."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3647
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3707
 msgid "Hide servers with one of the selected security types."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3644
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3704
 msgid "Hide servers with one of the selected transports."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2780
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2840
 msgid "Hide URLTest group nodes"
 msgstr ""
 
@@ -1413,7 +1418,7 @@ msgstr ""
 msgid "Hides the resolver name inside the TLS handshake, which is what providers match on when they block DoH and DoT. Requires an encrypted DNS protocol and a resolver that publishes ECH keys."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3350
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3410
 #: src/loghorizon/tabs/dashboard/initController.ts:1131
 msgid "Higher-level check interval"
 msgstr ""
@@ -1431,11 +1436,11 @@ msgstr ""
 msgid "Hour to clear it"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3351
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3411
 msgid "How often higher priority levels are checked while a lower level is active"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3327
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3387
 msgid "How often the currently selected server is checked"
 msgstr ""
 
@@ -1463,25 +1468,25 @@ msgstr ""
 msgid "HTTPS works, but one control path is degraded"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2732
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2792
 msgid "HWID"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1966
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2026
 msgid "Hysteria2 and TUIC carry several streams of their own."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2902
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2962
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:3059
 #: src/loghorizon/tabs/dashboard/initController.ts:906
 msgid "Idle timeout"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2771
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2831
 msgid "Import subscription URLTest groups"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2772
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2832
 msgid "Import URLTest groups returned by this subscription provider"
 msgstr ""
 
@@ -1497,31 +1502,31 @@ msgstr ""
 msgid "Inbound JSON must be an object with a type field"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2957
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3166
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3615
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3017
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3226
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3675
 msgid "Include by proxy parameters"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3009
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3222
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3671
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3069
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3282
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3731
 msgid "Include by regular expression"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2993
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3206
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3655
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3053
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3266
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3715
 msgid "Include countries"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4340
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4400
 msgid "Include IP addresses and subnets"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3001
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3214
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3663
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3061
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3274
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3723
 msgid "Include servers"
 msgstr ""
 
@@ -1571,14 +1576,14 @@ msgstr ""
 msgid "Interpretation"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2916
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3453
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2976
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3513
 #: src/loghorizon/tabs/dashboard/initController.ts:908
 #: src/loghorizon/tabs/dashboard/initController.ts:1151
 msgid "Interrupt connections"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2917
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2977
 msgid "Interrupt connections when URLTest switches the selected server"
 msgstr ""
 
@@ -1586,7 +1591,7 @@ msgstr ""
 msgid "Interval"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7669
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7754
 msgid "Invalid ByeDPI strategy"
 msgstr ""
 
@@ -1606,7 +1611,7 @@ msgstr ""
 msgid "Invalid DNS server port"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5509
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5569
 #: src/validators/validateDomain.ts:67
 #: src/validators/validateDomain.ts:73
 msgid "Invalid domain address"
@@ -1682,7 +1687,7 @@ msgstr ""
 msgid "Invalid JSON format"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7625
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7710
 msgid "Invalid NFQWS2 strategy"
 msgstr ""
 
@@ -1690,16 +1695,16 @@ msgstr ""
 msgid "Invalid path format. Path must start with \"/\" and contain valid characters"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8215
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8302
 #: src/validators/validateShadowsocksUrl.ts:91
 msgid "Invalid port number. Must be between 1 and 65535"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5658
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5718
 msgid "Invalid port or range. Use 80 or 1000-2000"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4883
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4943
 msgid "Invalid regular expression"
 msgstr ""
 
@@ -1805,7 +1810,7 @@ msgstr ""
 msgid "Invalid VMess URL: parsing failed"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8364
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8451
 msgid "IPs"
 msgstr ""
 
@@ -1817,15 +1822,15 @@ msgstr ""
 msgid "IPv6 only"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 #: src/loghorizon/tabs/diagnostic/checks/getCheckItemsMeta.ts:17
+#: src/loghorizon/tabs/diagnostic/helpers/getMeta.ts:20
 msgid "Issues detected"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1279
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4264
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4500
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7925
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1321
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4324
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4560
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8012
 msgid "JSON outbound"
 msgstr ""
 
@@ -1845,11 +1850,11 @@ msgstr ""
 msgid "JSON outbound must contain a non-empty type field"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4288
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4348
 msgid "JSON outbound settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3465
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3525
 msgid "Keep Priority before latency-sorted servers"
 msgstr ""
 
@@ -1857,11 +1862,11 @@ msgstr ""
 msgid "Keep the active DNS server after an isolated failed check; switch after this many consecutive failures."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3403
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3463
 msgid "Keep the active route after an isolated failed check; switch after this many consecutive failures."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2926
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2986
 msgid "Keep URLTest before latency-sorted servers"
 msgstr ""
 
@@ -1869,11 +1874,11 @@ msgstr ""
 msgid "Key path"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4893
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4953
 msgid "Keyword must not contain spaces or commas"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3440
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3500
 msgid "Latency improvement threshold"
 msgstr ""
 
@@ -1899,12 +1904,12 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3120
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3180
 msgid "Level name"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7335
-msgid "List must be an HTTP(S) URL or a local .lst path"
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7418
+msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:572
@@ -1956,19 +1961,19 @@ msgstr ""
 msgid "logIn Error"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6710
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6770
 msgid "logIn manages ciadpi pid files itself, so pidfile options are not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6707
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6767
 msgid "logIn manages the ciadpi process lifecycle itself, so daemon mode is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5854
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5914
 msgid "logIn manages the nfqws process lifecycle itself, so daemon mode is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6305
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6365
 msgid "logIn manages the nfqws2 process lifecycle itself, so daemon mode is not allowed here."
 msgstr ""
 
@@ -2032,11 +2037,11 @@ msgstr ""
 msgid "Main DNS server. A URL scheme may override the protocol per entry, allowing a QUIC primary and HTTPS/TLS fallback."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8365
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8452
 msgid "Match destination IPs or subnets"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8513
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8600
 msgid "Match destination ports. Use a single port or a range"
 msgstr ""
 
@@ -2056,15 +2061,15 @@ msgstr ""
 msgid "Minimum DNS hold time"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2876
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2936
 msgid "Minimum latency difference in milliseconds that triggers switching to a faster server."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3426
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3486
 msgid "Minimum route hold time"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3427
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3487
 msgid "Minimum time before a planned recovery or latency-based switch. Emergency failover is not delayed."
 msgstr ""
 
@@ -2072,15 +2077,15 @@ msgstr ""
 msgid "Minimum time before returning to a higher-priority DNS server. Emergency failover is not delayed."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8273
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8360
 msgid "Mixed Proxy Password"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8196
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8283
 msgid "Mixed Proxy Port"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8237
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8324
 msgid "Mixed Proxy Username"
 msgstr ""
 
@@ -2088,42 +2093,42 @@ msgstr ""
 msgid "Monitored Interfaces"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:495
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:566
 msgid "Monitoring"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8064
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8151
 msgid "Multiplex connections"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8079
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8166
 msgid "Multiplex protocol"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1989
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2049
 msgid "Multiplexing drops the XTLS flow, and the server then refuses every connection."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2360
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2375
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2420
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2435
 msgid "Must be a number in the range of 0 - 10000"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2846
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3303
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2906
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3363
 msgid "Name displayed on the dashboard"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3121
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3181
 msgid "Name shown in the priority level list"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2175
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7884
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2235
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7971
 msgid "Network Interface"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4055
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4115
 msgid "Network interface settings"
 msgstr ""
 
@@ -2157,19 +2162,19 @@ msgstr ""
 msgid "NFQUEUE traffic reaches rule %s"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7556
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7641
 msgid "NFQWS Strategy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5966
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6026
 msgid "NFQWS strategy cannot be empty"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7604
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7689
 msgid "NFQWS2 Strategy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6440
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6500
 msgid "NFQWS2 strategy cannot be empty"
 msgstr ""
 
@@ -2321,37 +2326,37 @@ msgstr ""
 msgid "Obfuscation password"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3207
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3267
 msgid "Only from the specified countries."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2246
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2254
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2306
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2314
 msgid "Only selected"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2247
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2256
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2307
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2316
 msgid "Only selected except exclusions"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3223
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3283
 msgid "Only servers whose names match the expression."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3174
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3234
 msgid "Only servers with one of the selected protocols."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3178
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3238
 msgid "Only servers with one of the selected security types."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3175
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3235
 msgid "Only servers with one of the selected transports."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3215
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3275
 msgid "Only the specified servers."
 msgstr ""
 
@@ -2360,11 +2365,11 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4232
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4292
 msgid "Open priority settings and enter a display name"
 msgstr ""
 
-#: src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts:31
+#: src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts:37
 msgid "Open Project Page"
 msgstr ""
 
@@ -2374,16 +2379,16 @@ msgstr ""
 msgid "Operation timed out"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1596
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7045
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1654
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7119
 msgid "Option \"%s\" contains an invalid input value."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6044
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6104
 msgid "Optional values must be attached with '=' here; a separate token would be ignored by nfqws."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6518
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6578
 msgid "Optional values must be attached with '=' here; a separate token would be ignored by nfqws2."
 msgstr ""
 
@@ -2399,7 +2404,7 @@ msgstr ""
 msgid "Packet queues during check"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8093
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8180
 msgid "Pad multiplexed streams"
 msgstr ""
 
@@ -2411,7 +2416,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8299
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8386
 msgid "Password cannot be empty"
 msgstr ""
 
@@ -2441,16 +2446,20 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3376
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3436
 msgid "Periodically check the current level and switch to a faster server even when the current one works."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2925
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3464
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2985
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3524
 msgid "Pin on dashboard"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8207
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7404
+msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8294
 msgid "Port cannot be empty"
 msgstr ""
 
@@ -2458,20 +2467,20 @@ msgstr ""
 msgid "Port conflict"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8197
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8284
 msgid "Port for the local mixed proxy of this section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5665
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5725
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:1810
 msgid "Port must be between 1 and 65535"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5669
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5729
 msgid "Port range start must be less than or equal to end"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8512
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8599
 msgid "Ports"
 msgstr ""
 
@@ -2487,11 +2496,11 @@ msgstr ""
 msgid "Preferred IP"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2764
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2824
 msgid "Prefix text"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8011
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8098
 msgid "Priority"
 msgstr ""
 
@@ -2505,28 +2514,28 @@ msgstr ""
 msgid "Priority details are unavailable"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4119
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4120
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4179
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4180
 msgid "Priority level settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3473
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3533
 msgid "Priority levels"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4177
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4182
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4183
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4237
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4242
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4243
 msgid "Priority settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2316
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2376
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2482
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2516
 msgid "Protocol"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4553
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4613
 msgid "Provider visibility"
 msgstr ""
 
@@ -2534,7 +2543,7 @@ msgstr ""
 msgid "Proxy link is unavailable"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7485
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7570
 msgid "Proxy or VPN route"
 msgstr ""
 
@@ -2587,51 +2596,53 @@ msgstr ""
 msgid "Refill"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5551
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5611
 msgid "Regular expression must not contain spaces or commas"
 msgstr ""
 
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1370
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1371
 #: src/loghorizon/tabs/updates/initController.ts:802
 msgid "Remove"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3231
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3291
 msgid "Remove servers from the specified countries from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3247
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3307
 msgid "Remove servers whose names match the expression from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3239
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3299
 msgid "Remove the specified servers from this level."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8223
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8310
 msgid "Require a username and password for the local mixed proxy"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8310
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8397
 msgid "Resolve domain names before routing so sing-box can use real destination IPs."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8309
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8396
 msgid "Resolve real IP for routing"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5839
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5899
 msgid "Resource selection by hostname inside nfqws is not supported here; sing-box selects resources before NFQUEUE."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6284
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6344
 msgid "Resource selection by hostname inside nfqws2 is not supported here; sing-box selects resources before NFQUEUE."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5842
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5902
 msgid "Resource selection by IP or CIDR inside nfqws is not supported here; sing-box selects resources before NFQUEUE."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6287
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6347
 msgid "Resource selection by IP or CIDR inside nfqws2 is not supported here; sing-box selects resources before NFQUEUE."
 msgstr ""
 
@@ -2647,7 +2658,7 @@ msgstr ""
 msgid "Return to a higher-priority DNS server only after this many consecutive successful checks."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3415
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3475
 msgid "Return to a preferred route only after this many consecutive successful checks."
 msgstr ""
 
@@ -2656,7 +2667,7 @@ msgstr ""
 msgid "Route"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7528
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7613
 msgid "Route requests to this DNS server through another section."
 msgstr ""
 
@@ -2678,7 +2689,7 @@ msgstr ""
 msgid "Routing section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:567
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:638
 msgid "Routing, subscriptions and DPI control for OpenWrt"
 msgstr ""
 
@@ -2686,16 +2697,16 @@ msgstr ""
 msgid "Rule path result"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7326
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7409
 msgid "Rule set must be an HTTP(S) URL or a local .srs / .json path"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4347
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4407
 msgid "Rule set settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8394
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8423
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8481
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8510
 msgid "Rule sets"
 msgstr ""
 
@@ -2727,11 +2738,11 @@ msgstr ""
 msgid "Rules proxy exist"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7761
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7847
 msgid "Run BlockCheck"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7800
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7886
 msgid "Run check"
 msgstr ""
 
@@ -2739,11 +2750,11 @@ msgstr ""
 msgid "Run Diagnostic"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7752
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7838
 msgid "Safely tests the current strategy on Discord and YouTube, then restores the saved strategy."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3940
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4000
 msgid "Save"
 msgstr ""
 
@@ -2759,57 +2770,57 @@ msgstr ""
 msgid "Secret key for authenticating remote access to YACD when WAN access is enabled."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:430
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:501
 msgid "Section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7431
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7516
 msgid "Section name"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:424
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:495
 msgid "Sections"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2328
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2388
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2593
 msgid "Security"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2704
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2764
 msgid "Select a common client profile or enter a custom User-Agent"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7890
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7977
 msgid "Select a network interface"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8375
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8462
 msgid "Select a predefined domain list"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7549
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7634
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:82
 msgid "Select a section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2681
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2741
 msgid "Select a section for downloading this subscription"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8144
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8231
 msgid "Select a transit section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2226
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2286
 msgid "Select an existing network interface"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3575
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3635
 msgid "Select an existing URLTest or Priority group"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8157
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8244
 msgid "Select an intermediate section"
 msgstr ""
 
@@ -2817,11 +2828,11 @@ msgstr ""
 msgid "Select DNS protocol to use"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7885
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7972
 msgid "Select network interface for VPN connection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2717
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2777
 msgid "Select or enter a User-Agent"
 msgstr ""
 
@@ -2833,7 +2844,7 @@ msgstr ""
 msgid "Select path for sing-box config file. Change this ONLY if you know what you are doing"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3364
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3424
 #: src/loghorizon/tabs/dashboard/initController.ts:1135
 msgid "Select the fastest node"
 msgstr ""
@@ -2863,7 +2874,7 @@ msgstr ""
 msgid "Selected section"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7688
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7773
 msgid "Selecting a preset copies it into the editable strategy field. Presets are filtered by the selected DPI engine."
 msgstr ""
 
@@ -2875,24 +2886,24 @@ msgstr ""
 msgid "Sends DNS requests through the selected connection instead of straight out. The provider then sees neither the requests nor the resolver name, so there is nothing left for it to block."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8051
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8138
 msgid "Sends the TLS ClientHello in several packets so a filter cannot read the server name out of a single one. Applies to the connections of this section that use TLS."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:447
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:518
 msgid "Server"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2934
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3140
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2994
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3200
 msgid "Server filtering"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7953
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8040
 msgid "Server group for automatic lowest-latency selection"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8012
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8099
 msgid "Server group for priority failover"
 msgstr ""
 
@@ -2921,11 +2932,11 @@ msgstr ""
 msgid "server_port must be a number from 1 to 65535"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:441
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:512
 msgid "Servers"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3591
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3651
 msgid "Servers on dashboard"
 msgstr ""
 
@@ -2935,7 +2946,7 @@ msgstr ""
 msgid "Service action failed"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8378
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8465
 msgid "Service list"
 msgstr ""
 
@@ -2943,45 +2954,44 @@ msgstr ""
 msgid "Services info"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:459
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1340
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7402
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:530
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1398
 msgid "Settings"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:386
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:457
 msgid "Settings were applied, but the service state could not be re-read. The values shown may be out of date; reload the page."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2747
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2807
 msgid "Show metadata on dashboard"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3664
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3724
 msgid "Show only selected servers."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3623
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3683
 msgid "Show only servers with one of the selected protocols."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3629
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3689
 msgid "Show only servers with one of the selected security types."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3626
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3686
 msgid "Show only servers with one of the selected transports."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3737
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3797
 msgid "Show servers from selected groups without repeating their filtering criteria."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3656
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3716
 msgid "Show servers only from the specified countries."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3672
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3732
 msgid "Show servers whose names match the expression."
 msgstr ""
 
@@ -2990,7 +3000,7 @@ msgstr ""
 msgid "Show sing-box config"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2748
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2808
 msgid "Show subscription metadata for this source on the dashboard"
 msgstr ""
 
@@ -3038,11 +3048,11 @@ msgstr ""
 msgid "Software flow offloading is enabled"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8169
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8256
 msgid "Sort by latency"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8170
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8257
 msgid "Sorts servers in this section by lowest latency in the dashboard."
 msgstr ""
 
@@ -3064,7 +3074,7 @@ msgstr ""
 msgid "Specify different files"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8050
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8137
 msgid "Split the TLS handshake"
 msgstr ""
 
@@ -3116,7 +3126,11 @@ msgstr ""
 msgid "Start logIn"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2903
+#: src/loghorizon/tabs/diagnostic/partials/renderWikiDisclaimer.ts:29
+msgid "Start with the failed check. The guide explains routing and solutions to common errors."
+msgstr ""
+
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2963
 msgid "Stop checking when URLTest group is not used. Use sing-box duration format like 1d, 12h or 30m."
 msgstr ""
 
@@ -3124,11 +3138,11 @@ msgstr ""
 msgid "Stop logIn"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4341
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4401
 msgid "Subnets from the list will be extracted and added to nftables"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2635
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2695
 msgid "Subscription auto update"
 msgstr ""
 
@@ -3141,15 +3155,15 @@ msgstr ""
 msgid "Subscription update failed"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2644
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2704
 msgid "Subscription update interval"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7836
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7922
 msgid "Subscription URL"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4044
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4104
 msgid "Subscription URL settings"
 msgstr ""
 
@@ -3157,7 +3171,7 @@ msgstr ""
 msgid "Subscriptions updated"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3414
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3474
 msgid "Successful checks before recovery"
 msgstr ""
 
@@ -3205,7 +3219,7 @@ msgstr ""
 msgid "Technical details"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7751
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7837
 msgid "Test DPI strategy"
 msgstr ""
 
@@ -3215,27 +3229,27 @@ msgstr ""
 msgid "Test latency"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3002
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3062
 msgid "Test only selected servers."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2962
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3022
 msgid "Test only servers with one of the selected protocols."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2968
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3028
 msgid "Test only servers with one of the selected security types."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2965
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3025
 msgid "Test only servers with one of the selected transports."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2994
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3054
 msgid "Test servers only from the specified countries."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3010
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3070
 msgid "Test servers whose names match the expression."
 msgstr ""
 
@@ -3247,8 +3261,8 @@ msgstr ""
 msgid "The complete rule path works."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5851
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6296
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5911
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6356
 msgid "The desync fwmark is managed by logIn for loop prevention and must not be overridden here."
 msgstr ""
 
@@ -3256,25 +3270,25 @@ msgstr ""
 msgid "The diagnostic result could not be saved locally"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5848
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6293
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5908
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6353
 msgid "The NFQUEUE number is assigned by logIn for each rule and must not be overridden here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7466
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7551
 msgid "The provider can observe the destination IP and traffic sizes and timing. DNS is visible unless an encrypted resolver is used; the server name is visible unless the application successfully uses ECH. Application TLS may still encrypt the content."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7476
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7561
 msgid "The provider can still observe the destination IP and traffic sizes and timing. A DPI strategy changes selected packets to bypass filtering; DNS and the server name have the same visibility limits as a direct route."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7486
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7571
 msgid "The provider observes the proxy or VPN server IP and tunnel traffic sizes and timing. Destination DNS, server names and addresses are hidden from the provider only when both traffic and DNS use this route and no direct fallback occurs."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8336
-msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8423
+msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression. exitlag.com also includes the ExitLag client domain exitlag.net; game relay IPs may still require IP rules."
 msgstr ""
 
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:334
@@ -3285,7 +3299,7 @@ msgstr ""
 msgid "The service restarts, so pick an hour when nobody is using the router."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:1984
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2044
 msgid "The XHTTP and gRPC transports already multiplex over HTTP/2."
 msgstr ""
 
@@ -3309,37 +3323,37 @@ msgstr ""
 msgid "This field is required"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6713
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6773
 msgid "This field must start a working ciadpi strategy; help/version options exit immediately and are not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5857
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5917
 msgid "This field must start a working nfqws strategy; --dry-run exits immediately and is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5860
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5920
 msgid "This field must start a working nfqws strategy; --version exits immediately and is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6308
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6368
 msgid "This field must start a working nfqws2 strategy; --dry-run exits immediately and is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6311
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6371
 msgid "This field must start a working nfqws2 strategy; --version exits immediately and is not allowed here."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6029
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6503
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6089
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6563
 msgid "This flag does not accept a value."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7738
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7824
 msgid "This Flowseal preset uses replacement fake files available on OpenWrt. Test it before regular use."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6060
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6534
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6120
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6594
 msgid "This option requires a value."
 msgstr ""
 
@@ -3376,12 +3390,12 @@ msgstr ""
 msgid "TLS validation failed"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2875
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2935
 #: src/loghorizon/tabs/dashboard/initController.ts:905
 msgid "Tolerance"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3474
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3534
 msgid "Top level has the highest priority; lower levels are used as fallback"
 msgstr ""
 
@@ -3394,7 +3408,7 @@ msgstr ""
 msgid "Traffic"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3132
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3192
 msgid "Traffic for this level goes directly."
 msgstr ""
 
@@ -3402,11 +3416,11 @@ msgstr ""
 msgid "Traffic Total"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6704
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6764
 msgid "Transparent proxy mode is incompatible with action=byedpi because logIn connects to ciadpi through SOCKS."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2322
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2382
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/server.js:2760
 msgid "Transport"
 msgstr ""
@@ -3427,7 +3441,7 @@ msgstr ""
 msgid "Troubleshooting"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2693
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2753
 msgid "Try compatible User-Agent profiles automatically when downloading this subscription"
 msgstr ""
 
@@ -3449,7 +3463,7 @@ msgstr ""
 msgid "UDP (Unprotected DNS)"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7726
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7813
 msgid "Unable to apply the selected DPI preset"
 msgstr ""
 
@@ -3462,28 +3476,28 @@ msgstr ""
 msgid "Unable to start BlockCheck"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6628
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6688
 msgid "Unable to validate the ByeDPI strategy through the backend parser."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5771
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7109
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7583
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5831
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7183
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7668
 msgid "Unable to validate the NFQWS strategy through the backend parser."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6216
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7118
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6276
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7192
 msgid "Unable to validate the NFQWS2 strategy through the backend parser."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3338
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3398
 #: src/loghorizon/tabs/dashboard/initController.ts:1129
 msgid "Unavailability timeout"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6845
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6894
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6905
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6954
 msgid "Unexpected ByeDPI strategy argument: %s"
 msgstr ""
 
@@ -3499,12 +3513,12 @@ msgstr ""
 msgid "Unexpected logIn-managed nfqws2 runtime is running"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6009
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6483
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6069
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6543
 msgid "Unexpected standalone token. Use explicit flags such as --name or --name=value."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:53
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/loghorizon.js:122
 msgid "unique UCI identifier"
 msgstr ""
 
@@ -3523,9 +3537,9 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6814
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6836
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6887
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6874
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6896
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6947
 msgid "Unknown ByeDPI option: %s"
 msgstr ""
 
@@ -3537,11 +3551,11 @@ msgstr ""
 msgid "Unknown error"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6020
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6080
 msgid "Unknown NFQWS flag."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6494
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6554
 msgid "Unknown NFQWS2 flag."
 msgstr ""
 
@@ -3579,7 +3593,7 @@ msgstr ""
 msgid "Update subscriptions"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2636
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2696
 msgid "Update this subscription automatically"
 msgstr ""
 
@@ -3601,15 +3615,15 @@ msgstr ""
 msgid "URL must use one of the following protocols:"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3314
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3374
 msgid "URL used to check whether a server is alive"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2890
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2950
 msgid "URL used to test server latency"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7952
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8039
 msgid "URLTest"
 msgstr ""
 
@@ -3623,8 +3637,8 @@ msgstr ""
 msgid "URLTest details are unavailable"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4076
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4077
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4136
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4137
 msgid "URLTest settings"
 msgstr ""
 
@@ -3664,7 +3678,7 @@ msgstr ""
 msgid "Use an IP listen address"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8106
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8193
 msgid "Use another section as an intermediate hop to connect to servers in this section. Does not apply to network interfaces or JSON outbounds."
 msgstr ""
 
@@ -3684,12 +3698,12 @@ msgstr ""
 msgid "Use sing-box duration format like 10s, 1m or 2m30s"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2645
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2864
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3387
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4927
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4934
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4941
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2705
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2924
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3447
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4987
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4994
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5001
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:573
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:595
 #: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/settings.js:602
@@ -3702,7 +3716,7 @@ msgstr ""
 msgid "Used by"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2703
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2763
 msgid "User-Agent"
 msgstr ""
 
@@ -3710,12 +3724,12 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8263
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:8350
 msgid "Username cannot be empty"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5544
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5557
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5604
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5617
 #: src/validators/validateDns.ts:61
 #: src/validators/validateDns.ts:81
 #: src/validators/validateDns.ts:85
@@ -3735,11 +3749,11 @@ msgstr ""
 msgid "Valid"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:4996
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5056
 msgid "Validation errors:"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5534
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5594
 msgid "Value cannot be empty"
 msgstr ""
 
@@ -3747,11 +3761,11 @@ msgstr ""
 msgid "Value must not contain control characters"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7784
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7870
 msgid "Verify that a domain reaches this section through the complete generated routing chain."
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2263
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:2323
 msgid "Via country.is"
 msgstr ""
 
@@ -3760,7 +3774,7 @@ msgstr ""
 msgid "View logs"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7432
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7517
 msgid "Visible name of this section"
 msgstr ""
 
@@ -3768,7 +3782,7 @@ msgstr ""
 msgid "VLESS flow"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7811
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7897
 msgid "vless://, vmess://, ss://, trojan://, socks4/5://, hy2/hysteria2:// links"
 msgstr ""
 
@@ -3780,11 +3794,11 @@ msgstr ""
 msgid "WAN public IP"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7445
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7530
 msgid "What logIn should do when this section matches"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3365
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:3425
 msgid "When switching to another level, test every server and select the fastest instead of the first working one."
 msgstr ""
 
@@ -3808,7 +3822,7 @@ msgstr ""
 msgid "You can select Output Network Interface, by default autodetect"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5845
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:5905
 msgid "Zapret hostlist templates are not supported here because logIn does not expand them for per-rule NFQWS strategies."
 msgstr ""
 
@@ -3836,7 +3850,7 @@ msgstr ""
 msgid "Zapret sing-box outbound is not configured"
 msgstr ""
 
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6290
+#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:6350
 msgid "Zapret2 hostlist templates are not supported here because logIn does not expand them for per-rule NFQWS2 strategies."
 msgstr ""
 
@@ -3862,18 +3876,4 @@ msgstr ""
 
 #: src/loghorizon/tabs/diagnostic/checks/runZapret2Check.ts:108
 msgid "Zapret2 sing-box outbound is not configured"
-msgstr ""
-
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7403
-msgid "Advanced"
-msgstr ""
-
-#: ../luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/section.js:7402
-msgid "General"
-msgstr ""
-
-msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
-msgstr ""
-
-msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
 msgstr ""

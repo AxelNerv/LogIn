@@ -42,7 +42,56 @@ export const DOMAIN_LIST_OPTIONS = {
   cloudfront: 'CloudFront ASN',
 };
 
+// Explicit transports and pinned addresses also work as bootstrap resolvers:
+// resolving the resolver itself must not depend on an already-working DNS.
+const PROTECTED_PUBLIC_DNS_OPTIONS = {
+  'https://dns.google/dns-query?address=8.8.8.8': 'Google DoH (8.8.8.8)',
+  'https://dns.google/dns-query?address=8.8.4.4': 'Google DoH (8.8.4.4)',
+  'https://cloudflare-dns.com/dns-query?address=1.1.1.1':
+    'Cloudflare DoH (1.1.1.1)',
+  'https://cloudflare-dns.com/dns-query?address=1.0.0.1':
+    'Cloudflare DoH (1.0.0.1)',
+  'https://dns.quad9.net/dns-query?address=9.9.9.9':
+    'Quad9 DoH (malware protection)',
+  'https://dns10.quad9.net/dns-query?address=9.9.9.10':
+    'Quad9 DoH (unfiltered)',
+  'https://unfiltered.adguard-dns.com/dns-query?address=94.140.14.140':
+    'AdGuard DoH (unfiltered)',
+  'https://dns.adguard-dns.com/dns-query?address=94.140.14.14':
+    'AdGuard DoH (ad blocking)',
+  'https://family.adguard-dns.com/dns-query?address=94.140.14.15':
+    'AdGuard DoH (family protection)',
+  'https://doh.dns.sb/dns-query?address=185.222.222.222': 'DNS.SB DoH',
+  'https://freedns.controld.com/p0?address=76.76.2.11':
+    'Control D DoH (unfiltered)',
+  'https://unfiltered.joindns4.eu/dns-query?address=86.54.11.100':
+    'DNS4EU DoH (unfiltered)',
+  'https://common.dot.dns.yandex.net/dns-query?address=77.88.8.8':
+    'Yandex DoH (basic)',
+  'https://odvr.nic.cz/doh?address=193.17.47.1': 'CZ.NIC DoH',
+  'https://dns.alidns.com/dns-query?address=223.5.5.5': 'AliDNS DoH',
+  'tls://dns10.quad9.net?address=9.9.9.10': 'Quad9 DoT (unfiltered)',
+  'tls://unfiltered.adguard-dns.com?address=94.140.14.140':
+    'AdGuard DoT (unfiltered)',
+  'tls://dns.sb?address=185.222.222.222': 'DNS.SB DoT',
+  'tls://p0.freedns.controld.com?address=76.76.2.11':
+    'Control D DoT (unfiltered)',
+  'tls://unfiltered.joindns4.eu?address=86.54.11.100':
+    'DNS4EU DoT (unfiltered)',
+  'tls://common.dot.dns.yandex.net?address=77.88.8.8': 'Yandex DoT (basic)',
+  'tls://odvr.nic.cz?address=193.17.47.1': 'CZ.NIC DoT',
+  'quic://unfiltered.adguard-dns.com?address=94.140.14.140':
+    'AdGuard DoQ (unfiltered)',
+  'quic://p0.freedns.controld.com?address=76.76.2.11':
+    'Control D DoQ (unfiltered)',
+  'quic://dns.alidns.com?address=223.5.5.5': 'AliDNS DoQ',
+  'h3://cloudflare-dns.com/dns-query?address=1.1.1.1': 'Cloudflare DoH3',
+  'h3://unfiltered.adguard-dns.com/dns-query?address=94.140.14.140':
+    'AdGuard DoH3 (unfiltered)',
+};
+
 export const DNS_SERVER_OPTIONS = {
+  ...PROTECTED_PUBLIC_DNS_OPTIONS,
   '77.88.8.8': '77.88.8.8 (Yandex)',
   '77.88.8.1': '77.88.8.1 (Yandex)',
   'dns.google': 'dns.google (Google, DoH/DoT)',
@@ -59,6 +108,7 @@ export const DNS_SERVER_OPTIONS = {
   '8.8.8.8': '8.8.8.8 (Google)',
 };
 export const BOOTSTRAP_DNS_SERVER_OPTIONS = {
+  ...PROTECTED_PUBLIC_DNS_OPTIONS,
   'https://cloudflare-dns.com/dns-query?address=1.1.1.1':
     'Protected DoH (Cloudflare, pinned IP)',
   'https://dns.google/dns-query?address=8.8.8.8':

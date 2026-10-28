@@ -12,6 +12,8 @@ export const styles = `
 
 .lgh_updates-page {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Grid tracks of 1fr always fill the row, whatever the theme wraps this in.
@@ -25,6 +27,7 @@ export const styles = `
     align-items: start;
     gap: 12px;
     width: 100%;
+    min-width: 0;
 }
 
 .lgh_updates-page__components-column {
@@ -65,6 +68,8 @@ export const styles = `
     color: var(--text-color-medium, #888);
     font-size: 13px;
     font-weight: normal;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .lgh_updates-page__component__details {
@@ -79,7 +84,9 @@ export const styles = `
     align-items: center;
     min-height: 24px;
     gap: 8px;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
+    white-space: normal;
 }
 
 .lgh_updates-page__component__info-label {
@@ -108,6 +115,8 @@ export const styles = `
     color: var(--link-color, #3498db) !important;
     text-decoration: underline;
     font-weight: bold;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .lgh_updates-page__component__release-version-link:hover {
@@ -130,7 +139,8 @@ export const styles = `
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
     gap: 6px;
 }
 
@@ -149,7 +159,16 @@ export const styles = `
 
 .lgh_updates-page__component__variants-buttons {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
     gap: 6px;
+}
+
+.lgh_updates-page__component__actions-main > .btn,
+.lgh_updates-page__component__variants-buttons > .btn {
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 `;

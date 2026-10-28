@@ -19,6 +19,7 @@ export { validateProxyUrl } from './validators/validateProxyUrl';
 export { parseValueList } from './helpers/parseValueList';
 export { getProxyUrlName } from './helpers/getProxyUrlName';
 export { injectGlobalStyles } from './helpers/injectGlobalStyles';
+export { mountNotifications } from './helpers/mountNotifications';
 export { showToast } from './helpers/showToast';
 export { getClashUIUrl } from './helpers/getClashApiUrl';
 export { LogHorizonShellMethods } from './loghorizon/methods/shell';

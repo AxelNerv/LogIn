@@ -123,21 +123,49 @@ ${PartialStyles}
         left: 150%;
     }
 }
-/* Toast */
-.toast-container {
+/* Keep LuCI notifications and short toasts out of the form's layout. */
+#lgh-notifications.lgh-notification-stack {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: max(48px, env(safe-area-inset-top, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+    left: auto;
+    bottom: auto;
+    width: min(400px, calc(100vw - 32px));
+    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
+    transform: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    z-index: 9999;
+    align-items: stretch;
+    gap: 12px;
+    z-index: 10001;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+    box-sizing: border-box;
     font-family: system-ui, sans-serif;
 }
 
-.toast {
+#lgh-notifications > .alert-message {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    gap: 12px;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+}
+
+#lgh-notifications > .alert-message > div:first-child {
+    min-width: 0;
+}
+
+.lgh-toast {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -146,20 +174,24 @@ ${PartialStyles}
     color: #fff;
     font-size: 14px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    min-width: 220px;
-    max-width: 340px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
     text-align: center;
 }
 
-.toast-success {
+.lgh-toast-success {
     background-color: #28a745;
 }
 
-.toast-error {
+.lgh-toast-error {
     background-color: #dc3545;
 }
 
-.toast.visible {
+.lgh-toast.visible {
     opacity: 1;
     transform: translateY(0);
 }
@@ -175,29 +207,50 @@ ${PartialStyles}
  * fallbacks produced dark borders on a light page. Inside .lh-shell the
  * palette is ours regardless of the theme the router runs.
  */
-/* The theme caps its content column at 940px, which left the tables cramped.
- * Lift that cap only on the page that hosts logIn, rather than dragging the
- * panel out of the column with negative margins: that depended on the column
- * being centred in the viewport and clipped the header when it was not. */
-/* The cap keeps lines from running the full width of a large monitor, but a
-   theme that gives the column fixed side margins instead of automatic ones
-   then leaves the whole page pinned to the left with the slack piled up on
-   the right. Argon does exactly that, through a selector carrying an id, so
-   the centring has to be at least as specific to survive. */
+/* Only the actual page container owns the gutter and readable-width cap.
+ * Its ancestors must fill the theme's content column: auto cross-axis margins
+ * on Argon's column flex item otherwise make #maincontent shrink to its tab. */
 #maincontent > .lh-page-container,
 .lh-page-container {
     width: calc(100% - 32px) !important;
     max-width: min(1720px, calc(100vw - 32px)) !important;
+    min-width: 0 !important;
     flex-basis: auto !important;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
 }
 
 #maincontent.lh-page-maincontent {
-    max-width: min(1720px, calc(100vw - 32px));
-    margin-left: auto;
-    margin-right: auto;
+    --lh-page-gutter: 32px;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#maincontent.lh-page-maincontent:not(.lh-page-container),
+.lh-page-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    align-self: stretch;
+    box-sizing: border-box !important;
+}
+
+.main-right.lh-page-host {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+}
+
+#view.lh-page-view,
+#view.lh-page-view > .lh-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    align-self: stretch;
+    box-sizing: border-box;
 }
 
 .lh-shell {
@@ -218,7 +271,8 @@ ${PartialStyles}
     --lh-radius-lg: 10px;
     color-scheme: dark;
     box-sizing: border-box;
-    width: auto;
+    width: 100%;
+    min-width: 0;
     padding: 6px 28px 22px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
@@ -311,6 +365,42 @@ ${PartialStyles}
 .lh-shell > .cbi-map > h2,
 .lh-shell > .cbi-map > .cbi-map-descr {
     display: none;
+}
+
+.lh-shell > .cbi-map,
+.lh-shell > .cbi-map > [data-tab-group],
+.lh-shell > .cbi-map .cbi-section[data-tab] {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* These are application panels, not two-column LuCI label/field rows. */
+.lh-shell #cbi-${LOGHORIZON_CBI_PREFIX}-dashboard-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_CBI_PREFIX}-monitoring-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_CBI_PREFIX}-diagnostic-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_CBI_PREFIX}-updates-_mount_node {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+.lh-shell [id$="-_mount_node"] > .cbi-value-title {
+    display: none !important;
+}
+
+.lh-shell [id$="-_mount_node"] > .cbi-value-field {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
 }
 
 .lh-shell h2,
@@ -479,10 +569,6 @@ ${PartialStyles}
 .lh-shell input::placeholder,
 .lh-shell textarea::placeholder {
     color: var(--lh-faint);
-}
-
-.lh-shell .lgh_dashboard-page {
-    --dashboard-grid-min-width: 190px;
 }
 
 .lh-shell .lgh_dashboard-page__widgets-section,
@@ -698,9 +784,14 @@ body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field t
 }
 
 @media (max-width: 700px) {
+    #maincontent.lh-page-maincontent {
+        --lh-page-gutter: 16px;
+    }
+
     #maincontent > .lh-page-container,
     .lh-page-container {
         width: calc(100% - 16px) !important;
+        max-width: min(1720px, calc(100vw - 16px)) !important;
     }
 
     .lh-shell {

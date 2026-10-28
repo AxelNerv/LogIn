@@ -1030,7 +1030,37 @@ var DOMAIN_LIST_OPTIONS = {
   digitalocean: "Digital Ocean ASN",
   cloudfront: "CloudFront ASN"
 };
+var PROTECTED_PUBLIC_DNS_OPTIONS = {
+  "https://dns.google/dns-query?address=8.8.8.8": "Google DoH (8.8.8.8)",
+  "https://dns.google/dns-query?address=8.8.4.4": "Google DoH (8.8.4.4)",
+  "https://cloudflare-dns.com/dns-query?address=1.1.1.1": "Cloudflare DoH (1.1.1.1)",
+  "https://cloudflare-dns.com/dns-query?address=1.0.0.1": "Cloudflare DoH (1.0.0.1)",
+  "https://dns.quad9.net/dns-query?address=9.9.9.9": "Quad9 DoH (malware protection)",
+  "https://dns10.quad9.net/dns-query?address=9.9.9.10": "Quad9 DoH (unfiltered)",
+  "https://unfiltered.adguard-dns.com/dns-query?address=94.140.14.140": "AdGuard DoH (unfiltered)",
+  "https://dns.adguard-dns.com/dns-query?address=94.140.14.14": "AdGuard DoH (ad blocking)",
+  "https://family.adguard-dns.com/dns-query?address=94.140.14.15": "AdGuard DoH (family protection)",
+  "https://doh.dns.sb/dns-query?address=185.222.222.222": "DNS.SB DoH",
+  "https://freedns.controld.com/p0?address=76.76.2.11": "Control D DoH (unfiltered)",
+  "https://unfiltered.joindns4.eu/dns-query?address=86.54.11.100": "DNS4EU DoH (unfiltered)",
+  "https://common.dot.dns.yandex.net/dns-query?address=77.88.8.8": "Yandex DoH (basic)",
+  "https://odvr.nic.cz/doh?address=193.17.47.1": "CZ.NIC DoH",
+  "https://dns.alidns.com/dns-query?address=223.5.5.5": "AliDNS DoH",
+  "tls://dns10.quad9.net?address=9.9.9.10": "Quad9 DoT (unfiltered)",
+  "tls://unfiltered.adguard-dns.com?address=94.140.14.140": "AdGuard DoT (unfiltered)",
+  "tls://dns.sb?address=185.222.222.222": "DNS.SB DoT",
+  "tls://p0.freedns.controld.com?address=76.76.2.11": "Control D DoT (unfiltered)",
+  "tls://unfiltered.joindns4.eu?address=86.54.11.100": "DNS4EU DoT (unfiltered)",
+  "tls://common.dot.dns.yandex.net?address=77.88.8.8": "Yandex DoT (basic)",
+  "tls://odvr.nic.cz?address=193.17.47.1": "CZ.NIC DoT",
+  "quic://unfiltered.adguard-dns.com?address=94.140.14.140": "AdGuard DoQ (unfiltered)",
+  "quic://p0.freedns.controld.com?address=76.76.2.11": "Control D DoQ (unfiltered)",
+  "quic://dns.alidns.com?address=223.5.5.5": "AliDNS DoQ",
+  "h3://cloudflare-dns.com/dns-query?address=1.1.1.1": "Cloudflare DoH3",
+  "h3://unfiltered.adguard-dns.com/dns-query?address=94.140.14.140": "AdGuard DoH3 (unfiltered)"
+};
 var DNS_SERVER_OPTIONS = {
+  ...PROTECTED_PUBLIC_DNS_OPTIONS,
   "77.88.8.8": "77.88.8.8 (Yandex)",
   "77.88.8.1": "77.88.8.1 (Yandex)",
   "dns.google": "dns.google (Google, DoH/DoT)",
@@ -1046,6 +1076,7 @@ var DNS_SERVER_OPTIONS = {
   "8.8.8.8": "8.8.8.8 (Google)"
 };
 var BOOTSTRAP_DNS_SERVER_OPTIONS = {
+  ...PROTECTED_PUBLIC_DNS_OPTIONS,
   "https://cloudflare-dns.com/dns-query?address=1.1.1.1": "Protected DoH (Cloudflare, pinned IP)",
   "https://dns.google/dns-query?address=8.8.8.8": "Protected DoH (Google, pinned IP)",
   "tls://dns.quad9.net?address=9.9.9.9": "Protected DoT (Quad9, pinned IP)",
@@ -2360,16 +2391,66 @@ function render() {
   );
 }
 
+// src/helpers/mountNotifications.ts
+var NOTIFICATION_STACK_ID = "lgh-notifications";
+var observedMainContent = null;
+var notificationObserver = null;
+function getNotificationStack() {
+  let stack = document.getElementById(NOTIFICATION_STACK_ID);
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = NOTIFICATION_STACK_ID;
+  }
+  stack.classList.add("lgh-notification-stack");
+  if (stack.parentElement !== document.body) {
+    document.body.appendChild(stack);
+  }
+  return stack;
+}
+function moveNotification(node, mainContent, stack) {
+  if (node.nodeType === 1 && node.parentNode === mainContent && node.classList.contains("alert-message")) {
+    stack.appendChild(node);
+  }
+}
+function disconnectNotifications() {
+  notificationObserver?.disconnect();
+  notificationObserver = null;
+  observedMainContent = null;
+  window.removeEventListener("pagehide", disconnectNotifications);
+}
+function mountNotifications() {
+  const stack = getNotificationStack();
+  const mainContent = document.getElementById("maincontent");
+  if (mainContent !== observedMainContent) {
+    disconnectNotifications();
+    if (mainContent) {
+      notificationObserver = new MutationObserver((records) => {
+        const currentStack = getNotificationStack();
+        for (const record of records) {
+          for (const node of record.addedNodes) {
+            moveNotification(node, mainContent, currentStack);
+          }
+        }
+      });
+      notificationObserver.observe(mainContent, { childList: true });
+      observedMainContent = mainContent;
+      window.addEventListener("pagehide", disconnectNotifications, { once: true });
+    }
+  }
+  if (mainContent) {
+    for (const child of Array.from(mainContent.children)) {
+      moveNotification(child, mainContent, stack);
+    }
+  }
+  return stack;
+}
+
 // src/helpers/showToast.ts
 function showToast(message, type, duration = 3e3) {
-  let container = document.querySelector(".toast-container");
-  if (!container) {
-    container = document.createElement("div");
-    container.className = "toast-container";
-    document.body.appendChild(container);
-  }
+  const container = mountNotifications();
   const toast = document.createElement("div");
-  toast.className = `toast toast-${type}`;
+  toast.className = `lgh-toast lgh-toast-${type}`;
+  toast.setAttribute("role", type === "error" ? "alert" : "status");
   toast.textContent = message;
   container.appendChild(toast);
   setTimeout(() => toast.classList.add("visible"), 100);
@@ -6938,8 +7019,18 @@ var styles = `
 
 .lgh_dashboard-page {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     --dashboard-grid-columns: 4;
-    --dashboard-grid-min-width: 180px;
+}
+
+.lgh_dashboard-page__content,
+.lgh_dashboard-page__widgets-section,
+.lgh_dashboard-page__outbound-section,
+.lgh_dashboard-page__outbound-grid,
+.lgh_dashboard-page__subscription-meta {
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .lgh_dashboard-page__service-stopped {
@@ -6965,7 +7056,7 @@ var styles = `
 
 .lgh_dashboard-page--service-stopped {
     display: grid;
-    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(var(--dashboard-grid-min-width), 1fr));
+    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(0, 1fr));
     gap: 10px;
 }
 
@@ -6987,14 +7078,13 @@ var styles = `
 @media (max-width: 560px) {
     .lgh_dashboard-page {
         --dashboard-grid-columns: 1;
-        --dashboard-grid-min-width: 0;
     }
 }
 
 .lgh_dashboard-page__widgets-section {
     margin-top: 10px;
     display: grid;
-    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(var(--dashboard-grid-min-width), 1fr));
+    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(0, 1fr));
     grid-gap: 10px;
 }
 
@@ -7007,7 +7097,9 @@ var styles = `
 
 .lgh_dashboard-page__widgets-section__item__title {}
 
-.lgh_dashboard-page__widgets-section__item__row {}
+.lgh_dashboard-page__widgets-section__item__row {
+    min-width: 0;
+}
 
 .lgh_dashboard-page__widgets-section__item__row--success .lgh_dashboard-page__widgets-section__item__row__value {
     color: var(--success-color-medium, green);
@@ -7017,9 +7109,18 @@ var styles = `
     color: var(--error-color-medium, red);
 }
 
-.lgh_dashboard-page__widgets-section__item__row__key {}
+.lgh_dashboard-page__widgets-section__item__row__key,
+.lgh_dashboard-page__widgets-section__item__row__value {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 
-.lgh_dashboard-page__widgets-section__item__row__value {}
+.lgh_dashboard-page__widgets-section__item__row__value,
+.lgh_dashboard-page__subscription-meta__fact-value,
+.lgh_dashboard-page__outbound-grid__item__footer > div,
+.lgh_dashboard-page__urltest-details__row-meta {
+    font-variant-numeric: tabular-nums;
+}
 
 .lgh_dashboard-page__outbound-section {
     margin-top: 10px;
@@ -7096,7 +7197,7 @@ var styles = `
 .lgh_dashboard-page__outbound-grid {
     margin-top: 5px;
     display: grid;
-    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(var(--dashboard-grid-min-width), 1fr));
+    grid-template-columns: repeat(var(--dashboard-grid-columns), minmax(0, 1fr));
     grid-gap: 10px;
 }
 
@@ -7129,7 +7230,7 @@ var styles = `
     flex: 0 1 auto;
     width: max-content;
     max-width: min(28ch, 30%);
-    min-width: min-content;
+    min-width: 0;
     color: var(--text-color-high);
     font-weight: 700;
     line-height: 1.25;
@@ -7333,6 +7434,11 @@ var styles = `
 }
 
 .lgh_dashboard-page__outbound-grid__item__type {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.lgh_dashboard-page__outbound-grid__item__footer > div {
     min-width: 0;
     overflow-wrap: anywhere;
 }
@@ -9536,14 +9642,20 @@ function renderWikiDisclaimer(kind) {
       iconWrap,
       E("div", { class: "lgh_diagnostic-page__right-bar__wiki__texts" }, [
         E("b", {}, _("Troubleshooting")),
-        E("div", {}, _("Do not panic, everything can be fixed, just..."))
+        E(
+          "div",
+          {},
+          _(
+            "Start with the failed check. The guide explains routing and solutions to common errors."
+          )
+        )
       ])
     ]),
     renderButton({
       classNames: ["cbi-button-save"],
       text: _("Open Project Page"),
       onClick: () => window.open(
-        "https://github.com/AxelNerv/LogIn#readme",
+        "https://github.com/AxelNerv/LogIn/blob/main/docs/TROUBLESHOOTING.md",
         "_blank",
         "noopener,noreferrer"
       )
@@ -14188,6 +14300,8 @@ var styles6 = `
 
 .lgh_updates-page {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Grid tracks of 1fr always fill the row, whatever the theme wraps this in.
@@ -14201,6 +14315,7 @@ var styles6 = `
     align-items: start;
     gap: 12px;
     width: 100%;
+    min-width: 0;
 }
 
 .lgh_updates-page__components-column {
@@ -14241,6 +14356,8 @@ var styles6 = `
     color: var(--text-color-medium, #888);
     font-size: 13px;
     font-weight: normal;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .lgh_updates-page__component__details {
@@ -14255,7 +14372,9 @@ var styles6 = `
     align-items: center;
     min-height: 24px;
     gap: 8px;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
+    white-space: normal;
 }
 
 .lgh_updates-page__component__info-label {
@@ -14284,6 +14403,8 @@ var styles6 = `
     color: var(--link-color, #3498db) !important;
     text-decoration: underline;
     font-weight: bold;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .lgh_updates-page__component__release-version-link:hover {
@@ -14306,7 +14427,8 @@ var styles6 = `
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
     gap: 6px;
 }
 
@@ -14325,8 +14447,17 @@ var styles6 = `
 
 .lgh_updates-page__component__variants-buttons {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
     gap: 6px;
+}
+
+.lgh_updates-page__component__actions-main > .btn,
+.lgh_updates-page__component__variants-buttons > .btn {
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 `;
 
@@ -14455,21 +14586,49 @@ ${PartialStyles}
         left: 150%;
     }
 }
-/* Toast */
-.toast-container {
+/* Keep LuCI notifications and short toasts out of the form's layout. */
+#lgh-notifications.lgh-notification-stack {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: max(48px, env(safe-area-inset-top, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+    left: auto;
+    bottom: auto;
+    width: min(400px, calc(100vw - 32px));
+    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
+    transform: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    z-index: 9999;
+    align-items: stretch;
+    gap: 12px;
+    z-index: 10001;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+    box-sizing: border-box;
     font-family: system-ui, sans-serif;
 }
 
-.toast {
+#lgh-notifications > .alert-message {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    gap: 12px;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+}
+
+#lgh-notifications > .alert-message > div:first-child {
+    min-width: 0;
+}
+
+.lgh-toast {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -14478,20 +14637,24 @@ ${PartialStyles}
     color: #fff;
     font-size: 14px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    min-width: 220px;
-    max-width: 340px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
     text-align: center;
 }
 
-.toast-success {
+.lgh-toast-success {
     background-color: #28a745;
 }
 
-.toast-error {
+.lgh-toast-error {
     background-color: #dc3545;
 }
 
-.toast.visible {
+.lgh-toast.visible {
     opacity: 1;
     transform: translateY(0);
 }
@@ -14507,29 +14670,50 @@ ${PartialStyles}
  * fallbacks produced dark borders on a light page. Inside .lh-shell the
  * palette is ours regardless of the theme the router runs.
  */
-/* The theme caps its content column at 940px, which left the tables cramped.
- * Lift that cap only on the page that hosts logIn, rather than dragging the
- * panel out of the column with negative margins: that depended on the column
- * being centred in the viewport and clipped the header when it was not. */
-/* The cap keeps lines from running the full width of a large monitor, but a
-   theme that gives the column fixed side margins instead of automatic ones
-   then leaves the whole page pinned to the left with the slack piled up on
-   the right. Argon does exactly that, through a selector carrying an id, so
-   the centring has to be at least as specific to survive. */
+/* Only the actual page container owns the gutter and readable-width cap.
+ * Its ancestors must fill the theme's content column: auto cross-axis margins
+ * on Argon's column flex item otherwise make #maincontent shrink to its tab. */
 #maincontent > .lh-page-container,
 .lh-page-container {
     width: calc(100% - 32px) !important;
     max-width: min(1720px, calc(100vw - 32px)) !important;
+    min-width: 0 !important;
     flex-basis: auto !important;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
 }
 
 #maincontent.lh-page-maincontent {
-    max-width: min(1720px, calc(100vw - 32px));
-    margin-left: auto;
-    margin-right: auto;
+    --lh-page-gutter: 32px;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#maincontent.lh-page-maincontent:not(.lh-page-container),
+.lh-page-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    align-self: stretch;
+    box-sizing: border-box !important;
+}
+
+.main-right.lh-page-host {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+}
+
+#view.lh-page-view,
+#view.lh-page-view > .lh-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    align-self: stretch;
+    box-sizing: border-box;
 }
 
 .lh-shell {
@@ -14550,7 +14734,8 @@ ${PartialStyles}
     --lh-radius-lg: 10px;
     color-scheme: dark;
     box-sizing: border-box;
-    width: auto;
+    width: 100%;
+    min-width: 0;
     padding: 6px 28px 22px;
     border-radius: var(--lh-radius-lg);
     color: var(--lh-ink);
@@ -14643,6 +14828,42 @@ ${PartialStyles}
 .lh-shell > .cbi-map > h2,
 .lh-shell > .cbi-map > .cbi-map-descr {
     display: none;
+}
+
+.lh-shell > .cbi-map,
+.lh-shell > .cbi-map > [data-tab-group],
+.lh-shell > .cbi-map .cbi-section[data-tab] {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* These are application panels, not two-column LuCI label/field rows. */
+.lh-shell #cbi-${LOGHORIZON_UCI_PACKAGE}-dashboard-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_UCI_PACKAGE}-monitoring-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_UCI_PACKAGE}-diagnostic-_mount_node,
+.lh-shell #cbi-${LOGHORIZON_UCI_PACKAGE}-updates-_mount_node {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+.lh-shell [id$="-_mount_node"] > .cbi-value-title {
+    display: none !important;
+}
+
+.lh-shell [id$="-_mount_node"] > .cbi-value-field {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
 }
 
 .lh-shell h2,
@@ -14811,10 +15032,6 @@ ${PartialStyles}
 .lh-shell input::placeholder,
 .lh-shell textarea::placeholder {
     color: var(--lh-faint);
-}
-
-.lh-shell .lgh_dashboard-page {
-    --dashboard-grid-min-width: 190px;
 }
 
 .lh-shell .lgh_dashboard-page__widgets-section,
@@ -15030,9 +15247,14 @@ body.modal-overlay-active > #modal_overlay > .modal.cbi-modal .cbi-value-field t
 }
 
 @media (max-width: 700px) {
+    #maincontent.lh-page-maincontent {
+        --lh-page-gutter: 16px;
+    }
+
     #maincontent > .lh-page-container,
     .lh-page-container {
         width: calc(100% - 16px) !important;
+        max-width: min(1720px, calc(100vw - 16px)) !important;
     }
 
     .lh-shell {
@@ -15105,7 +15327,8 @@ var LOGIN_BRAND = Object.freeze({
   displayName: "logIn",
   wordmark: Object.freeze({ prefix: "log", accent: "In" }),
   internalName: "loghorizon",
-  edition: "Foundation"
+  edition: "Foundation",
+  uiVersion: "0.5.58"
 });
 
 // src/main.ts
@@ -15133,6 +15356,7 @@ return baseclass.extend({
   injectGlobalStyles,
   isIPv4,
   isIPv6,
+  mountNotifications,
   parseValueList,
   showToast,
   store,

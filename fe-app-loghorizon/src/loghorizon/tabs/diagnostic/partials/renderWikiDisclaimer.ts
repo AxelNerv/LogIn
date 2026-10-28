@@ -23,7 +23,13 @@ export function renderWikiDisclaimer(kind: 'default' | 'error' | 'warning') {
       iconWrap,
       E('div', { class: 'lgh_diagnostic-page__right-bar__wiki__texts' }, [
         E('b', {}, _('Troubleshooting')),
-        E('div', {}, _('Do not panic, everything can be fixed, just...')),
+        E(
+          'div',
+          {},
+          _(
+            'Start with the failed check. The guide explains routing and solutions to common errors.',
+          ),
+        ),
       ]),
     ]),
     renderButton({
@@ -31,7 +37,7 @@ export function renderWikiDisclaimer(kind: 'default' | 'error' | 'warning') {
       text: _('Open Project Page'),
       onClick: () =>
         window.open(
-          'https://github.com/AxelNerv/LogIn#readme',
+          'https://github.com/AxelNerv/LogIn/blob/main/docs/TROUBLESHOOTING.md',
           '_blank',
           'noopener,noreferrer',
         ),

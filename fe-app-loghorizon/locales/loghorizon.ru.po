@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LOGHORIZON\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 19:05+0300\n"
-"PO-Revision-Date: 2026-09-17 19:05+0300\n"
+"POT-Creation-Date: 2026-10-28 14:33+0300\n"
+"PO-Revision-Date: 2026-10-28 14:33+0300\n"
 "Last-Translator: logIn\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -112,6 +112,9 @@ msgstr "Адрес"
 
 msgid "Adds filler so the size of the traffic gives less away."
 msgstr "Добавляет наполнитель, чтобы размер трафика меньше выдавал."
+
+msgid "Advanced"
+msgstr "Дополнительно"
 
 msgid "Advertise exit node"
 msgstr "Анонсировать exit node"
@@ -623,9 +626,6 @@ msgstr "Таймаут недоступности DNS"
 msgid "DNS, TCP handoff, TLS, and HTTP path is available"
 msgstr "Путь DNS, локальной передачи TCP, TLS и HTTP доступен"
 
-msgid "Do not panic, everything can be fixed, just..."
-msgstr "Не паникуйте, всё можно исправить, просто..."
-
 msgid "Do not switch within the same priority level unless the new route is faster by more than this many milliseconds."
 msgstr "Не переключаться внутри одного уровня приоритета, пока новый маршрут не станет быстрее как минимум на указанное число миллисекунд."
 
@@ -913,6 +913,9 @@ msgstr "Proxy protocol для фронтинга"
 
 msgid "Fuzzing is not supported here because logIn needs deterministic runtime validation."
 msgstr "Fuzzing здесь не поддерживается, потому что logIn нужна предсказуемая runtime-валидация."
+
+msgid "General"
+msgstr "Основное"
 
 msgid "Generate HWID from router hardware information for this subscription"
 msgstr "Генерировать HWID из аппаратной информации роутера для этой подписки"
@@ -1325,8 +1328,8 @@ msgstr "Уровень"
 msgid "Level name"
 msgstr "Название уровня"
 
-msgid "List must be an HTTP(S) URL or a local .lst path"
-msgstr "Список должен быть HTTP(S) URL или локальным путём .lst"
+msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
+msgstr "Укажите HTTP(S)-ссылку или локальный путь к файлу .lst / .txt / .list"
 
 msgid "List Update Frequency"
 msgstr "Частота обновления списков"
@@ -1702,6 +1705,9 @@ msgstr "Периодически проверять текущий уровен�
 
 msgid "Pin on dashboard"
 msgstr "Закрепить в дашборде"
+
+msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
+msgstr "Текстовые списки добавляются в поле «Списки доменов и IP», а не «Наборы правил»."
 
 msgid "Port cannot be empty"
 msgstr "Порт не может быть пустым"
@@ -2183,6 +2189,9 @@ msgstr "Отдельная служба Zapret2 неактивна"
 msgid "Start logIn"
 msgstr "Запустить logIn"
 
+msgid "Start with the failed check. The guide explains routing and solutions to common errors."
+msgstr "Начните с проверки, которая не прошла. В справке — работа маршрутизации и решения частых ошибок."
+
 msgid "Stop checking when URLTest group is not used. Use sing-box duration format like 1d, 12h or 30m."
 msgstr "Останавливать проверку если URLTest группа не используется. Используйте формат длительности sing-box, например 1d, 12h или 30m."
 
@@ -2297,8 +2306,8 @@ msgstr "Провайдер по-прежнему видит IP назначен�
 msgid "The provider observes the proxy or VPN server IP and tunnel traffic sizes and timing. Destination DNS, server names and addresses are hidden from the provider only when both traffic and DNS use this route and no direct fallback occurs."
 msgstr "Провайдер видит IP сервера прокси или VPN, размеры и тайминги туннельного трафика. DNS, имена и адреса назначения скрыты от провайдера, только если и трафик, и DNS идут этим маршрутом без прямого резервного выхода."
 
-msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression."
-msgstr "Правило применяется к домену и всем его поддоменам. Для полного совпадения, совпадению по слову или регулярному выражению используйте префиксы full:, keyword: или regex:."
+msgid "The rule applies to the domain and all its subdomains. Use full:, keyword:, or regex: prefixes for exact match, keyword match, or regular expression. exitlag.com also includes the ExitLag client domain exitlag.net; game relay IPs may still require IP rules."
+msgstr "Правило применяется к домену и всем его поддоменам. Префиксы full:, keyword: и regex: задают точное совпадение, совпадение по слову и регулярное выражение. exitlag.com также включает домен клиента ExitLag exitlag.net; для игровых ретрансляторов могут потребоваться правила по IP."
 
 msgid "The rule path is broken. The failed stage is shown below."
 msgstr "Цепочка правила разорвана. Проблемный этап указан ниже."
@@ -2686,15 +2695,3 @@ msgstr "sing-box outbound для Zapret2 настроен"
 
 msgid "Zapret2 sing-box outbound is not configured"
 msgstr "sing-box outbound для Zapret2 не настроен"
-
-msgid "Advanced"
-msgstr "Дополнительно"
-
-msgid "General"
-msgstr "Основное"
-
-msgid "Plain-text lists belong in Domain and IP lists, not Rule sets."
-msgstr "Текстовые списки добавляются в поле «Списки доменов и IP», а не «Наборы правил»."
-
-msgid "List must be an HTTP(S) URL or a local .lst / .txt / .list path"
-msgstr "Укажите HTTP(S)-ссылку или локальный путь к файлу .lst / .txt / .list"
