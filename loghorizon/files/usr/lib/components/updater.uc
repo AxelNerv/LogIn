@@ -900,7 +900,21 @@ function byedpi_select_asset(series, asset_ext, arch_candidates) {
     }
 }
 
-function sing_box_extended_release_tag() {
+// True when the tag's major.minor is not newer than max_minor ("1.13").
+// An empty max_minor accepts every version.
+function sing_box_tag_within_minor(tag, max_minor) {
+    if (as_string(max_minor) == "")
+        return true;
+    let have = match(as_string(tag), /^v?([0-9]+)\.([0-9]+)/);
+    let limit = match(as_string(max_minor), /^([0-9]+)\.([0-9]+)/);
+    if (have == null || limit == null)
+        return false;
+    let major = int(have[1]), minor = int(have[2]);
+    let max_major = int(limit[1]), max_minor_num = int(limit[2]);
+    return major < max_major || (major == max_major && minor <= max_minor_num);
+}
+
+function sing_box_extended_release_tag(max_minor) {
     for (let release in array_or_empty(read_stdin_json())) {
         if (type(release) != "object")
             continue;
@@ -908,6 +922,8 @@ function sing_box_extended_release_tag() {
             continue;
         let tag = as_string(release.tag_name || "");
         let lowered = lc(tag);
+        if (!sing_box_tag_within_minor(tag, max_minor))
+            continue;
         if (tag != "" && !str_contains(lowered, "alpha") && !str_contains(lowered, "beta") && !str_contains(lowered, "rc")) {
             print(tag, "\n");
             return;
@@ -1224,7 +1240,9 @@ else if (mode == "release-select-arch-suffix-asset")
 else if (mode == "byedpi-select-asset")
     byedpi_select_asset(ARGV[1], ARGV[2], ARGV[3]);
 else if (mode == "sing-box-extended-release-tag")
-    sing_box_extended_release_tag();
+    sing_box_extended_release_tag(ARGV[1] || "");
+else if (mode == "sing-box-tag-within-minor")
+    exit(sing_box_tag_within_minor(ARGV[1], ARGV[2]) ? 0 : 1);
 else if (mode == "file-last-nonblank-line")
     file_last_nonblank_line(ARGV[1], ARGV[2], ARGV[3]);
 else if (mode == "file-flat-snippet")

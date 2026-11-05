@@ -1145,11 +1145,21 @@ function sing_box_extended_tag_is_stable(tag) {
     return tag != "" && index(tag, "alpha") < 0 && index(tag, "beta") < 0 && index(tag, "rc") < 0;
 }
 
+// Newest sing-box line the config generator is verified against. sing-box 1.14
+// rejects the legacy ip_cidr response filter in logical DNS rules (the
+// source-aware bypass rule), so updates stay on 1.13 until the generator emits
+// evaluate + match_response. Raise this once that is done and tested.
+const SING_BOX_EXTENDED_MAX_SUPPORTED_MINOR = getenv("LOGHORIZON_SING_BOX_MAX_SUPPORTED_MINOR") || "1.13";
+
+function sing_box_extended_tag_is_supported(tag) {
+    return helper_success("sing-box-tag-within-minor", [ tag, SING_BOX_EXTENDED_MAX_SUPPORTED_MINOR ]);
+}
+
 function set_sing_box_extended_release_from_json(release_json, compressed) {
     if (as_string(release_json) == "")
         return null;
     let tag = trim(helper_output_input(release_json, "object-get-default", [ "tag_name", "" ]));
-    if (!sing_box_extended_tag_is_stable(tag))
+    if (!sing_box_extended_tag_is_stable(tag) || !sing_box_extended_tag_is_supported(tag))
         return null;
 
     let asset_url = "";
@@ -1187,7 +1197,7 @@ function resolve_sing_box_extended_release(compressed) {
     let releases_json = fetch_github_releases_json("shtorm-7", "sing-box-extended", "30");
     if (releases_json == "")
         return null;
-    let tag = trim(helper_output_input(releases_json, "sing-box-extended-release-tag", []));
+    let tag = trim(helper_output_input(releases_json, "sing-box-extended-release-tag", [ SING_BOX_EXTENDED_MAX_SUPPORTED_MINOR ]));
     if (tag == "")
         return null;
     release_json = helper_output_input(releases_json, "release-by-tag", [ tag ]);

@@ -364,6 +364,24 @@ assert_eq "1.13.14-extended-2.5.0" \
   "$(printf 'sing-box version 1.13.14-extended-2.5.0\n\nEnvironment: go1.26.4 linux/amd64\n' | ucode "$UPDATER" stdin-first-line-last-field)" \
   "sing-box extended binary version parsing"
 
+# sing-box 1.14 rejects the generated config, so updates are capped at 1.13.
+sing_box_releases='[{"tag_name":"v1.14.3-extended-2.7.3"},{"tag_name":"v1.14.0-extended-2.7.0-beta.1","prerelease":true},{"tag_name":"v1.13.18-extended-2.6.5"},{"tag_name":"v1.13.16-extended-2.6.2"}]'
+assert_eq "v1.13.18-extended-2.6.5" \
+  "$(printf '%s' "$sing_box_releases" | ucode "$UPDATER" sing-box-extended-release-tag 1.13)" \
+  "sing-box-extended release selection must skip lines newer than the supported one"
+assert_eq "v1.14.3-extended-2.7.3" \
+  "$(printf '%s' "$sing_box_releases" | ucode "$UPDATER" sing-box-extended-release-tag)" \
+  "sing-box-extended release selection without a cap must keep picking the newest stable"
+ucode "$UPDATER" sing-box-tag-within-minor v1.13.18-extended-2.6.5 1.13 ||
+  fail "a 1.13 sing-box tag must be within the 1.13 cap"
+if ucode "$UPDATER" sing-box-tag-within-minor v1.14.3-extended-2.7.3 1.13; then
+  fail "a 1.14 sing-box tag must be outside the 1.13 cap"
+fi
+ucode "$UPDATER" sing-box-tag-within-minor v2.0.0 1.13 &&
+  fail "a newer major sing-box tag must be outside the 1.13 cap" || true
+grep -Fq 'SING_BOX_EXTENDED_MAX_SUPPORTED_MINOR = getenv("LOGHORIZON_SING_BOX_MAX_SUPPORTED_MINOR") || "1.13"' "$ACTION_UC" ||
+  fail "sing-box-extended updates must stay on 1.13 until the generator supports 1.14"
+
 component_actions_dir="$WORK_DIR/component-actions"
 fake_lib="$WORK_DIR/lib"
 mkdir -p "$fake_lib/components" "$fake_lib/config" "$fake_lib/core"
