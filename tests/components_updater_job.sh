@@ -105,6 +105,18 @@ grep -Fq 'let package_spec = package_name + "=" + package_version;' "$ACTION_UC"
   fail "APK sing-box installs must pin the concrete package version instead of selecting a provider"
 grep -Fq 'Package rollback failed; restored the previous sing-box binary backup' "$ACTION_UC" ||
   fail "package rollback must accept a successfully restored binary backup"
+# Reinstalling the extended package during rollback resolves the latest release,
+# i.e. the build that just failed. The saved binary must be tried first.
+awk '
+  /^function restore_sing_box_install_backup\(/ { inside = 1; next }
+  inside && /^}/ { exit }
+  inside && /restore_sing_box_backup\(backup_binary\)/ && !package_seen { backup_first = 1 }
+  inside && /restore_sing_box_package_variant\(/ { package_seen = 1 }
+  END { exit backup_first ? 0 : 1 }
+' "$ACTION_UC" ||
+  fail "extended rollback must restore the saved binary before reinstalling the latest package"
+grep -Fq 'if (previous_variant == "extended" && as_string(backup_binary) != ""' "$ACTION_UC" ||
+  fail "extended rollback must prefer the saved binary only when one exists"
 grep -Fq '!file_exists("/etc/init.d/sing-box") && file_nonempty("/usr/bin/sing-box")' "$ACTION_UC" ||
   fail "binary rollback must restore a managed sing-box service when the package script is missing"
 grep -Fq 'fail_package_sing_box_install(action, tiny, "package was installed, but sing-box binary is not available"' "$ACTION_UC" ||

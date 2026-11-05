@@ -1279,6 +1279,17 @@ function sing_box_variant_is_package_managed(variant) {
 }
 
 function restore_sing_box_install_backup(previous_variant, backup_binary) {
+    // Reinstalling the extended package resolves the latest release, which is
+    // the very build that just failed. The saved binary is the one that worked.
+    if (previous_variant == "extended" && as_string(backup_binary) != "" &&
+        file_nonempty(backup_binary)) {
+        if (restore_sing_box_backup(backup_binary)) {
+            updates_log("Restored the previous sing-box-extended binary", "warn");
+            return true;
+        }
+        updates_log("Failed to restore the previous sing-box-extended binary backup", "error");
+    }
+
     if (sing_box_variant_is_package_managed(previous_variant)) {
         if (restore_sing_box_package_variant(previous_variant))
             return true;
