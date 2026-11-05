@@ -302,6 +302,8 @@ function apply_selections(state, selections) {
     return true;
 }
 
+const WORKER_MAX_IDLE_SECONDS = 5;
+
 function worker() {
     let cfg = settings();
     let state = runtime_dns.normalize_state(cfg, common.read_json_file(STATE_FILE));
@@ -392,7 +394,14 @@ function worker() {
             next_recovery = completed + recovery_interval;
         }
 
-        command_success_from_args([ "sleep", "1" ]);
+        // Sleep in-process until the next due probe instead of forking sleep(1)
+        // every second. The cap keeps settings changes noticed within seconds.
+        let wait_seconds = (next_active < next_recovery ? next_active : next_recovery) - now_seconds();
+        if (wait_seconds < 1)
+            wait_seconds = 1;
+        if (wait_seconds > WORKER_MAX_IDLE_SECONDS)
+            wait_seconds = WORKER_MAX_IDLE_SECONDS;
+        sleep(wait_seconds * 1000);
     }
 }
 
