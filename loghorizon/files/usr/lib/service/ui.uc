@@ -1084,13 +1084,19 @@ function capability_flags() {
             result.sing_box_extended = 1;
             result.sing_box_tailscale = 1;
         }
-        else if (marker_is("tiny") || tiny_package_installed()) {
+        else if (marker_is("tiny")) {
             result.sing_box_tiny = 1;
         }
         else if (component_action_running_for("sing_box")) {
-            result.sing_box_tailscale = 1;
+            if (tiny_package_installed())
+                result.sing_box_tiny = 1;
+            else
+                result.sing_box_tailscale = 1;
         }
         else {
+            // The UI polls this every second. The version probe is cached by
+            // binary signature, so ask the package manager only when the
+            // binary itself cannot tell which build it is.
             let info = sing_box_version_info();
             if (info != null && index(info.version, "extended") >= 0) {
                 result.sing_box_extended = 1;
@@ -1101,6 +1107,9 @@ function capability_flags() {
                     result.sing_box_tailscale = 1;
                 if (result.sing_box_tailscale == 0)
                     result.sing_box_tiny = 1;
+            }
+            else if (tiny_package_installed()) {
+                result.sing_box_tiny = 1;
             }
         }
     }

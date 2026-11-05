@@ -38,6 +38,7 @@ SH
 chmod 755 "$PROBE_BIN"
 cat >"$WORK_DIR/opkg" <<'SH'
 #!/bin/sh
+printf '%s\n' "$*" >>"$LOGHORIZON_TEST_OPKG_LOG"
 exit 0
 SH
 chmod 755 "$WORK_DIR/opkg"
@@ -57,6 +58,7 @@ ui_capabilities() {
   BYEDPI_BIN="$WORK_DIR/missing-ciadpi" \
   LOGHORIZON_TEST_SING_BOX_PROBE_COUNT="$PROBE_COUNT" \
   LOGHORIZON_TEST_SING_BOX_PROBE_PIDS="$PROBE_PIDS" \
+  LOGHORIZON_TEST_OPKG_LOG="$WORK_DIR/opkg.log" \
   ucode -L "$LOGHORIZON_LIB" "$UI_UC" get-ui-capabilities
 }
 
@@ -74,6 +76,8 @@ if (value.sing_box_extended !== 0 || value.sing_box_tiny !== 0 || value.sing_box
 NODE
 [ "$fast_first" = "$fast_second" ] ||
   fail "cached sing-box capabilities must match the initial detection"
+[ ! -s "$WORK_DIR/opkg.log" ] ||
+  fail "the per-second UI poll must not query the package manager when the sing-box version is known"
 
 : >"$PROBE_COUNT"
 : >"$PROBE_PIDS"
