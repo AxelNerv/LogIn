@@ -5079,13 +5079,14 @@ function applyUiStateToStore(uiState) {
 
 // src/loghorizon/services/runtimeUiState.service.ts
 var RUNTIME_UI_STATE_REFRESH_MIN_INTERVAL_MS = 500;
-var RUNTIME_UI_STATE_IDLE_POLL_INTERVAL_MS = 1e3;
+var RUNTIME_UI_STATE_IDLE_POLL_INTERVAL_MS = 5e3;
 var RUNTIME_UI_STATE_ACTIVE_POLL_INTERVAL_MS = 500;
 var runtimeUiStateRefreshPromise = null;
 var lastRuntimeUiStateRefreshAt = 0;
 var lastRuntimeUiState;
 var runtimeStateResumeRefreshRegistered = false;
 var runtimeStatePollTimer = null;
+var runtimeStatePollTimerDelay = 0;
 var runtimeStatePollingStarted = false;
 var runtimeStateHasRunningAction = false;
 var runtimeUiStateListeners = /* @__PURE__ */ new Set();
@@ -5104,12 +5105,25 @@ function scheduleRuntimeUiStatePoll(delay = getNextPollDelay()) {
   if (!runtimeStatePollingStarted || runtimeStatePollTimer || typeof window === "undefined") {
     return;
   }
+  runtimeStatePollTimerDelay = delay;
   runtimeStatePollTimer = window.setTimeout(() => {
     runtimeStatePollTimer = null;
     void refreshRuntimeUiState().catch(() => void 0).finally(() => {
       scheduleRuntimeUiStatePoll();
     });
   }, delay);
+}
+function rescheduleIfFasterPollNeeded() {
+  if (!runtimeStatePollTimer) {
+    return;
+  }
+  const delay = getNextPollDelay();
+  if (delay >= runtimeStatePollTimerDelay) {
+    return;
+  }
+  window.clearTimeout(runtimeStatePollTimer);
+  runtimeStatePollTimer = null;
+  scheduleRuntimeUiStatePoll(delay);
 }
 function notifyRuntimeUiStateListeners(uiState) {
   for (const listener of runtimeUiStateListeners) {
@@ -5141,6 +5155,7 @@ async function refreshRuntimeUiState({
     applyUiStateToStore(response.data);
     lastRuntimeUiState = response.data;
     runtimeStateHasRunningAction = hasRunningAction(response.data);
+    rescheduleIfFasterPollNeeded();
     notifyRuntimeUiStateListeners(response.data);
     return response.data;
   }).catch((error) => {

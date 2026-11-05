@@ -4,7 +4,10 @@ import { logger } from './logger.service';
 import { applyUiStateToStore } from './uiState.service';
 
 const RUNTIME_UI_STATE_REFRESH_MIN_INTERVAL_MS = 500;
-const RUNTIME_UI_STATE_IDLE_POLL_INTERVAL_MS = 1000;
+// Each poll runs a full service health check on the router (~0.3 s, a dozen
+// processes). Nothing changes while idle, so poll slowly then and speed up as
+// soon as an action is running. Tab focus and actions force a fresh refresh.
+const RUNTIME_UI_STATE_IDLE_POLL_INTERVAL_MS = 5000;
 const RUNTIME_UI_STATE_ACTIVE_POLL_INTERVAL_MS = 500;
 type RuntimeUiStateListener = (uiState: logIn.UiState) => void;
 
@@ -14,6 +17,7 @@ let lastRuntimeUiStateRefreshAt = 0;
 let lastRuntimeUiState: logIn.UiState | undefined;
 let runtimeStateResumeRefreshRegistered = false;
 let runtimeStatePollTimer: ReturnType<typeof setTimeout> | null = null;
+let runtimeStatePollTimerDelay = 0;
 let runtimeStatePollingStarted = false;
 let runtimeStateHasRunningAction = false;
 const runtimeUiStateListeners = new Set<RuntimeUiStateListener>();
@@ -47,6 +51,7 @@ function scheduleRuntimeUiStatePoll(delay = getNextPollDelay()) {
     return;
   }
 
+  runtimeStatePollTimerDelay = delay;
   runtimeStatePollTimer = window.setTimeout(() => {
     runtimeStatePollTimer = null;
     void refreshRuntimeUiState()
@@ -55,6 +60,22 @@ function scheduleRuntimeUiStatePoll(delay = getNextPollDelay()) {
         scheduleRuntimeUiStatePoll();
       });
   }, delay);
+}
+
+// An action started between idle polls must not wait out the long idle timer.
+function rescheduleIfFasterPollNeeded() {
+  if (!runtimeStatePollTimer) {
+    return;
+  }
+
+  const delay = getNextPollDelay();
+  if (delay >= runtimeStatePollTimerDelay) {
+    return;
+  }
+
+  window.clearTimeout(runtimeStatePollTimer);
+  runtimeStatePollTimer = null;
+  scheduleRuntimeUiStatePoll(delay);
 }
 
 function notifyRuntimeUiStateListeners(uiState: logIn.UiState) {
@@ -97,6 +118,7 @@ export async function refreshRuntimeUiState({
       applyUiStateToStore(response.data);
       lastRuntimeUiState = response.data;
       runtimeStateHasRunningAction = hasRunningAction(response.data);
+      rescheduleIfFasterPollNeeded();
       notifyRuntimeUiStateListeners(response.data);
       return response.data;
     })
