@@ -111,6 +111,22 @@ if PATH="$WORK_DIR/check-bin:$PATH" \
 fi
 [ "$(cat "$WORK_DIR/sing-box-check.reason")" = 'FATAL[0000] route: missing outbound tag' ] ||
   fail "singbox/runtime.uc must return the first non-empty sing-box check diagnostic"
+# sing-box 1.14 prints a coloured deprecation WARN before the real error. The
+# reason must name the FATAL line, without terminal colour codes.
+cat >"$WORK_DIR/check-bin/sing-box" <<'EOF_SING_BOX_CHECK'
+#!/bin/sh
+printf '\033[33mWARN\033[0m[0000] `independent_cache` DNS option is deprecated\n' >&2
+printf '\033[31mFATAL\033[0m[0000] decode config: unknown field "example"\n' >&2
+exit 1
+EOF_SING_BOX_CHECK
+if PATH="$WORK_DIR/check-bin:$PATH" \
+  ucode -L "$LOGHORIZON_LIB" "$SINGBOX_RUNTIME_UC" check-config-fixture \
+  "$WORK_DIR/invalid-config.json" "$WORK_DIR/sing-box-check.log" \
+  >"$WORK_DIR/sing-box-check.reason"; then
+  fail "a failed sing-box check after a WARN line must keep the failed status"
+fi
+[ "$(cat "$WORK_DIR/sing-box-check.reason")" = 'FATAL[0000] decode config: unknown field "example"' ] ||
+  fail "sing-box check reason must skip WARN lines and strip colour codes: $(cat "$WORK_DIR/sing-box-check.reason")"
 grep -Fq 'Generated sing-box configuration is invalid: " + check_result.reason' "$SINGBOX_RUNTIME_UC" ||
   fail "generated config failure must include the captured sing-box check diagnostic"
 

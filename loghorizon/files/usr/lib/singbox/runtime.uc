@@ -632,14 +632,6 @@ function log_lines(text, level, prefix) {
             log_message(as_string(prefix) + as_string(line), level);
 }
 
-function first_nonblank_line(path) {
-    let data = as_string(fs.readfile(path) || "");
-    for (let line in split(data, "\n"))
-        if (trim(as_string(line)) != "")
-            return as_string(line);
-    return "";
-}
-
 function last_nonblank_line(path) {
     let result = "";
     let data = as_string(fs.readfile(path) || "");
@@ -658,12 +650,33 @@ function log_file_lines(path, level, prefix) {
     log_lines(fs.readfile(path), level, prefix);
 }
 
+const ANSI_ESCAPE_PATTERN = regexp(chr(27) + "\\[[0-9;]*m", "g");
+
+// sing-box prints deprecation WARN lines before the real error, so the first
+// line of a failed check is often not the reason. Prefer FATAL/ERROR, then any
+// line that is not a low-level notice, and strip terminal colour codes.
+function sing_box_check_failure_reason(path) {
+    let lines = [];
+    for (let line in split(as_string(fs.readfile(path) || ""), "\n")) {
+        line = trim(replace(as_string(line), ANSI_ESCAPE_PATTERN, ""));
+        if (line != "")
+            push(lines, line);
+    }
+    for (let line in lines)
+        if (match(line, /(^|[^A-Z])(FATAL|ERROR)\[/) != null)
+            return line;
+    for (let line in lines)
+        if (match(line, /(^|[^A-Z])(WARN|INFO|DEBUG|TRACE)\[/) == null)
+            return line;
+    return length(lines) > 0 ? lines[0] : "";
+}
+
 function sing_box_check(config_path, output_path) {
     let status = command_status(
         command_from_args([ "sing-box", "-c", config_path, "check" ]) +
         " >" + shell_quote(output_path) + " 2>&1"
     );
-    let reason = status == 0 ? "" : first_nonblank_line(output_path);
+    let reason = status == 0 ? "" : sing_box_check_failure_reason(output_path);
     if (status != 0 && reason == "")
         reason = "exit status " + status;
     return { status, reason };
