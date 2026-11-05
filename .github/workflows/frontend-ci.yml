@@ -4,6 +4,15 @@ on:
   pull_request:
     paths:
       - 'fe-app-loghorizon/**'
+      - 'luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js'
+      - '.github/workflows/frontend-ci.yml'
+  # Work is pushed straight to main, so pull_request alone never ran these checks.
+  push:
+    branches:
+      - main
+    paths:
+      - 'fe-app-loghorizon/**'
+      - 'luci-app-loghorizon/htdocs/luci-static/resources/view/loghorizon/main.js'
       - '.github/workflows/frontend-ci.yml'
 
 jobs:
